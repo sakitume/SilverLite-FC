@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) silverx and contributors. STMF4 port by Markus Gritsch.
+Copyright (c) silverx and contributors. STM32F4 port by Markus Gritsch.
 
 All rights reserved.
 

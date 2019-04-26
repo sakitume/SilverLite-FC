@@ -47,7 +47,7 @@
 // gyro filter 3 = 41hz delay 5.9mS
 #define GYRO_LOW_PASS_FILTER 0
 
-// Software Gyro Filter
+// Software Gyro Filter (enable exactly one option)
 // #define GYRO_FILTER_NONE
 
 #define BIQUAD_NOTCH_HZ 259
@@ -121,6 +121,8 @@
 
 // Betaflight like mix scaling
 #define MIX_SCALING
+// Only lower the motor mix to prevent from a jumpy quad
+#define NO_MIX_INCREASING
 
 // Use a square root motor curve to counteract thrust ~ RPM^2
 // 0.0f .. no compensation, 1.0f .. full square root curve

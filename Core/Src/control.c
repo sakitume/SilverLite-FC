@@ -285,16 +285,19 @@ void control( void )
 		} else {
 			if ( maxMix > 1.0f ) {
 				reduceAmount = maxMix - 1.0f;
-			} else if ( minMix < 0.0f ) {
+			}
+#ifndef NO_MIX_INCREASING
+			else if ( minMix < 0.0f ) {
 				reduceAmount = minMix;
 			}
+#endif // NO_MIX_INCREASING
 		}
 		if ( reduceAmount != 0.0f ) {
 			for ( int i = 0; i < 4; ++i ) {
 				mix[ i ] -= reduceAmount;
 			}
 		}
-#endif
+#endif // MIX_SCALING
 
 		thrsum = 0;
 		mixmax = 0;
