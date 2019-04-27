@@ -286,11 +286,11 @@ void control( void )
 			if ( maxMix > 1.0f ) {
 				reduceAmount = maxMix - 1.0f;
 			}
-#ifndef NO_MIX_INCREASING
+#ifdef ALLOW_MIX_INCREASING
 			else if ( minMix < 0.0f ) {
 				reduceAmount = minMix;
 			}
-#endif // NO_MIX_INCREASING
+#endif // ALLOW_MIX_INCREASING
 		}
 		if ( reduceAmount != 0.0f ) {
 			for ( int i = 0; i < 4; ++i ) {

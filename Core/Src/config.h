@@ -121,8 +121,8 @@
 
 // Betaflight like mix scaling
 #define MIX_SCALING
-// Only lower the motor mix to prevent from a jumpy quad
-#define NO_MIX_INCREASING
+// Mix increasing yields a more crisp response but also a more jumpy quad at low RPM
+#define ALLOW_MIX_INCREASING
 
 // Use a square root motor curve to counteract thrust ~ RPM^2
 // 0.0f .. no compensation, 1.0f .. full square root curve

@@ -59,7 +59,7 @@ void xn_command( int command )
 // 	spi_xn_csoff();
 // }
 
-void xn_readpayload( int *data, int size )
+void xn_readpayload( int * data, int size )
 {
 	int index = 0;
 	spi_xn_cson();
@@ -71,7 +71,7 @@ void xn_readpayload( int *data, int size )
 	spi_xn_csoff();
 }
 
-void xn_writerxaddress( int *addr )
+void xn_writerxaddress( int * addr )
 {
 	int index = 0;
 	spi_xn_cson();
@@ -83,7 +83,7 @@ void xn_writerxaddress( int *addr )
 	spi_xn_csoff();
 }
 
-void xn_writetxaddress( int *addr )
+void xn_writetxaddress( int * addr )
 {
 	int index = 0;
 	spi_xn_cson();
