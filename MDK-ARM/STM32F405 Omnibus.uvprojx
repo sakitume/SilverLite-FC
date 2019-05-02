@@ -532,6 +532,11 @@
               <FileType>1</FileType>
               <FilePath>../Core/Src/stm32f4xx_hal_msp.c</FilePath>
             </File>
+            <File>
+              <FileName>rx_nrf24_bayang.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\rx_nrf24_bayang.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

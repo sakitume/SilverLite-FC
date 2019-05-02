@@ -79,9 +79,8 @@
 
 #define LEDS_ON DEVO_CHAN_7
 
-// Airmode keeps the PID loop stabilizing the quads orientation even at zero throttle.
 // To stop the motors on ground a switch on the remote control is necessary.
-#define AIRMODE_HOLD_SWITCH DEVO_CHAN_5
+#define THROTTLE_KILL_SWITCH DEVO_CHAN_5
 
 // enable inverted (3D) flight code (brushless only)
 #define INVERTED_ENABLE
@@ -101,7 +100,8 @@
 #define DISPLAY_MAX_G_INSTEAD_OF_VOLTAGE
 
 // Radio protocol selection (only Bayang implemented)
-#define RX_BAYANG_PROTOCOL_TELEMETRY
+#define RX_BAYANG_PROTOCOL_TELEMETRY // For XN297 radio module harvested from toy TX
+// #define RX_NRF24_BAYANG_TELEMETRY // For nRF24L01+ radio module
 
 // led brightness 0 .. 15 (used for solid lights only)
 #define LED_BRIGHTNESS 15

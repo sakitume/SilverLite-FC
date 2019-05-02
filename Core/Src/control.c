@@ -163,7 +163,7 @@ void control( void )
 	throttle = throttle * ( throttle * aa + 1 - aa ); // invert the motor curve correction applied further below
 #endif
 
-	if ( failsafe || aux[ AIRMODE_HOLD_SWITCH ] ) {
+	if ( failsafe || aux[ THROTTLE_KILL_SWITCH ] ) {
 		static uint32_t counter;
 		++counter;
 		if ( counter % 8 != 0 ) { // Make sure, we send either pwm_set() or motorbeep().
