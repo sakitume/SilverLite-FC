@@ -73,7 +73,7 @@
 
 // Switch function selection
 
-#define RATES DEVO_CHAN_9 // For applying LOW_RATES_MULTI
+#define RATES DEVO_CHAN_9 // LOW_RATES_MULTI gets applied when RATES is 0.
 
 #define LEVELMODE DEVO_CHAN_10
 
@@ -176,10 +176,10 @@
 //#define SENSOR_FLIP_180 // Flip is forward. If you want to flip sideways then you have to FLIP_180 and ROTATE_180.
 
 // Motor order
-#define MOTOR_BL 3
-#define MOTOR_FL 2
+#define MOTOR_BL 2
+#define MOTOR_FL 1
 #define MOTOR_BR 4
-#define MOTOR_FR 1
+#define MOTOR_FR 3
 
 // Disable the check for known gyro that causes the 4 times flash.
 #define GYRO_CHECK

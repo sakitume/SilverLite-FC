@@ -123,7 +123,7 @@ float gyro_filter( float input, int num )
 #ifdef DYNAMIC_LPF_1ST_HZ
 
 static float one_minus_alpha;
-static float gyro_lpf_last;
+static float gyro_lpf_last[ 3 ];
 
 float gyro_filter( float in, int num )
 {
@@ -140,8 +140,8 @@ float gyro_filter( float in, int num )
 		}
 		one_minus_alpha = FILTERCALC( LOOPTIME, 1e6f / filter_Hz );
 	}
-	lpf( &gyro_lpf_last, in, one_minus_alpha );
-	return gyro_lpf_last;
+	lpf( &gyro_lpf_last[ num ], in, one_minus_alpha );
+	return gyro_lpf_last[ num ];
 }
 
 #endif // DYNAMIC_LPF_1ST_HZ
