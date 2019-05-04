@@ -47,29 +47,34 @@
 // gyro filter 3 = 41hz delay 5.9mS
 #define GYRO_LOW_PASS_FILTER 0
 
-// Software Gyro Filter (enable exactly one option)
-// #define GYRO_FILTER_NONE
+// Software Gyro Filters
 
-#define BIQUAD_NOTCH_HZ 259
-#define BIQUAD_NOTCH_Q 8
+#define BIQUAD_NOTCH_A_HZ 260
+#define BIQUAD_NOTCH_A_Q 8
 
-// #define DYNAMIC_LPF_1ST_HZ // Raises filter frequency with throttle.
-// #define DYNAMIC_LPF_1ST_HZ_BASE 80 // Filter frequency at zero throttle.
-// #define DYNAMIC_LPF_1ST_HZ_MAX 300 // A higher filter frequency than loopfrequency/3 causes ripples.
-// #define DYNAMIC_LPF_1ST_HZ_THROTTLE 0.25 // MAX reached at 1/4 throttle.
+#define BIQUAD_NOTCH_B_HZ 280
+#define BIQUAD_NOTCH_B_Q 8
+
+#define BIQUAD_NOTCH_C_HZ 360
+#define BIQUAD_NOTCH_C_Q 8
+
+#define DYNAMIC_LPF_1ST_HZ // Raises filter frequency with throttle.
+#define DYNAMIC_LPF_1ST_HZ_BASE 150 // Filter frequency at zero throttle.
+#define DYNAMIC_LPF_1ST_HZ_MAX 300 // A higher filter frequency than loopfrequency/3 causes ripples.
+#define DYNAMIC_LPF_1ST_HZ_THROTTLE 0.25 // MAX reached at 1/4 throttle.
 
 // #define DYNAMIC_LPF_2ND_HZ
 // #define DYNAMIC_LPF_2ND_HZ_BASE 100 * ( aux[ FN_INVERTED ] ? 0.75f : 1.0f )
 // #define DYNAMIC_LPF_2ND_HZ_MAX 300
 // #define DYNAMIC_LPF_2ND_HZ_THROTTLE 0.25
 
-// D-Term LPF (cannot be turned off)
+// D-Term second order LPF (cannot be turned off)
 #define DYNAMIC_DTERM_LPF_2ND_HZ_BASE 30 * ( aux[ FN_INVERTED ] ? 0.75f : 1.0f )
 #define DYNAMIC_DTERM_LPF_2ND_HZ_MAX 60
 #define DYNAMIC_DTERM_LPF_2ND_HZ_THROTTLE 0.5
 
-// If enabled, the D-Term filter uses the filtered gyro signal from above. Can lead to control loop instability.
-#define CASCADE_GYRO_AND_DTERM_FILTER
+// If enabled, the D-Term filter uses the LP filtered gyro signal from above. (Notch filters are always applied.)
+// #define CASCADE_GYRO_AND_DTERM_FILTER
 
 // Switch function selection
 

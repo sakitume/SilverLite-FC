@@ -220,12 +220,22 @@ static void process_gyronew_to_gyro( float gyronew[] )
 	// 16 bit, +-2000°/s -> 4000°/s / 2**16 * reading = °/s
 	for ( int i = 0; i < 3; ++i ) {
 		gyronew[ i ] = gyronew[ i ] * 0.061035156f * DEGTORAD;
-#ifndef GYRO_FILTER_NONE
-		gyro[ i ] = gyro_filter( gyronew[ i ], i );
-#else
-		gyro[ i ] = gyronew[ i ];
+		gyro[ i ] = gyro_unfiltered[ i ] = gyronew[ i ];
+#ifdef BIQUAD_NOTCH_A_HZ
+		gyro[ i ] = gyro_unfiltered[ i ] = notch_a_filter( gyro[ i ], i );
 #endif
-		gyro_unfiltered[ i ] = gyronew[ i ];
+#ifdef BIQUAD_NOTCH_B_HZ
+		gyro[ i ] = gyro_unfiltered[ i ] = notch_b_filter( gyro[ i ], i );
+#endif
+#ifdef BIQUAD_NOTCH_C_HZ
+		gyro[ i ] = gyro_unfiltered[ i ] = notch_c_filter( gyro[ i ], i );
+#endif
+#ifdef DYNAMIC_LPF_1ST_HZ
+		gyro[ i ] = gyro_lpf_filter( gyro[ i ], i );
+#endif
+#ifdef DYNAMIC_LPF_2ND_HZ
+		gyro[ i ] = gyro_lpf2_filter( gyro[ i ], i );
+#endif
 	}
 }
 
