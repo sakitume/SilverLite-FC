@@ -49,28 +49,28 @@
 
 // Software Gyro Filters
 
-#define BIQUAD_NOTCH_A_HZ 260
-#define BIQUAD_NOTCH_A_Q 8
+// #define BIQUAD_NOTCH_A_HZ 260
+// #define BIQUAD_NOTCH_A_Q 6
 
-#define BIQUAD_NOTCH_B_HZ 280
-#define BIQUAD_NOTCH_B_Q 8
+// #define BIQUAD_NOTCH_B_HZ BIQUAD_NOTCH_A_HZ * 3
+// #define BIQUAD_NOTCH_B_Q BIQUAD_NOTCH_A_Q
 
-#define BIQUAD_NOTCH_C_HZ 360
-#define BIQUAD_NOTCH_C_Q 8
+// #define BIQUAD_NOTCH_C_HZ BIQUAD_NOTCH_A_HZ * 6
+// #define BIQUAD_NOTCH_C_Q BIQUAD_NOTCH_A_Q
 
-#define DYNAMIC_LPF_1ST_HZ // Raises filter frequency with throttle.
-#define DYNAMIC_LPF_1ST_HZ_BASE 150 // Filter frequency at zero throttle.
-#define DYNAMIC_LPF_1ST_HZ_MAX 300 // A higher filter frequency than loopfrequency/3 causes ripples.
-#define DYNAMIC_LPF_1ST_HZ_THROTTLE 0.25 // MAX reached at 1/4 throttle.
+// #define DYNAMIC_LPF_1ST_HZ // Raises filter frequency with throttle.
+// #define DYNAMIC_LPF_1ST_HZ_BASE 400 // Filter frequency at zero throttle.
+// #define DYNAMIC_LPF_1ST_HZ_MAX 400 // A higher filter frequency than loopfrequency/3 causes ripples.
+// #define DYNAMIC_LPF_1ST_HZ_THROTTLE 0.25 // MAX reached at 1/4 throttle.
 
-// #define DYNAMIC_LPF_2ND_HZ
-// #define DYNAMIC_LPF_2ND_HZ_BASE 100 * ( aux[ FN_INVERTED ] ? 0.75f : 1.0f )
-// #define DYNAMIC_LPF_2ND_HZ_MAX 300
-// #define DYNAMIC_LPF_2ND_HZ_THROTTLE 0.25
+#define DYNAMIC_LPF_2ND_HZ
+#define DYNAMIC_LPF_2ND_HZ_BASE 200 * ( aux[ FN_INVERTED ] ? 0.75f : 1.0f )
+#define DYNAMIC_LPF_2ND_HZ_MAX 300
+#define DYNAMIC_LPF_2ND_HZ_THROTTLE 0.25
 
 // D-Term second order LPF (cannot be turned off)
-#define DYNAMIC_DTERM_LPF_2ND_HZ_BASE 30 * ( aux[ FN_INVERTED ] ? 0.75f : 1.0f )
-#define DYNAMIC_DTERM_LPF_2ND_HZ_MAX 60
+#define DYNAMIC_DTERM_LPF_2ND_HZ_BASE 80 * ( aux[ FN_INVERTED ] ? 0.75f : 1.0f )
+#define DYNAMIC_DTERM_LPF_2ND_HZ_MAX 120
 #define DYNAMIC_DTERM_LPF_2ND_HZ_THROTTLE 0.5
 
 // If enabled, the D-Term filter uses the LP filtered gyro signal from above. (Notch filters are always applied.)
@@ -136,9 +136,6 @@
 // A deadband can be used to eliminate stick center jitter and non-returning to exactly 0.
 #define STICKS_DEADBAND 0.02f
 
-// limit minimum motor output to a value (0.0 - 1.0)
-// #define MOTOR_MIN_VALUE 0.05
-
 // throttle direct to motors for thrust measure
 // #define MOTORS_TO_THROTTLE
 
@@ -186,10 +183,10 @@
 #define MOTOR_BR 4
 #define MOTOR_FR 3
 
-// Disable the check for known gyro that causes the 4 times flash.
+// Disable the check for known gyro that causes the 4 times LED flash.
 #define GYRO_CHECK
 
-// Disable the check for development without RX module (3 times flash).
+// Disable the check for development without RX module (3 times LED flash).
 #define RADIO_CHECK
 
 #define RADIO_XN297

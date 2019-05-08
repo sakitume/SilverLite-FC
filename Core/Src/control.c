@@ -320,12 +320,6 @@ void control( void )
 
 #endif
 
-#ifdef MOTOR_MIN_VALUE
-			if ( mix[ i ] < (float)MOTOR_MIN_VALUE ) {
-				mix[ i ] = (float)MOTOR_MIN_VALUE;
-			}
-#endif
-
 #ifdef THRUST_LINEARIZATION
 			// Computationally quite expensive:
 			static float a, a_reci, b, b_sq;

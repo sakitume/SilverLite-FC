@@ -416,6 +416,16 @@ int timingfail = 0;
 
 void checkrx( void )
 {
+	if ( LOOPTIME == 125 ) { // Kludge. 250 seems to works better for telemetry, so we skip every other call.
+		static bool skip_this = false;
+		if ( skip_this ) {
+			skip_this = false;
+			return;
+		} else {
+			skip_this = true;
+		}
+	}
+
 	if ( send_telemetry_next_loop ) {
 		beacon_sequence();
 		send_telemetry_next_loop = 0;
