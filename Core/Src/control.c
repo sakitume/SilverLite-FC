@@ -30,7 +30,7 @@ extern float pidoutput[ PIDNUMBER ]; // pid.c
 extern int pwmdir; // pid.c
 extern float ierror[ PIDNUMBER ]; // pid.c
 
-extern int failsafe; // rx.c
+extern bool failsafe; // rx.c
 extern float rx[ 4 ]; // rx.c
 extern char aux[ AUXNUMBER ]; // rx.c
 extern float aux_analog[ 2 ];
@@ -181,7 +181,7 @@ void control( void )
 
 		onground = 1;
 		thrsum = 0;
-	} else {// motors on - normal flight
+	} else { // motors on - normal flight
 		onground = 0;
 
 #ifdef THROTTLE_TRANSIENT_COMPENSATION_FACTOR

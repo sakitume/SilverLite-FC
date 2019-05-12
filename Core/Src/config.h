@@ -104,7 +104,7 @@
 // Send maximum measured g-force in the telemetry data.
 #define DISPLAY_MAX_G_INSTEAD_OF_VOLTAGE
 
-// Radio protocol selection (only Bayang implemented)
+// Radio module and protocol selection (only Bayang protocol implemented)
 #define RX_BAYANG_PROTOCOL_TELEMETRY // For XN297 radio module harvested from toy TX
 // #define RX_NRF24_BAYANG_TELEMETRY // For nRF24L01+ radio module
 
