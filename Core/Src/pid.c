@@ -141,7 +141,7 @@ void pid( int x )
 
 	// P term
 #ifdef ENABLE_SETPOINT_WEIGHTING
-	pidoutput[ x ] = ( setpoint[ x ] * b[ x ] - gyro[x] ) * pidkp[ x ] * AA_pidkp;
+	pidoutput[ x ] = ( setpoint[ x ] * b[ x ] - gyro[ x ] ) * pidkp[ x ] * AA_pidkp;
 #else // b disabled
 	pidoutput[ x ] = error[ x ] * pidkp[ x ] * AA_pidkp;
 #endif

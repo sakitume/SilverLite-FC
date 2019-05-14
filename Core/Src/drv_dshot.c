@@ -165,25 +165,16 @@ static void bitbang_data()
 		// Dshot1200, BLHeli_32 only
 		_NOP_ _NOP_ _NOP_ _NOP_ _NOP_
 		_NOP_ _NOP_ _NOP_ _NOP_ _NOP_
-		_NOP_ _NOP_ _NOP_ _NOP_
-
-		// Dshot600, BLHeli_S BB2 (not supported by BB1; works on BB2)
-		_NOP_ _NOP_ _NOP_ _NOP_ _NOP_
-		_NOP_ _NOP_ _NOP_ _NOP_ _NOP_
-		_NOP_ _NOP_ _NOP_ _NOP_ _NOP_
-		_NOP_ _NOP_ _NOP_ _NOP_ _NOP_
-		_NOP_ _NOP_ _NOP_ _NOP_ _NOP_
-		_NOP_ _NOP_ _NOP_ _NOP_ _NOP_
-		_NOP_ _NOP_ _NOP_ _NOP_ _NOP_
-		_NOP_ _NOP_ _NOP_ _NOP_ _NOP_
 		_NOP_ _NOP_ _NOP_ _NOP_ _NOP_
 
-		// Seems to be faster if Pins are on different Ports, so some additional delay.
-		_NOP_ _NOP_ _NOP_ _NOP_ _NOP_
-
-		// Dshot300 (recommended for BB2; works on BB1)
 		volatile static uint32_t count;
-		count = 9; while ( count-- ); // 6 to 12 is recognized as Dshot300
+#if 1
+		// Dshot600, BLHeli_S BB2 (not supported by BB1; works on BB2)
+		count = 5; while ( count-- ); // 4 to 6 is recognized as Dshot600
+#else
+		// Dshot300 (recommended for BB2; works on BB1)
+		count = 19; while ( count-- ); // 16 to 23 is recognized as Dshot300
+#endif
 	}
 }
 

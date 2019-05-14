@@ -64,8 +64,8 @@
 // #define DYNAMIC_LPF_1ST_HZ_THROTTLE 0.25 // MAX reached at 1/4 throttle.
 
 #define DYNAMIC_LPF_2ND_HZ
-#define DYNAMIC_LPF_2ND_HZ_BASE 200 * ( aux[ FN_INVERTED ] ? 0.75f : 1.0f )
-#define DYNAMIC_LPF_2ND_HZ_MAX 300
+#define DYNAMIC_LPF_2ND_HZ_BASE 400 * ( aux[ FN_INVERTED ] ? 0.75f : 1.0f )
+#define DYNAMIC_LPF_2ND_HZ_MAX 400
 #define DYNAMIC_LPF_2ND_HZ_THROTTLE 0.25
 
 // D-Term second order LPF (cannot be turned off)
