@@ -15,7 +15,7 @@
 #include "hardware.h"
 #include "main.h"
 
-#ifdef USE_DSHOT_DRIVER
+#ifdef DSHOT_DRIVER
 
 extern bool failsafe;
 extern int onground;
@@ -221,4 +221,4 @@ void motorbeep( int channel )
 	}
 }
 
-#endif // USE_DSHOT_DRIVER
+#endif // DSHOT_DRIVER

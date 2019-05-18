@@ -30,8 +30,8 @@ uint32_t gettime( void )
 	lastticks = ticks;
 	elapsedticks += remainder;
 
-	const uint32_t quotient = elapsedticks / 168;
-	remainder = elapsedticks - quotient * 168;
+	const uint32_t quotient = elapsedticks / SYS_CLOCK_FREQ_MHZ;
+	remainder = elapsedticks - quotient * SYS_CLOCK_FREQ_MHZ;
 
 	globalticks = globalticks + quotient;
 
@@ -41,6 +41,6 @@ uint32_t gettime( void )
 void delay( uint32_t us )
 {
 	volatile uint32_t count;
-	count = us * ( SYS_CLOCK_FREQ_HZ / 6000000 );
+	count = us * ( SYS_CLOCK_FREQ_MHZ / 6 );
 	while ( count-- );
 }

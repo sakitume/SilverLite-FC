@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-#define SYS_CLOCK_FREQ_HZ 168000000
+#define SYS_CLOCK_FREQ_MHZ 168
 
 void time_init( void );
 

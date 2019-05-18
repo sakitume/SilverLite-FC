@@ -6,8 +6,9 @@
 // Only available option
 #define SOFTSPI_4WIRE
 
-// Only available option
-#define USE_DSHOT_DRIVER
+// Choose between bitbang and DMA version
+// #define DSHOT_DRIVER
+#define DSHOT_DMA_DRIVER
 
 // LED is on when pin is low
 #define LED_INVERT
