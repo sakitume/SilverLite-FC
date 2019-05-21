@@ -1,6 +1,5 @@
-#include "main.h"
-
 #include "drv_time.h"
+#include "main.h"
 
 void time_init( void )
 {

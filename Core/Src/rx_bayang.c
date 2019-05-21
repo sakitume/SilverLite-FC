@@ -416,22 +416,23 @@ int timingfail = 0;
 
 void checkrx( void )
 {
-	if ( LOOPTIME == 125 ) { // Kludge. 250 seems to works better for telemetry, so we skip every other call.
-		static bool skip_this = false;
-		if ( skip_this ) {
-			skip_this = false;
-			return;
+	if ( LOOPTIME < 500 ) { // Kludge. 500 seems to works better for telemetry, so we skip some calls accordingly.
+		static int count;
+		if ( count == 0 ) {
+			count = 500 / LOOPTIME - 1;
 		} else {
-			skip_this = true;
+			--count;
+			return;
 		}
 	}
 
 	if ( send_telemetry_next_loop ) {
 		beacon_sequence();
 		send_telemetry_next_loop = 0;
+		return;
 	}
 
-	int packetreceived = checkpacket();
+	const int packetreceived = checkpacket();
 
 	if ( packetreceived ) {
 		if ( rxmode == RX_MODE_BIND ) { // rx startup, bind mode

@@ -5,7 +5,6 @@ void debug_on( void )
 {
 #ifdef DBG_Pin
 	DBG_GPIO_Port->BSRR = DBG_Pin;
-	LD5_GPIO_Port->BSRR = LD5_Pin;
 #endif
 }
 
@@ -13,7 +12,6 @@ void debug_off( void )
 {
 #ifdef DBG_Pin
 	DBG_GPIO_Port->BSRR = (uint32_t)DBG_Pin << 16U;
-	LD5_GPIO_Port->BSRR = (uint32_t)LD5_Pin << 16U;
 #endif
 }
 

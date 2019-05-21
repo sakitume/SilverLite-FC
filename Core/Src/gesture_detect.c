@@ -4,7 +4,6 @@
 #include "drv_time.h"
 #include "gesture_detect.h"
 #include "gestures.h"
-#include "config.h"
 
 #define STICKMAX 0.7f
 #define STICKCENTER 0.2f

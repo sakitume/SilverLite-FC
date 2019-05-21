@@ -44,13 +44,10 @@ void usermain()
 	lastlooptime = gettime() - LOOPTIME;
 
 	while ( true ) {
-		// Time measurements with ARMCC -O2 (ARMCLANG yields better results):
-		// 37 us Dshot600 :: contains 26.7 us bitbang time
-		// 13.5 us sixaxis_read() :: contains 12 us SPI bitbang time
-		// 21 us checkrx() :: 21 us worst case for LOOPTIME < 1000; 39 us otherwise [17 us with no TX module connected]
-		// 01 us DMA
-		// -----
-		// 73 us
+		// Time measurements with ARMCLANG -O3:
+		// sixaxis_read(): 11 +2 per gyro filter (contains 10 SPI bitbang time)
+		// control(): 23 acro (+3 angle)
+		// checkrx(): 17 us worst case for LOOPTIME < 1000; 39 us otherwise [+12 in case of nrf24 due to scrambling]
 
 		const uint32_t loop_start_time = gettime();
 		looptime = ( loop_start_time - lastlooptime ) * 1e-6f;
