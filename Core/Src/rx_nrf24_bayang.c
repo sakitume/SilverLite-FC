@@ -467,7 +467,7 @@ void checkrx( void )
 		return;
 	}
 
-	int packetreceived = checkpacket();
+	const int packetreceived = checkpacket();
 
 	if ( packetreceived ) {
 		if ( rxmode == RX_MODE_BIND ) { // rx startup, bind mode
