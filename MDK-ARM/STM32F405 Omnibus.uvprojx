@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F405xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;   ../Drivers/STM32F4xx_HAL_Driver/Inc;   ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;   ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;   ../Drivers/CMSIS/Include</IncludePath>
+              <IncludePath>../Core/Inc;    ../Drivers/STM32F4xx_HAL_Driver/Inc;    ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;    ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;    ../Drivers/CMSIS/Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -523,6 +523,11 @@
               <FilePath>..\Core\Src\rx_nrf24_bayang.c</FilePath>
             </File>
             <File>
+              <FileName>drv_dshot_dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\drv_dshot_dma.c</FilePath>
+            </File>
+            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/main.c</FilePath>
@@ -538,9 +543,9 @@
               <FilePath>../Core/Src/stm32f4xx_hal_msp.c</FilePath>
             </File>
             <File>
-              <FileName>drv_dshot_dma.c</FileName>
+              <FileName>drv_reset.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Core\Src\drv_dshot_dma.c</FilePath>
+              <FilePath>..\Core\Src\drv_reset.c</FilePath>
             </File>
           </Files>
         </Group>

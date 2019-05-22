@@ -49,8 +49,8 @@
 
 // Software Gyro Filters
 
-// #define BIQUAD_NOTCH_A_HZ 260
-// #define BIQUAD_NOTCH_A_Q 6
+#define BIQUAD_NOTCH_A_HZ 200
+#define BIQUAD_NOTCH_A_Q 6
 
 // #define BIQUAD_NOTCH_B_HZ BIQUAD_NOTCH_A_HZ * 3
 // #define BIQUAD_NOTCH_B_Q BIQUAD_NOTCH_A_Q
