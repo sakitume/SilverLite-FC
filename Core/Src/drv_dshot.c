@@ -169,10 +169,10 @@ static void bitbang_data()
 
 		volatile static uint32_t count;
 #if 1
-		// Dshot600, BLHeli_S BB2 (not supported by BB1; works on BB2)
+		// Dshot600, BLHeli_S BB2 (not supported by BB1)
 		count = 5; while ( count-- ); // 4 to 6 is recognized as Dshot600
 #else
-		// Dshot300 (recommended for BB2; works on BB1)
+		// Dshot300, works on BB1
 		count = 19; while ( count-- ); // 16 to 23 is recognized as Dshot300
 #endif
 	}
