@@ -27,8 +27,8 @@ extern float bb_mix[ 4 ];
 void blackbox_init( void )
 {
 #ifdef BLACKBOX_LOGGING
-	extern void MX_USART6_UART_Init( void );
-	MX_USART6_UART_Init();
+	extern void MX_UART4_Init( void );
+	MX_UART4_Init();
 #endif // BLACKBOX_LOGGING
 }
 
@@ -110,9 +110,9 @@ void blackbox_log( void )
 	// pos is 90
 	++bb_iteration;
 
-	extern UART_HandleTypeDef huart6;
-	// HAL_UART_IRQHandler( &huart6 ); // Resets huart->gState to HAL_UART_STATE_READY
-	huart6.gState = HAL_UART_STATE_READY; // Do it directly to save flash space.
-	HAL_UART_Transmit_DMA( &huart6, bb_buffer, sizeof( bb_buffer ) );
+	extern UART_HandleTypeDef huart4;
+	// HAL_UART_IRQHandler( &huart4 ); // Resets huart->gState to HAL_UART_STATE_READY
+	huart4.gState = HAL_UART_STATE_READY; // Do it directly to save flash space.
+	HAL_UART_Transmit_DMA( &huart4, bb_buffer, sizeof( bb_buffer ) );
 #endif // BLACKBOX_LOGGING
 }
