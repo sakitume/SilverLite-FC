@@ -14,3 +14,10 @@
 
 // Use this if LED is on when pin is low
 #define LED_INVERT
+
+#ifdef USE_SILVERLITE
+// Place your customizations into the following included header file rather
+// than directly modifying this file. It will make merging/updating easier.
+// It also makes it cleaner/easier to support multiple targets.
+#include "_my_hardware.h"
+#endif

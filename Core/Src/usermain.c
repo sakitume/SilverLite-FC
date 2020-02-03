@@ -18,6 +18,10 @@
 
 #include "debug.h"
 
+#ifdef USE_SILVERLITE
+#include "silverlite.h"
+#endif
+
 float looptime; // in seconds
 uint32_t lastlooptime;
 uint32_t used_loop_time;
@@ -40,6 +44,9 @@ void usermain()
 	adc_init(); // DMA takes about 1 us once installed. Must be done early, adc is used in battery_init().
 	flash_calculate_pid_c_identifier(); // Must be called before flash_load().
 	flash_load(); // Must be called before rx_init() for autobind to work.
+#ifdef USE_SILVERLITE
+	silverlite_init();
+#endif
 	rx_init();
 	battery_init(); // Must be called before gyro_cal() to send initial battery voltage there.
 	gyro_cal();
@@ -81,6 +88,9 @@ void usermain()
 		process_led_command();
 		checkrx(); // receiver function
 
+#ifdef USE_SILVERLITE
+		silverlite_update();
+#endif
 		// for debug
 		used_loop_time = gettime() - loop_start_time;
 		if ( used_loop_time > max_used_loop_time ) {
@@ -92,9 +102,36 @@ void usermain()
 			next_loop_start = loop_start_time;
 		}
 		next_loop_start += LOOPTIME;
+
+#ifdef USE_SILVERLITE
+		if (silverlite_postupdate(max_used_loop_time))
+		{
+            max_used_loop_time = 0;
+		}
+#endif
 		while ( gettime() < next_loop_start );
 	}
 }
+
+#ifdef USE_SILVERLITE
+// failloop() uses long delays which will cause our USB VCP to timeout
+// so this is a little hack to prevent that from happening
+static void delayWithPolling(uint32_t us)
+{
+	while (us >= 1000)
+	{
+		delay(1000);
+		us -= 1000;
+		silverlite_poll();
+	}
+	if (us)
+	{
+		delay(us);
+	}
+}
+#define 	delay	delayWithPolling
+#endif
+
 
 // 2 - low battery at powerup - if enabled by config
 // 3 - radio chip not detected

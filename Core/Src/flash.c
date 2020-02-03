@@ -50,7 +50,7 @@ void flash_save( void )
 	fmc_write_float( addresscount++, accelcal[ 1 ] );
 	fmc_write_float( addresscount++, accelcal[ 2 ] );
 
-#if ( defined RX_BAYANG_PROTOCOL_TELEMETRY || defined RX_NRF24_BAYANG_TELEMETRY )
+#if ( defined RX_BAYANG_PROTOCOL_TELEMETRY || defined RX_NRF24_BAYANG_TELEMETRY || defined USE_SILVERLITE)
 
 	if ( rx_bind_enable ) {
 		fmc_write( 50, rxaddress[ 4 ] | ( telemetry_enabled << 8 ) );
@@ -94,7 +94,7 @@ void flash_load( void )
 		accelcal[ 1 ] = fmc_read_float( addresscount++ );
 		accelcal[ 2 ] = fmc_read_float( addresscount++ );
 
-#if ( defined RX_BAYANG_PROTOCOL_TELEMETRY || defined RX_NRF24_BAYANG_TELEMETRY )
+#if ( defined RX_BAYANG_PROTOCOL_TELEMETRY || defined RX_NRF24_BAYANG_TELEMETRY || defined USE_SILVERLITE)
 
 		int temp = fmc_read( 52 );
 		int error = 0;

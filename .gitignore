@@ -1,7 +1,4 @@
-.mxproject
-MDK-ARM/DebugConfig/
-MDK-ARM/RTE/
-MDK-ARM/STM32F405 Omnibus/
-MDK-ARM/EventRecorderStub.scvd
-MDK-ARM/startup_stm32f405xx.lst
-MDK-ARM/STM32F405 Omnibus.uvguix.mgr
+/gcc_debug/
+/gcc_release/
+/.vscode/.cortex-debug*
+

@@ -1,3 +1,18 @@
+#ifdef USE_SILVERLITE
+#include "drv_xn297.h"
+// SilverLite performs its own software SPI implementation
+// We need to have this driver module use it
+extern void trx_spi_cs_enable();
+extern void trx_spi_cs_disable();
+extern void trx_spi_write(int data);
+extern int trx_spi_read();
+
+#define	spi_xn_cson				trx_spi_cs_enable
+#define	spi_xn_csoff			trx_spi_cs_disable
+#define spi_sendbyte			trx_spi_write
+#define spi_sendzerorecvbyte	trx_spi_read
+
+#else
 #include "drv_spi.h"
 #include "drv_xn297.h"
 #include "main.h"
@@ -11,6 +26,7 @@ void spi_xn_csoff()
 {
 	SPI_XN_SS_GPIO_Port->BSRR = SPI_XN_SS_Pin;
 }
+#endif
 
 void xn_writereg( int reg, int val )
 {

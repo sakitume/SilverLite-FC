@@ -229,3 +229,11 @@
 
 // Logs various information to an externally connected OpenLager logger
 //#define BLACKBOX_LOGGING
+
+
+#ifdef USE_SILVERLITE
+// Place your customizations into the following included header file rather
+// than directly modifying this file. It will make merging/updating easier.
+// It also makes it cleaner/easier to support multiple targets.
+#include "_my_config.h"
+#endif
