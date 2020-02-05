@@ -15,13 +15,13 @@
 #undef LOW_RATES_MULTI
 
 // rate in deg/sec for acro mode
-#define MAX_RATE 1800
-#define MAX_RATEYAW 1800
+#define MAX_RATE            800
+#define MAX_RATEYAW         550
 
-#define LEVEL_MAX_ANGLE 80
-#define LEVEL_MAX_RATE 1800
+#define LEVEL_MAX_ANGLE     75
+#define LEVEL_MAX_RATE      200
 
-#define LOW_RATES_MULTI 0.5
+#define LOW_RATES_MULTI     0.75
 
 //------------------------------------------------------------------------------
 // Expo
@@ -29,13 +29,13 @@
 //  The higher the value, the less sensitive near center
 //------------------------------------------------------------------------------
 
-#define ACRO_EXPO_ROLL 0.80
-#define ACRO_EXPO_PITCH 0.80
-#define ACRO_EXPO_YAW 0.60
+#define ACRO_EXPO_ROLL      0.70
+#define ACRO_EXPO_PITCH     0.70
+#define ACRO_EXPO_YAW       0.30
 
-#define ANGLE_EXPO_ROLL 0.55
-#define ANGLE_EXPO_PITCH 0.0
-#define ANGLE_EXPO_YAW 0.55
+#define ANGLE_EXPO_ROLL     0.55
+#define ANGLE_EXPO_PITCH    0.0
+#define ANGLE_EXPO_YAW      0.55
 
 //------------------------------------------------------------------------------
 // Battery
@@ -155,13 +155,21 @@
 #endif
 
 //------------------------------------------------------------------------------
-// Blackbox
+// Other important features
 //------------------------------------------------------------------------------
-#undef BLACKBOX_LOGGING // Disable this
+
+// Disable blackbox, my hardware doesn't have this. Plus this feature only
+// builds for OMNIBUS target. Code isn't conditionalized to support NOX
+#undef BLACKBOX_LOGGING 
+
+// I think having this on led to the slow/awkward control I first experienced
+#undef STICKS_DEADBAND
+// But I'll try it again, but this time use 0.01 instead of 0.02
+#define STICKS_DEADBAND 0.01f
 
 
 #undef LOOPTIME
-#define LOOPTIME 250
+#define LOOPTIME    250
 
 
 //------------------------------------------------------------------------------
