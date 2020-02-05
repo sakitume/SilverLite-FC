@@ -8,7 +8,14 @@ def handlePacket(cmdID, packet):
     if cmdID == 0xFF:
         print str(packet),
     elif cmdID == 0x01:
-        if len(packet) >= 10:
+        if len(packet) >= 12:
+            loopTime, pps, pktHit, hwCRC, bCRC, osdTime = struct.unpack("<hhhhhh", packet)
+            print "looptime: ", loopTime
+            print "osdTime: ", osdTime
+            print "pps: ", pps, "hit: ", pktHit
+            print "hcrc: ", hwCRC, "bcrc: ", bCRC
+            print
+        elif len(packet) >= 10:
             loopTime, pps, pktHit, hwCRC, bCRC = struct.unpack("<hhhhh", packet)
             print "looptime: ", loopTime
             print "pps: ", pps, "hit: ", pktHit

@@ -183,6 +183,7 @@ bool silverlite_postupdate(uint32_t max_used_loop_time)
         console_appendPacket16(pkt_hits);
         console_appendPacket16(hw_crc_errors);
         console_appendPacket16(b_crc_errors);
+        console_appendPacket16(osd_time);
         console_closePacket(0x01);
 #endif
         
