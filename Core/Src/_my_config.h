@@ -47,9 +47,44 @@
 #undef LVC_LOWER_THROTTLE
 
 //------------------------------------------------------------------------------
+// LOOPTIME, and filters
+//------------------------------------------------------------------------------
+#undef RPM_FILTER
+#undef LOOPTIME
+#if defined(NOX)
+    // F411 is very close to 250us mark when RPM_FILTER enabled, OSD spikes
+    // (every 10th second) will always cause it to go over
+    #define RPM_FILTER
+    #define LOOPTIME    250     
+#elif defined(OMNIBUS)
+    #define RPM_FILTER
+    #define LOOPTIME    250
+#else
+    #undef RPM_FILTER
+    #define LOOPTIME    1000    
+#endif
+
+//------------------------------------------------------------------------------
 // Filters
 //------------------------------------------------------------------------------
-#undef RPM_FILTER   // Will explore this feature later, disable for now
+#if defined(RPM_FILTER)
+
+#define RPM_FILTER_HZ_MIN           100
+#define RPM_FILTER_2ND_HARMONIC     false   // note, that there are 12 notch filters (4 motors * 3 axes) per harmonic
+#define RPM_FILTER_3RD_HARMONIC     true
+#define RPM_FILTER_Q                6       // -3dB bandwidth = f0 / Q -- but a higher Q also results in a longer settling time
+
+// Dynamic Gyro first order LPF
+#define GYRO_LPF_1ST_HZ_BASE        120     // Filter frequency at zero throttle.
+#define GYRO_LPF_1ST_HZ_MAX         120     // A higher filter frequency than loopfrequency/2.4 causes ripples.
+#define GYRO_LPF_1ST_HZ_THROTTLE    0.25    // MAX reached at 1/4 throttle.
+
+// Dynamic D-Term second order LPF (cannot be turned off)
+#define DTERM_LPF_2ND_HZ_BASE       60      //* ( aux[ FN_INVERTED ] ? 0.75f : 1.0f )
+#define DTERM_LPF_2ND_HZ_MAX        60
+#define DTERM_LPF_2ND_HZ_THROTTLE   0.5
+
+#else
 
 #undef GYRO_LPF_1ST_HZ_BASE
 #undef GYRO_LPF_1ST_HZ_MAX
@@ -63,17 +98,19 @@
 #undef DTERM_LPF_2ND_HZ_MAX
 #undef DTERM_LPF_2ND_HZ_THROTTLE
 
-#define GYRO_LPF_1ST_HZ_BASE 90 // Filter frequency at zero throttle.
-#define GYRO_LPF_1ST_HZ_MAX 90 // A higher filter frequency than loopfrequency/2.4 causes ripples.
-#define GYRO_LPF_1ST_HZ_THROTTLE 0.25 // MAX reached at 1/4 throttle.
+#define GYRO_LPF_1ST_HZ_BASE        90      // Filter frequency at zero throttle.
+#define GYRO_LPF_1ST_HZ_MAX         90      // A higher filter frequency than loopfrequency/2.4 causes ripples.
+#define GYRO_LPF_1ST_HZ_THROTTLE    0.25    // MAX reached at 1/4 throttle.
 
-#define GYRO_LPF_2ND_HZ_BASE 120 //* ( aux[ FN_INVERTED ] ? 0.75f : 1.0f )
-#define GYRO_LPF_2ND_HZ_MAX 120
-#define GYRO_LPF_2ND_HZ_THROTTLE 0.25
+#define GYRO_LPF_2ND_HZ_BASE        120     //* ( aux[ FN_INVERTED ] ? 0.75f : 1.0f )
+#define GYRO_LPF_2ND_HZ_MAX         120
+#define GYRO_LPF_2ND_HZ_THROTTLE    0.25
 
-#define DTERM_LPF_2ND_HZ_BASE 120 //* ( aux[ FN_INVERTED ] ? 0.75f : 1.0f )
-#define DTERM_LPF_2ND_HZ_MAX 120
-#define DTERM_LPF_2ND_HZ_THROTTLE 0.5
+#define DTERM_LPF_2ND_HZ_BASE       120     //* ( aux[ FN_INVERTED ] ? 0.75f : 1.0f )
+#define DTERM_LPF_2ND_HZ_MAX        120
+#define DTERM_LPF_2ND_HZ_THROTTLE   0.5
+
+#endif
 
 //------------------------------------------------------------------------------
 // Switches/Channels
@@ -166,11 +203,6 @@
 #undef STICKS_DEADBAND
 // But I'll try it again, but this time use 0.01 instead of 0.02
 #define STICKS_DEADBAND 0.01f
-
-
-#undef LOOPTIME
-#define LOOPTIME    250
-
 
 //------------------------------------------------------------------------------
 // SilverLite features
