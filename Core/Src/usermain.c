@@ -89,13 +89,16 @@ void usermain()
 		checkrx(); // receiver function
 
 #ifdef USE_SILVERLITE
-		silverlite_update();
+		if (silverlite_update()) {
 #endif
 		// for debug
 		used_loop_time = gettime() - loop_start_time;
 		if ( used_loop_time > max_used_loop_time ) {
 			max_used_loop_time = used_loop_time;
 		}
+#ifdef USE_SILVERLITE
+		}
+#endif
 
 		static uint32_t next_loop_start = 0;
 		if ( next_loop_start == 0 ) {
