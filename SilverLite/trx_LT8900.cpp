@@ -72,24 +72,66 @@ void trx_SetAddr(uint8_t addr[]);
 void trx_SetChannel(uint8_t channel);
 void trx_SetToRXMode();
 
+static volatile int nsHelper;
 //------------------------------------------------------------------------------
+// See: Page 10, Section 6.3 SPI Timing Requirements
 static void lt_writeRegister2(uint8_t reg, uint8_t high, uint8_t low)
 {
     trx_spi_cs_enable();
-
+    //  T2a,  41.5ns between CS and SCK
+    // Empirical testing seems to indicate we don't need to inject additional delay here
     trx_spi_write(REGISTER_WRITE | (REGISTER_MASK & reg));
+    // See: Page 10, Section 6.3 SPI Timing Requirements
+    //  T3,  41.5ns between address write and data write
+    // Empirical testing seems to indicate we don't need to inject additional delay here
     trx_spi_write(high);
+    //  T4,  41.5ns between high byte and low byte data
+    // Empirical testing seems to indicate we don't need to inject additional delay here
     trx_spi_write(low);
-
+    //  T2b,  41.5ns between CS and SCK
+    // Empirical testing seems to indicate we don't need to inject additional delay here
     trx_spi_cs_disable();
+
+#if 0
+    //  T1,  Min of 250ns, Interval between two SPI accesses (interval between calling this function)
+    nsHelper = 20;   // 0 seems sufficient
+    while (nsHelper--)
+        ;
+#else
+//    delay_us(1);
+#endif        
 }
 
+static uint16_t lt_readRegister(uint8_t reg);
 //------------------------------------------------------------------------------
 static void lt_writeRegister(uint8_t reg, uint16_t data)
 {
     uint8_t high = data >> 8;
     uint8_t low = data & 0xFF;
     lt_writeRegister2(reg, high, low);
+
+    // Mysteriously, removing this if() statement (even though the condition
+    // is always false) breaks packet reception (binding and data)
+#if 0
+    if (echo)
+    {
+        uint16_t value = lt_readRegister(reg);
+        XPRINTF("%d = %04x\r\n", reg, value);
+    }
+#elif 1
+    // So I've concluded that a delay is needed. If I disable code optimization
+    // when compiling this specific source file, I find that I can remove the
+    // delay and everything works. So I'm going to enable this as a safeguard
+    // whether or not I have compiler optimization enabled or not.
+
+//    nsHelper = 20;   // 20 works
+//    nsHelper = 10;  // 10 works
+    nsHelper = 5;   // 5 works
+//    nsHelper = 1;   // 1 works (I may have seen an error 2 times out of 10?)
+    while (nsHelper--)
+        ;
+#endif
+
 }
 
 //------------------------------------------------------------------------------
@@ -117,7 +159,19 @@ static void lt_setCurrentControl(uint8_t power, uint8_t gain)
 //------------------------------------------------------------------------------
 void trx_Init()
 {
+#if 0    
+    delay_ms(1000);
+#endif    
     trx_spi_init();
+
+#if 0
+    for (int i = 0; i <= 50; i++)
+    {
+        uint16_t value = lt_readRegister(i);
+        XPRINTF("%d = %04x\r\n", i, value);
+    }
+    XPRINTF("--\r\n");
+#endif
 
     lt_writeRegister(0, 0x6fe0);
     lt_writeRegister(1, 0x5681);
@@ -179,6 +233,7 @@ Trailer length is 8bits
     setDataRate(LT8900_1MBPS);
 */    
 
+#if 0
     //15:8, 01: 1Mbps 04: 250Kbps 08: 125Kbps 10: 62.5Kbps
 
     lt_writeRegister(R_FIFO, 0x0000); //TXRX_FIFO_REG (FIFO queue)
@@ -189,6 +244,27 @@ Trailer length is 8bits
     lt_writeRegister(R_CHANNEL, (1L << CHANNEL_TX_BIT)); //set TX mode.  (TX = bit 8, RX = bit 7, so RX would be 0x0080)
     delay_ms(2);
     lt_writeRegister(R_CHANNEL, _channel); // Frequency = 2402 + channel
+
+    // XXX, TODO:
+    for (int i=0; i<1; i++)
+    {
+        lt_readRegister(R_FIFO);
+    }
+#endif     
+
+    // XXX, For some mysterious reason we must read exactly 1 time from FIFO
+    // for our system to work, otherwise checksum for bind packets fails
+    uint16_t value = lt_readRegister(52);
+    XPRINTF("%d = %04x\r\n", 52, value);
+    int numToDiscard = value & 0x3F;
+
+    numToDiscard = 1;   // XXX, exactly one!
+    for (int i=0; i<numToDiscard; i++)
+    {
+        lt_readRegister(R_FIFO);
+    }
+    value = lt_readRegister(52);
+    XPRINTF("%d = %04x\r\n", 52, value);
 
 #define RADIO_CHECK
 #ifdef RADIO_CHECK

@@ -32,9 +32,14 @@
 volatile static uint32_t count;
 
 #define _NOP_	__asm__ __volatile__("nop");
-#define	DELAY_O3	
-//#define DELAY_O3 _NOP_ _NOP_ _NOP_ _NOP_ _NOP_ _NOP_ _NOP_ _NOP_ _NOP_// necessary when the loop is unrolled i.e. with -O3
-//#define DELAY_O3 count = 2; while ( count-- );
+
+#if defined(TRX_LT8900)
+	#define DELAY_O3 count = 0; while ( count-- );
+#else	
+	#define	DELAY_O3	
+	//#define DELAY_O3 _NOP_ _NOP_ _NOP_ _NOP_ _NOP_ _NOP_ _NOP_ _NOP_ _NOP_// necessary when the loop is unrolled i.e. with -O3
+	//#define DELAY_O3 count = 2; while ( count-- );
+#endif	
 
 //------------------------------------------------------------------------------
 void trx_spi_cs_enable()
