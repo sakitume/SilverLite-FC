@@ -9,7 +9,7 @@ extern "C" {
 #endif
 
 extern void silverlite_init(void);
-extern void silverlite_update(void);
+extern bool silverlite_update(void);
 extern bool silverlite_postupdate(uint32_t max_used_loop_time);
 extern void silverlite_poll(void);
 

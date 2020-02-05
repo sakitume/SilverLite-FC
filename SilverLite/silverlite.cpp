@@ -58,6 +58,7 @@ static uint32_t osd_ticks = 0;
 static uint32_t flyTimeTicks = 0;
 static const char *flyModes[] = { "ACRO ", "LEVEL" };
 static uint32_t osd_time;
+static uint32_t _max_loop_time;
 static void update_osd()
 {
     int row;
@@ -79,9 +80,12 @@ static void update_osd()
 
     // RSSI (packets per second), on upper right
     const char *s = tprintf("\x01%3d", packetpersecond);
-//    const char *s = tprintf("\x01%3d", osd_time);
-
     osd_print(row, 30 - strlen(s) - 1, s);
+    s = tprintf("%3d", _max_loop_time);
+    osd_print(row+1, 24, s);
+    s = tprintf("%3d", osd_time);
+    osd_print(row+2, 24, s);
+
 
     // Battery voltage on lower left
     uint8_t maxRows = osd_get_max_rows();
@@ -111,8 +115,11 @@ static void update_osd()
 }
 
 //------------------------------------------------------------------------------
-void silverlite_update()
+bool silverlite_update()
 {
+    // Make sure USB VCP is updated or risk losing connection
+    console_poll();
+
     if (!onground)
     {
         flyTimeTicks++;
@@ -127,10 +134,14 @@ void silverlite_update()
         uint32_t now = gettime();
         update_osd();
         osd_time = gettime() - now;
-    }
 
-    // Make sure USB VCP is updated or risk losing connection
-    console_poll();
+        // return false to signal to main loop to not count this frame
+        // when determining max loop time. OSD update/refresh spikes
+        // will always occur and are being measured above with osd_time
+        // and therefore shouldn't be considered
+        return false;
+    }
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -143,6 +154,7 @@ void silverlite_poll(void)
 //------------------------------------------------------------------------------
 bool silverlite_postupdate(uint32_t max_used_loop_time)
 {
+    _max_loop_time = max_used_loop_time;
     static uint32_t secondTimer;
     if ((gettime() - secondTimer) >= 1000000)
     {

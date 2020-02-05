@@ -377,12 +377,14 @@ void osd_show(void)
 //
 void osd_refresh(void)
 {
+	static unsigned lastPos = 0;
+
 	// Need 3 to 4 register writes for a single character
 	// Need 4 to 5 register writes for a single character with auto-increment mode
 	int buffMax = sizeof(spiBuff) - (2*5);	
 
 	int 		autoIncrementMode = -1;	// -1 means unknown, so set it. 0 means disabled, 1 means enabled
-	unsigned 	pos = 0;
+	unsigned 	pos = lastPos;
 	int 		buff_len = 0;
 	while (buff_len < buffMax)
 	{
@@ -409,6 +411,7 @@ void osd_refresh(void)
 		if (runLen <= 0)
 		{
 			// Reached end of screen and found nothing to update
+			pos = 0;
 			break;
 		}
 
@@ -442,7 +445,7 @@ void osd_refresh(void)
 
 			// Clamp the number of chars to output if needed so that we
 			// don't overrun our spiBuff[]
-			unsigned buffAvail 	= sizeof(spiBuff) - buff_len - (1*2);	// 1 reg write (2bytes) to terminate
+			unsigned buffAvail 	= buffMax - buff_len - (1*2);	// 1 reg write (2bytes) to terminate
 			unsigned maxChars	= buffAvail >> 1;	// div by 2 to get max chars we can write
 			if ((unsigned)runLen > maxChars)
 			{
@@ -462,8 +465,11 @@ void osd_refresh(void)
 		CS_ENABLE
 		spi_write_buffer(spiBuff, buff_len);
 		CS_DISABLE
-		buff_len = 0;
+
+//XXX		buff_len = 0;
 	}
+
+	lastPos = pos;
 }
 
 //------------------------------------------------------------------------------
