@@ -163,4 +163,17 @@
 #undef LOOPTIME
 #define LOOPTIME 250
 
+
+//------------------------------------------------------------------------------
+// SilverLite features
+//------------------------------------------------------------------------------
+#define     ACRO_P      {   .03,    .03,    .01     };
+#define     ACRO_I      {   .25,    .25,    .50     };
+#define     ACRO_D      {   .045,   .045,   .0      };
+
+#define     ANGLE_P1    10.
+#define     ANGLE_D1    3.0
+#define     ANGLE_P2    5.
+#define     ANGLE_D2    .0
+
 #endif

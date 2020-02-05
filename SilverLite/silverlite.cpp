@@ -15,11 +15,23 @@ extern "C" {
     extern float vbattfilt;
     extern bool lowbatt;
 
+    extern float pidkp[];
+    extern float pidki[];
+    extern float pidkd[];
+    extern float apidkp[];
+    extern float apidkd[];
+
     extern uint32_t gettime();
     extern const char *tprintf(const char* fmt, ...);
 }
 
+//------------------------------------------------------------------------------
 static void update_osd();
+
+//------------------------------------------------------------------------------
+static float _custom_pidkp[] = ACRO_P;
+static float _custom_pidki[] = ACRO_I;
+static float _custom_pidkd[] = ACRO_D;
 
 //------------------------------------------------------------------------------
 void silverlite_init(void)
@@ -27,6 +39,18 @@ void silverlite_init(void)
     console_init();
     osd_init();
     update_osd();
+
+    // Update acro PID terms
+    for (int i=0; i<3; i++)
+    {
+        pidkp[i] = _custom_pidkp[i];
+        pidki[i] = _custom_pidki[i];
+        pidkd[i] = _custom_pidkd[i];
+    }
+
+    // Update angle mode PID terms
+    apidkp[0] = ANGLE_P1;
+    apidkd[0] = ANGLE_D1;
 }
 
 //------------------------------------------------------------------------------
