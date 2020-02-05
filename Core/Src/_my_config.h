@@ -15,8 +15,8 @@
 #undef LOW_RATES_MULTI
 
 // rate in deg/sec for acro mode
-#define MAX_RATE            800
-#define MAX_RATEYAW         550
+#define MAX_RATE            850
+#define MAX_RATEYAW         650
 
 #define LEVEL_MAX_ANGLE     75
 #define LEVEL_MAX_RATE      200
