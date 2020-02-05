@@ -41,7 +41,11 @@ extern void delay_us(uint32_t us);
 #define  __NOP()	__asm__ __volatile__("nop");
 #if defined(__NOP)
 	// Need at least 3 nops with OMINIBUS4 board (STM32F405)
+	#if defined(OMNIBUS)
 	#define DELAY_SLOW __NOP(); __NOP(); __NOP(); // __NOP(); __NOP();
+	#else
+	#define DELAY_SLOW
+	#endif
 #else
 	// Initializing 'count' only (no while loop) works unless you use -O3 optimization
 	//#define DELAY_SLOW	count = 0;
