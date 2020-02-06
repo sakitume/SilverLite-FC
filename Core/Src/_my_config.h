@@ -16,7 +16,7 @@
 
 // rate in deg/sec for acro mode
 #define MAX_RATE            850
-#define MAX_RATEYAW         650
+#define MAX_RATEYAW         550
 
 #define LEVEL_MAX_ANGLE     75
 #define LEVEL_MAX_RATE      200
@@ -31,11 +31,23 @@
 
 #define ACRO_EXPO_ROLL      0.70
 #define ACRO_EXPO_PITCH     0.70
-#define ACRO_EXPO_YAW       0.30
+#define ACRO_EXPO_YAW       0.50
 
 #define ANGLE_EXPO_ROLL     0.55
 #define ANGLE_EXPO_PITCH    0.0
 #define ANGLE_EXPO_YAW      0.55
+
+//------------------------------------------------------------------------------
+// PID term overrides
+//------------------------------------------------------------------------------
+#define     ACRO_P      {   .040,   .040,   .01     };
+#define     ACRO_I      {   .250,   .250,   .50     };
+#define     ACRO_D      {   .035,   .035,   .0      };
+
+#define     ANGLE_P1    10.
+#define     ANGLE_D1    3.0
+#define     ANGLE_P2    5.
+#define     ANGLE_D2    .0
 
 //------------------------------------------------------------------------------
 // Battery
@@ -203,17 +215,5 @@
 #undef STICKS_DEADBAND
 // But I'll try it again, but this time use 0.01 instead of 0.02
 #define STICKS_DEADBAND 0.01f
-
-//------------------------------------------------------------------------------
-// SilverLite features
-//------------------------------------------------------------------------------
-#define     ACRO_P      {   .035,   .035,   .01     };
-#define     ACRO_I      {   .25,    .25,    .50     };
-#define     ACRO_D      {   .035,   .035,   .0      };
-
-#define     ANGLE_P1    10.
-#define     ANGLE_D1    3.0
-#define     ANGLE_P2    5.
-#define     ANGLE_D2    .0
 
 #endif
