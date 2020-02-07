@@ -16,7 +16,7 @@
 
 // rate in deg/sec for acro mode
 #define MAX_RATE            850
-#define MAX_RATEYAW         550
+#define MAX_RATEYAW         650
 
 #define LEVEL_MAX_ANGLE     80
 #define LEVEL_MAX_RATE      900
@@ -31,7 +31,7 @@
 
 #define ACRO_EXPO_ROLL      0.70
 #define ACRO_EXPO_PITCH     0.70
-#define ACRO_EXPO_YAW       0.50
+#define ACRO_EXPO_YAW       0.10
 
 #define ANGLE_EXPO_ROLL     0.55
 #define ANGLE_EXPO_PITCH    0.0
