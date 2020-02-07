@@ -18,10 +18,10 @@
 #define MAX_RATE            850
 #define MAX_RATEYAW         550
 
-#define LEVEL_MAX_ANGLE     75
-#define LEVEL_MAX_RATE      200
+#define LEVEL_MAX_ANGLE     80
+#define LEVEL_MAX_RATE      900
 
-#define LOW_RATES_MULTI     0.75
+#define LOW_RATES_MULTI     0.65
 
 //------------------------------------------------------------------------------
 // Expo
@@ -35,7 +35,7 @@
 
 #define ANGLE_EXPO_ROLL     0.55
 #define ANGLE_EXPO_PITCH    0.0
-#define ANGLE_EXPO_YAW      0.55
+#define ANGLE_EXPO_YAW      0.25
 
 //------------------------------------------------------------------------------
 // PID term overrides
@@ -159,6 +159,8 @@
 #undef LEDS_ON
 #define LEDS_ON                 CH_ON
 
+#undef FN_INVERTED
+#define FN_INVERTED             CH_OFF      // Default value (DEVO_CHAN_6) conflicts with my channel choice for LEVELMODE
 
 //------------------------------------------------------------------------------
 // RX protocol and configuration
@@ -215,5 +217,8 @@
 #undef STICKS_DEADBAND
 // But I'll try it again, but this time use 0.01 instead of 0.02
 #define STICKS_DEADBAND 0.01f
+
+// Disable inverted (3D) flight code
+#undef  INVERTED_ENABLE
 
 #endif
