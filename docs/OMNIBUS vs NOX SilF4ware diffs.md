@@ -1,17 +1,17 @@
-OMNIBUS vs NOX SilF4ware diffs
+OMNIBUSF4 vs NOX SilF4ware diffs
 
 C:\Projects\Hobbies\RC\STM32F405-Omnibus\Core\Inc\main.h
 	GPIO pin defines
 
 C:\Projects\Hobbies\RC\STM32F405-Omnibus\Core\Inc\stm32f4xx_it.h
 	DMA stream used
-	OMNIBUS
+	OMNIBUSF4
 		void DMA1_Stream4_IRQHandler(void);
 	NOX
 		void DMA1_Stream6_IRQHandler(void);
 
 C:\Projects\Hobbies\RC\STM32F405-Omnibus\Core\Src\blackbox.c
-	OMNIBUS
+	OMNIBUSF4
 		extern void MX_UART4_Init( void );
 		MX_UART4_Init();
 
@@ -30,7 +30,7 @@ C:\Projects\Hobbies\RC\STM32F405-Omnibus\Core\Src\blackbox.c
 		HAL_UART_Transmit_DMA( &huart2, bb_buffer, sizeof( bb_buffer ) );
 
 C:\Projects\Hobbies\RC\STM32F405-Omnibus\Core\Src\config.h
-	OMNIBUS
+	OMNIBUSF4
 		#define SENSOR_ROTATE_90_CCW
 	NOX
 		#define SENSOR_ROTATE_180
@@ -40,24 +40,24 @@ C:\Projects\Hobbies\RC\STM32F405-Omnibus\Core\Src\main.c
 	Many changes regarding
 
 	* UART/USART used (for blackbox logging)
-		OMNIBUS - UART4
+		OMNIBUSF4 - UART4
 		NOX - USART2
 
 	* Clock config
-		OMNIBUS - 168Mhz
+		OMNIBUSF4 - 168Mhz
 		NOX - 100 Mhz....but I need to change this to 96Mhz for USB VCP
 
 	* ADC channel
-		OMNIBUS 12
+		OMNIBUSF4 12
 		NOX 5
 
 	* TIM2
-		OMNIBUS Prescaler set to 84
+		OMNIBUSF4 Prescaler set to 84
 		NOX Prescaler set to 100 , but I'll need to change this to 96 due to clock config change
 
 	* DMA set IRQ priority and enables IRQ
-		OMNIBUS Uses DMA1_Stream4
-		OMNIBUS Uses DMA1_Stream6
+		OMNIBUSF4 Uses DMA1_Stream4
+		OMNIBUSF4 Uses DMA1_Stream6
 
 	* GPIO setup
 
@@ -71,7 +71,7 @@ C:\Projects\Hobbies\RC\STM32F405-Omnibus\Core\Src\stm32f4xx_it.c
 	These are the interrupt service routines
 
 Drivers folder...
-	OMNIBUS has this file
+	OMNIBUSF4 has this file
 	C:\Projects\Hobbies\RC\STM32F405-Omnibus\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f405xx.h
 	NOX has this file
 	C:\Projects\Hobbies\RC\STM32F411-NOXE\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f411xe.h

@@ -39,7 +39,7 @@ def checkForInput(ser):
             ser.write(ch)
 
 def main():
-    port = "com19"
+    port = "com22"
     if len(sys.argv) > 1:
         if sys.argv[1].lower().startswith("com"):
             port = sys.argv[1]

@@ -68,7 +68,7 @@
     // (every 10th second) will always cause it to go over
     #define RPM_FILTER
     #define LOOPTIME    250     
-#elif defined(OMNIBUS)
+#elif defined(OMNIBUSF4)
     #define RPM_FILTER
     #define LOOPTIME    250
 #else
@@ -186,7 +186,7 @@
 
 #if defined(NOX)
     #define SENSOR_ROTATE_90_CW
-#elif defined(OMNIBUS)
+#elif defined(OMNIBUSF4)
     #define SENSOR_ROTATE_90_CCW
 #endif
 
@@ -210,7 +210,7 @@
 //------------------------------------------------------------------------------
 
 // Disable blackbox, my hardware doesn't have this. Plus this feature only
-// builds for OMNIBUS target. Code isn't conditionalized to support NOX
+// builds for OMNIBUSF4 target. Code isn't conditionalized to support NOX
 #undef BLACKBOX_LOGGING 
 
 // I think having this on led to the slow/awkward control I first experienced

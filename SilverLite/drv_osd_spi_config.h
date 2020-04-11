@@ -3,7 +3,7 @@
 // communicating with the onboard MAX7456 chip.
 //------------------------------------------------------------------------------
 
-#if defined(OMNIBUS)
+#if defined(OMNIBUSF4)
 //------------------------------------------------------------------------------
 // OMINBUSF4 connects to the MAX7456 via SPI using the following pins
 //

@@ -40,8 +40,9 @@ extern void delay_us(uint32_t us);
 
 #define  __NOP()	__asm__ __volatile__("nop");
 #if defined(__NOP)
-	// Need at least 3 nops with OMINIBUS4 board (STM32F405)
-	#if defined(OMNIBUS)
+	// STM32F405 boards run at 168Mhz (versus the STM32F411 boards which run at 98Mhz)
+	// and therefore need at least 3 NOP delay
+	#if defined(STM32F405xx)
 	#define DELAY_SLOW __NOP(); __NOP(); __NOP(); // __NOP(); __NOP();
 	#else
 	#define DELAY_SLOW

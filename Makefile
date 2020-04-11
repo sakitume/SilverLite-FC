@@ -197,7 +197,7 @@ clean:
 	rm -rf $(OBJECTS) $(DEPS) $(TARGET_ELF) $(TARGET_HEX) $(OBJECT_DIR)/output.map
 
 
-ifeq ($(TARGET),OMNIBUS)
+ifeq ($(TARGET),OMNIBUSF4)
 flash: $(TARGET_ELF)
 	openocd -d2 -f interface/stlink.cfg -c "transport select hla_swd" -f target/stm32f4x.cfg -c "reset_config none" -c "program $(TARGET_ELF)  verify reset; shutdown;"
 else

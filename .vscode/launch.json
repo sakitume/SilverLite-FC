@@ -10,7 +10,7 @@
             "request": "launch",
             "servertype": "openocd",
             "cwd": "${workspaceRoot}",
-            "executable": "./gcc_release/OMNIBUS/OMNIBUS.elf",
+            "executable": "./gcc_release/OMNIBUSF4/OMNIBUSF4.elf",
             "device": "stm32",
             "svdPath": ".vscode/STM32F40x.svd",
             "configFiles": [
@@ -24,7 +24,7 @@
             "request": "attach",
             "servertype": "openocd",
             "cwd": "${workspaceRoot}",
-            "executable": "./gcc_release/OMNIBUS/OMNIBUS.elf",
+            "executable": "./gcc_release/OMNIBUSF4/OMNIBUSF4.elf",
             "device": "stm32",
             "svdPath": ".vscode/STM32F40x.svd",
             "configFiles": [

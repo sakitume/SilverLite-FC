@@ -22,7 +22,7 @@
 static Pin<'B', 13>     TRX_RESET_PIN;  // PB13
 #endif
 
-#if defined(OMNIBUS)
+#if defined(OMNIBUSF4)
 //------------------------------------------------------------------------------
 //
 static Pin<'B', 14>		TRX_CS_PIN;	    // PB14

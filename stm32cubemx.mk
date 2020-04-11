@@ -1,14 +1,14 @@
 #-------------------------------------------------------------------------------
 # STM32CubeMX generated sources
 #-------------------------------------------------------------------------------
-ifeq ($(TARGET),OMNIBUS)
+ifeq ($(TARGET),OMNIBUSF4)
 SOURCES +=  \
 	startup_stm32f405xx.s
 else ifeq ($(TARGET),NOX)
 SOURCES +=  \
 	startup_stm32f411xe.s
 else
-	$(error TARGET must be either OMNIBUS or NOX, it is: $(TARGET))
+	$(error TARGET must be either OMNIBUSF4 or NOX, it is: $(TARGET))
 endif
 
 SOURCES +=  \
@@ -34,14 +34,14 @@ SOURCES +=  $(wildcard Drivers/STM32F4xx_HAL_Driver/Src/*.c)
 DEFINES += \
 	USE_HAL_DRIVER \
 
-ifeq ($(TARGET),OMNIBUS)
+ifeq ($(TARGET),OMNIBUSF4)
 DEFINES += \
 	STM32F405xx
 else ifeq ($(TARGET),NOX)
 DEFINES += \
 	STM32F411xE	
 else
-	$(error TARGET must be either OMNIBUS or NOX, it is: $(TARGET))
+	$(error TARGET must be either OMNIBUSF4 or NOX, it is: $(TARGET))
 endif
 
 #-------------------------------------------------------------------------------
@@ -56,10 +56,10 @@ INCLUDE_DIRS += \
 #-------------------------------------------------------------------------------
 # STM32 link script
 #-------------------------------------------------------------------------------
-ifeq ($(TARGET),OMNIBUS)
+ifeq ($(TARGET),OMNIBUSF4)
 LDSCRIPT = STM32F405RGTx_FLASH.ld
 else ifeq ($(TARGET),NOX)
 LDSCRIPT = STM32F411CEUx_FLASH.ld
 else
-	$(error TARGET must be either OMNIBUS or NOX, it is: $(TARGET))
+	$(error TARGET must be either OMNIBUSF4 or NOX, it is: $(TARGET))
 endif
