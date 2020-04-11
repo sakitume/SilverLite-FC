@@ -43,10 +43,18 @@ static Pin<'A', 9>		SPI_MOSI;	    // PA9
 // to either work around, or disable (via STM32CubeMX), or we simply avoid
 // using TX2. 
 
+//#define OLD_NOX_PINOUT
+#if defined(OLD_NOX_PINOUT)
 static Pin<'B', 7>		TRX_CS_PIN;	    // PB7 		RX1
 static Pin<'A', 0>		SPI_SCK;	    // PA0		LED_STRIP
-static Pin<'B', 10>		SPI_MISO;	    // PB10		DSM/IBUS/PPM
 static Pin<'B', 6>		SPI_MOSI;	    // PB6		TX1
+static Pin<'B', 10>		SPI_MISO;	    // PB10		DSM/IBUS/PPM
+#else
+static Pin<'A', 2>		TRX_CS_PIN;	    // PA2		TX2
+static Pin<'A', 0>		SPI_SCK;	    // PA0		LED_STRIP
+static Pin<'B', 6>		SPI_MOSI;	    // PB6		TX1
+static Pin<'B', 10>		SPI_MISO;	    // PB10		DSM/IBUS/PPM
+#endif
 
 // I may want to experiment with these two pins should I need more IO
 //static Pin<'A', 3>		SBUS_INPUT;		// SBUS pad on fc board via inverter
