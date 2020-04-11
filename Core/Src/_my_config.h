@@ -15,7 +15,7 @@
 #undef LOW_RATES_MULTI
 
 // rate in deg/sec for acro mode
-#define MAX_RATE            850
+#define MAX_RATE            800
 #define MAX_RATEYAW         650
 
 #define LEVEL_MAX_ANGLE     80
@@ -29,8 +29,8 @@
 //  The higher the value, the less sensitive near center
 //------------------------------------------------------------------------------
 
-#define ACRO_EXPO_ROLL      0.70
-#define ACRO_EXPO_PITCH     0.70
+#define ACRO_EXPO_ROLL      0.85
+#define ACRO_EXPO_PITCH     0.85
 #define ACRO_EXPO_YAW       0.10
 
 #define ANGLE_EXPO_ROLL     0.55
