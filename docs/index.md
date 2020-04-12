@@ -15,12 +15,12 @@ developing (the hopefully soon to be released) [QuickSilver firmware](https://co
 have some really cool features when it comes out. And of course Markus' [SilF4ware](https://www.rcgroups.com/forums/showthread.php?3294959-SilF4ware-an-STM32F4-port-of-SilverWare) is an amazing Silverware derivative that has
 RPM filtering, blackbox logging, enhanced DSHOT implementations, etc. Please check out those other projects.
 
-SilverLite supports a minimal OSD and features a very low latency Bayang protocol implementation.
+SilverLite supports a minimal OSD and features a very low latency Bayang protocol implementation (theoretical 3ms or 5ms if using telemetry).
 Some of the other features unique to SilverLite flight controller firmware are the enhanced telemetry and configuration that can be 
 performed when using my [SilverLite Firmware for the FlySky FS-i6](https://github.com/sakitume/FS-i6-SilverLite) or
 my SilverLite TX firmware for STM32, ESP32, ESP8266 (unreleased).
 
 # Quick Start
 
-The navigation bar on the left provides a list of topics you'll likely be interested in.
+The navigation bar on the left provides a list of topics you'll likely be interested in. If you sim
 

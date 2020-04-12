@@ -21,7 +21,7 @@ up substantially.
 You can build the OMNIBUSF4 target by specifying it like so:
 
 ```
-mingw32-make.exe -j12 OMNIBUSF4
+mingw32-make.exe -j12 TARGET=OMNIBUSF4
 ```
 
 If you're developing code and make changes and would like to clean up all intermediate
@@ -45,7 +45,7 @@ code in addition to flashing it.
 
 If you examine the `Makefile` and look for the `flash` target you will see that it uses `openocd`
 to flash the firmware when your build target is `OMNIBUSF4`. If your build target is `NOX`, the
-makefile will instead use the [STM32CubeProgrammer](https://www.st.com/en/development-tools/stm32cubeprog.html)
+makefile will instead use the command line version of [STM32CubeProgrammer](https://www.st.com/en/development-tools/stm32cubeprog.html)
 to flash the firmware.
 
 The NOX flight controller boards that I've been using (the "JMT Play F4" also known as "JHEMCU Play F4")
@@ -62,7 +62,8 @@ program. So after the first successful flashing of the firmware you won't have t
 boot pads again. More on this in the "Monitor" section of this document. 
 
 Another method you can use to enter DFU mode is to use the "L-R-D" gesture (Left/Right/Down). But
-this (of course) means you need to successfully connect your TX to the flight controller.
+this (of course) means you need to have successfully flashed the firmware once already and are able
+to connect your TX to the flight controller.
 
 > Note: If you have an OMNIBUSF4 target and don't wish to use an ST-Link adapter then edit the `Makefile`
 so that it uses the [STM32CubeProgrammer](https://www.st.com/en/development-tools/stm32cubeprog.html)
