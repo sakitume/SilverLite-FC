@@ -48,6 +48,21 @@ to flash the firmware when your build target is `OMNIBUSF4`. If your build targe
 makefile will instead use the command line version of [STM32CubeProgrammer](https://www.st.com/en/development-tools/stm32cubeprog.html)
 to flash the firmware.
 
+> Note: The `flash` target in the makefile will **build** and **flash**
+
+Enter the following command line to flash (and build if necessary) the default `NOX` target:
+
+```
+mingw32-make.exe -j12 flash
+```
+Or
+
+```
+make -j12 flash
+```
+
+> Note: To flash the `OMNIBUSF4` target you must add `TARGET=OMNIBUSF4` to the command line
+
 The NOX flight controller boards that I've been using (the "JMT Play F4" also known as "JHEMCU Play F4")
 does not have the SWDIO and SWCLK pins exposed. This means I must reset the board into DFU (bootloader) mode
 and connect it to my PC via USB. There are 2 boot pads on the top side near the front corner (look for "BOOT"
@@ -69,6 +84,14 @@ to connect your TX to the flight controller.
 so that it uses the [STM32CubeProgrammer](https://www.st.com/en/development-tools/stm32cubeprog.html)
 to flash the firmware. My OMNIBUSF4 flight controller board actually has a handy pushbutton to enter
 DFU mode.
+
+## Flash only
+
+Assuming you've built the firmware already you have your choice of two makefile targets
+
+* `stlinkflash` - This will use OpenOCD to flash the firmware using an ST-Link adapter
+* `download` - This will use STMCubeProgrammer to flash the firmware over USB
+
 
 # Monitor
 
@@ -127,12 +150,13 @@ firmware. These will probably be removed but for now I'll document them here:
 > Note: If hardware CRC checking is available then Bayang checksum failures will never occur (as the hardware CRC check will reject the packet before
 the Bayang checksum would occur)
 
-Use `Ctrl-C` in the terminal window to kill the monitor program. If you disconnect the flight controller the monitor program will continue to run
-and keep trying to re-connect to the flight controller. Plugging the controller back in will usually establish a reconnect with the monitor tool.
+Use `Ctrl-C` in the terminal window to kill the monitor program. If it doesn't close right away you may need to use `Ctrl-C` repeatedly until it
+finally does. 
 
-> Note: This `monitor.py` script will only work under Windows. This is due to how I check for keypresses (particularly the `r` key). I'm sure it
-could be adjusted to work on Mac OS as well as Linux. I just haven't taken the time to do so since my firmware development is performed on my
-desktop PC rather than my laptops.
+If you disconnect the flight controller the monitor program will continue to run and keep trying to re-connect to the flight controller. Plugging the controller back in will usually establish a reconnect with the monitor tool.
+
+> Note: This `monitor.py` script might not work under Linux. I've used it on Windows 10 and Mac OS, however when trying to use it with Ubuntu running in Windows Subsystem for Linux 
+it was not able to connect.
 
 ## Using the `monitor` to enter DFU (bootloader) mode
 While the monitor tool is connected and running you can press your `r` key on your keyboard to reset the board into DFU mode. The terminal should
