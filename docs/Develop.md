@@ -72,22 +72,30 @@ DFU mode.
 
 # Monitor
 
+The `monitor.py` script (found in the project root folder) can be used to monitor the output of
+the firmware via USB connection to your PC.
+
+> Note: The `monitor.py` script requires you have the `PySerial` python module. Use `pip install PySerial` in case you don't already have it.
+
 If you've successfully flashed the firmware you can use a simple utility program written in Python
-to monitor the debug output of the firmware. Connect your board via USB to your PC. Determine the
-com port and invoke the Python script like so (from a `bash` shell):
+to monitor the debug output of the firmware. Connect your board via USB to your PC. 
+
+Invoke this script like so:
 
 ```
-./monitor.py com11
+./monitor.py
 ```
 
-Change the `com11` to whatever com port your flight controller shows up as. You can use the Windows 10
-"Device Manager" tool and examine the "Ports (COM &LPT)" section. The board will show up as
-"STMicroelectronics Virtual COM Port (COM11)" (the last part will likely differ for you).
+Or like so:
+
+```
+python monitor.py
+```
 
 I usually open another "terminal" pane in Visual Studio for this. The output will look something like this:
 
 ```
-New Serial
+Flight controller found on COM23
 
 looptime:  81
 osdTime:  43

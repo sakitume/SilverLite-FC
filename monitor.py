@@ -1,8 +1,42 @@
 #!/usr/bin/env python
-import serial
+
 import sys
-import msvcrt
+
+try:
+    import serial
+except:
+    print "Please install PySerial: pip install PySerial"
+    sys.exit(-1)
+
+import serial.tools.list_ports
 import struct
+import time
+
+from signal import signal, SIGINT
+
+def handler(signal_received, frame):
+    print 'SIGINT or CTRL-C detected. Will try to exit.'
+    sys.exit(-1)
+
+if sys.platform.startswith('win'):
+    import msvcrt
+    def getch():
+        if msvcrt.kbhit():
+            return msvcrt.getch()
+else:
+    # See: https://stackoverflow.com/questions/13207678/whats-the-simplest-way-of-detecting-keyboard-input-in-python-from-the-terminal
+    # and: https://www.jonwitts.co.uk/archives/896
+    import tty, os, termios
+    def getch():
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(sys.stdin.fileno())
+            ch = sys.stdin.read(1)
+    
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return ch
 
 def handlePacket(cmdID, packet):
     if cmdID == 0xFF:
@@ -32,27 +66,37 @@ def handlePacket(cmdID, packet):
 
 def checkForInput(ser):
     # Check for keyboard input
-    if msvcrt.kbhit():
-        ch = msvcrt.getch()
-        if ch == 'r':
+    ch = getch()
+    if ch == 'r':
+        if ser:
             print 'Sending reset command'
             ser.write(ch)
 
 def main():
-    port = "com22"
-    if len(sys.argv) > 1:
-        if sys.argv[1].lower().startswith("com"):
-            port = sys.argv[1]
+    signal(SIGINT, handler)
 
     while True:
-        # Call kbhit() so that Ctrl-C can be used to kill this script
+        # Call getch() so that Ctrl-C can be used to kill this script
         # should we be in a tight loop trying to open a port that isn't available
-        msvcrt.kbhit()
+        getch()
 
         try:
-            ser = serial.Serial(port, baudrate=115200, timeout=0)
-            print "\n\nNew Serial\n"
+            port = None
+            # Search available com ports for the VCP 
+            # Note: Look at arch/stm32f4-usb.h to see how VID and PID are defined
+            for p in serial.tools.list_ports.comports():
+                if p.vid == 0x483 and p.pid == 0x5740:
+                    port = p.device
+                    break
+            if port:
+                ser = serial.Serial(port, baudrate=115200, timeout=0)
+                print "\n\nFlight controller found on", port, "\n"
+            else:
+                # VCP not found, do nothing for a tiny bit before retrying
+                time.sleep(0.1)
+                continue
         except:
+            time.sleep(0.1)
             continue
 
         inputStream = bytearray()
