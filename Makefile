@@ -1,6 +1,18 @@
 TARGET ?= NOX
 
 #-------------------------------------------------------------------------------
+# STM32CubeMXProgrammer
+# To install on Mac OS I had to download and unzip the package and run:
+# java -jar SetupSTM32CubeProgrammer-2.4.0.exe
+# This launched the installer executable
+#-------------------------------------------------------------------------------
+ifeq ($(OS),Windows_NT)
+	STM_CUBE_PROGRAMMER = STM32_Programmer_CLI.exe
+else
+	STM_CUBE_PROGRAMMER = /Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/MacOs/bin/STM32_Programmer_CLI
+endif
+
+#-------------------------------------------------------------------------------
 # GNU ARM Embedded Toolchain
 #-------------------------------------------------------------------------------
 CC=arm-none-eabi-gcc
@@ -202,11 +214,19 @@ flash: $(TARGET_ELF)
 	openocd -d2 -f interface/stlink.cfg -c "transport select hla_swd" -f target/stm32f4x.cfg -c "reset_config none" -c "program $(TARGET_ELF)  verify reset; shutdown;"
 else
 flash: $(TARGET_ELF)
-	STM32_Programmer_CLI.exe --connect port=USB1 -w $(TARGET_ELF) --start
+#	STM32_Programmer_CLI.exe --connect port=USB1 -w $(TARGET_ELF) --start
+	$(STM_CUBE_PROGRAMMER) --connect port=USB1 -w $(TARGET_ELF) --start
 endif
 
+# Flash using ST-Link adapter
+stlinkflash:
+	openocd -d2 -f interface/stlink.cfg -c "transport select hla_swd" -f target/stm32f4x.cfg -c "reset_config none" -c "program $(TARGET_ELF)  verify reset; shutdown;"
+
+# Flash using STM32CubeProgrammer via USB
 download: $(TARGET_ELF)
-	STM32_Programmer_CLI.exe --connect port=USB1 -w $(TARGET_ELF) --start
+#	STM32_Programmer_CLI.exe --connect port=USB1 -w $(TARGET_ELF) --start
+#	/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/MacOs/bin/STM32_Programmer_CLI  --connect port=USB1 -w $(TARGET_ELF) --start
+	$(STM_CUBE_PROGRAMMER) --connect port=USB1 -w $(TARGET_ELF) --start
 
 # Choose one of the following "all"
 #all: $(TARGET_BIN)
