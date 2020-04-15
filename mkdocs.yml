@@ -1,11 +1,11 @@
 site_name: SilverLite FC Firmware
 nav:
     - Home: index.md
-    - Develop (Build and Flash): Develop.md
-    - Setup: DevToolsSetup.md
+    - Configuration: Configuration.md
     - Targets: Targets.md
     - Transceiver modules: Transceiver.md
-    - Configuration: Configuration.md
+    - Build and Flash: Develop.md
+    - Setup: DevToolsSetup.md
 
 
 

@@ -1,8 +1,17 @@
 # Building
 
-This project uses `make` to build and optionally flash the firmware. On my Windows 10 machine
-I installed [MinGW-W64](https://sourceforge.net/projects/mingw-w64/) which installs
-`mingw32-make.exe`; this is the `make` tool that I use on Windows.
+Before you can run this firmware onto your flight controller you will need to build it
+and then flash it onto your board.
+
+This project uses `make` to build and optionally flash the firmware. On Mac OS you may
+(or may not) already have `make` installed. I had it on my Macs because I have
+Xcode installed on them (along with the command line tools).
+
+On my Windows 10 machine I had to install [MinGW-W64](https://sourceforge.net/projects/mingw-w64/) which installs
+`mingw32-make.exe`; that is the name of the `make` tool that I use on Windows.
+
+Whether on Mac or on Windows you'll want a terminal (or CMD prompt) window to run and execute
+the `make` program.
 
 I typically use a "Terminal" window within Visual Studio. You can set that up to use the 
 Windows CMD.exe program but I prefer a `bash` command prompt. On my Windows PC I have git for
@@ -12,6 +21,19 @@ command in that terminal to build.
 ```
 mingw32-make.exe -j12
 ```
+
+Or on Mac or Linux you would type:
+```
+make -j12
+```
+
+This will build the default `make` target named `all` (look towards the bottom of the `Makefile`).
+In addition to the *"`make` target"* there is also the idea of a [*flight controller target*](Targets.md).
+This type of target can be specified in the command line like so:
+
+```
+```
+
 
 Because I did not specify a target with this command line, the firmware will be built
 for the (default) NOX flight controller target. The `-j12` instructs the `make` tool 
