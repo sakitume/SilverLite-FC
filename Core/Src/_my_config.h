@@ -251,6 +251,11 @@
     #define MOTOR_FL 4
     #define MOTOR_BR 1
     #define MOTOR_FR 2
+#elif defined(OMNIBUSF4)
+    #define MOTOR_BL 2
+    #define MOTOR_FL 1
+    #define MOTOR_BR 4
+    #define MOTOR_FR 3
 #else
     #error "Unsupported flight controller target. Define your motor order here"
 #endif
