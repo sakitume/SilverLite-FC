@@ -6,13 +6,66 @@
 #define __MY_CONFIG_H__
 
 //------------------------------------------------------------------------------
-// Rates
+// Disable some SilF4ware features
 //------------------------------------------------------------------------------
+// Disable blackbox, my hardware doesn't have this. Plus this feature only
+// builds for OMNIBUSF4 target. Code isn't properly conditionalized to support NOX
+#undef BLACKBOX_LOGGING 
+
+// Disable inverted (3D) flight code
+#undef  INVERTED_ENABLE
+
+//------------------------------------------------------------------------------
+// RX protocol and configuration
+//------------------------------------------------------------------------------
+// Disable all SilF4ware RX implementations
+#undef DISPLAY_MAX_USED_LOOP_TIME_INSTEAD_OF_RX_PACKETS
+#undef RX_NRF24_BAYANG_TELEMETRY
+#undef RX_BAYANG_PROTOCOL_TELEMETRY
+#undef RADIO_XN297
+#undef RADIO_XN297L
+
+// Enable SilverLite RX implementation
+#define RX_SILVERLITE_BAYANG_PROTOCOL
+
+//------------------------------------------------------------------------------
+// Ignore this section. Here we are resetting or clearing various config flags
+// and/or values so that later sections won't be so cluttered; those later
+// sections can then focus solely on things you can customize.
+//------------------------------------------------------------------------------
+// Rates
 #undef MAX_RATE
 #undef MAX_RATEYAW
 #undef LEVEL_MAX_ANGLE
 #undef LEVEL_MAX_RATE
 #undef LOW_RATES_MULTI
+
+// Battery
+#undef WARN_ON_LOW_BATTERY
+#undef LVC_LOWER_THROTTLE
+
+// Filters
+#undef GYRO_LPF_1ST_HZ_BASE
+#undef GYRO_LPF_1ST_HZ_MAX
+#undef GYRO_LPF_1ST_HZ_THROTTLE
+
+#undef GYRO_LPF_2ND_HZ_BASE
+#undef GYRO_LPF_2ND_HZ_MAX
+#undef GYRO_LPF_2ND_HZ_THROTTLE
+
+#undef DTERM_LPF_2ND_HZ_BASE
+#undef DTERM_LPF_2ND_HZ_MAX
+#undef DTERM_LPF_2ND_HZ_THROTTLE
+
+// Motor order
+#undef MOTOR_BL
+#undef MOTOR_FL
+#undef MOTOR_BR
+#undef MOTOR_FR
+
+//------------------------------------------------------------------------------
+// Rates
+//------------------------------------------------------------------------------
 
 // rate in deg/sec for acro mode
 #define MAX_RATE            800
@@ -40,38 +93,56 @@
 //------------------------------------------------------------------------------
 // PID term overrides
 //------------------------------------------------------------------------------
+                        //  Roll    Pitch   Yaw
 #define     ACRO_P      {   .040,   .040,   .01     };
 #define     ACRO_I      {   .250,   .250,   .50     };
 #define     ACRO_D      {   .035,   .035,   .0      };
 
+// Angle mode P and D terms
 #define     ANGLE_P1    10.
 #define     ANGLE_D1    3.0
-#define     ANGLE_P2    5.
-#define     ANGLE_D2    .0
+
+//#define     ANGLE_P1    5.
+//#define     ANGLE_D1    .0
 
 //------------------------------------------------------------------------------
 // Battery
 //------------------------------------------------------------------------------
 
-#undef WARN_ON_LOW_BATTERY
+// Specifies the voltage threshold for when low battery warning occurs
+// Comment this out if you wish to disable this feature
 #define WARN_ON_LOW_BATTERY 3.5
 
-#undef LVC_LOWER_THROTTLE
+// Lower throttle when battery below threshold
+// Comment this out if you wish to disable this feature
+//#define LVC_LOWER_THROTTLE
+
+// Voltage thresholds for use by the "lower throttle on low voltage" feature
+// These are ignored if LVC_LOWER_THROTTLE is not defined
+#define LVC_LOWER_THROTTLE_VOLTAGE 3.30
+#define LVC_LOWER_THROTTLE_VOLTAGE_RAW 2.70
+#define LVC_LOWER_THROTTLE_KP 3.0
 
 //------------------------------------------------------------------------------
 // LOOPTIME, and filters
 //------------------------------------------------------------------------------
+// RPM filtering is enabled by default. A 4K loop is also configured (each
+// iteration of the loop takes 250us).
+//
 #undef RPM_FILTER
 #undef LOOPTIME
 #if defined(NOX)
-    // F411 is very close to 250us mark when RPM_FILTER enabled, OSD spikes
-    // (every 10th second) will always cause it to go over
+    // Note: The F411 processor on the NOX target runs typically at 209us when RPM_FILTER
+    // is enabled. An OSD update and takes around 71us to 81us which causes us to exceed 
+    // the 250 looptime; since this only happens 10 out of every 4000 times I'm
+    // more than fine with that. 
     #define RPM_FILTER
     #define LOOPTIME    250     
 #elif defined(OMNIBUSF4)
     #define RPM_FILTER
     #define LOOPTIME    250
 #else
+    #error "Unknown or unsupported flight controller target. Please edit this file"
     #undef RPM_FILTER
     #define LOOPTIME    1000    
 #endif
@@ -98,26 +169,19 @@
 
 #else
 
-#undef GYRO_LPF_1ST_HZ_BASE
-#undef GYRO_LPF_1ST_HZ_MAX
-#undef GYRO_LPF_1ST_HZ_THROTTLE
-
-#undef GYRO_LPF_2ND_HZ_BASE
-#undef GYRO_LPF_2ND_HZ_MAX
-#undef GYRO_LPF_2ND_HZ_THROTTLE
-
-#undef DTERM_LPF_2ND_HZ_BASE
-#undef DTERM_LPF_2ND_HZ_MAX
-#undef DTERM_LPF_2ND_HZ_THROTTLE
-
+// Dynamic Gyro first order LPF
+// Comment out GYRO_LPF_1ST_HZ_BASE if you don't want this filter enabled
 #define GYRO_LPF_1ST_HZ_BASE        90      // Filter frequency at zero throttle.
 #define GYRO_LPF_1ST_HZ_MAX         90      // A higher filter frequency than loopfrequency/2.4 causes ripples.
 #define GYRO_LPF_1ST_HZ_THROTTLE    0.25    // MAX reached at 1/4 throttle.
 
+// Dynamic Gyro second order LPF
+// Comment out GYRO_LPF_2ND_HZ_BASE if you don't want filter enabled
 #define GYRO_LPF_2ND_HZ_BASE        120     //* ( aux[ FN_INVERTED ] ? 0.75f : 1.0f )
 #define GYRO_LPF_2ND_HZ_MAX         120
 #define GYRO_LPF_2ND_HZ_THROTTLE    0.25
 
+// Dynamic D-Term second order LPF (cannot be turned off)
 #define DTERM_LPF_2ND_HZ_BASE       120     //* ( aux[ FN_INVERTED ] ? 0.75f : 1.0f )
 #define DTERM_LPF_2ND_HZ_MAX        120
 #define DTERM_LPF_2ND_HZ_THROTTLE   0.5
@@ -142,7 +206,7 @@
 // 
 //  Note:    If SwC/3 is high, then SwC/2 will also be high
 
-#define INVERT_CH_INV                       // Invert CH_INV logic
+#define INVERT_CH_INV                       // Invert CH_INV logic (so switch down means ON)
 #undef THROTTLE_KILL_SWITCH
 #define THROTTLE_KILL_SWITCH    CH_INV      // SwA/2   ==  MULTI_CHAN_10/DEVO_CHAN_5
 
@@ -163,18 +227,6 @@
 #define FN_INVERTED             CH_OFF      // Default value (DEVO_CHAN_6) conflicts with my channel choice for LEVELMODE
 
 //------------------------------------------------------------------------------
-// RX protocol and configuration
-//------------------------------------------------------------------------------
-#undef DISPLAY_MAX_USED_LOOP_TIME_INSTEAD_OF_RX_PACKETS
-#undef RX_NRF24_BAYANG_TELEMETRY
-#undef RX_BAYANG_PROTOCOL_TELEMETRY
-
-#undef RADIO_XN297
-#undef RADIO_XN297L
-
-#define RX_SILVERLITE_BAYANG_PROTOCOL
-
-//------------------------------------------------------------------------------
 // Gyro orientation
 //------------------------------------------------------------------------------
 #undef SENSOR_ROTATE_45_CCW
@@ -185,6 +237,7 @@
 #undef SENSOR_INVERT 
 
 #if defined(NOX)
+    // Play F4 board is oriented this way
     #define SENSOR_ROTATE_90_CW
 #elif defined(OMNIBUSF4)
     #define SENSOR_ROTATE_90_CCW
@@ -194,31 +247,21 @@
 // Motor order
 //------------------------------------------------------------------------------
 #if defined(NOX)
-    #undef MOTOR_BL
-    #undef MOTOR_FL
-    #undef MOTOR_BR
-    #undef MOTOR_FR
-
     #define MOTOR_BL 3
     #define MOTOR_FL 4
     #define MOTOR_BR 1
     #define MOTOR_FR 2
+#else
+    #error "Unsupported flight controller target. Define your motor order here"
 #endif
 
 //------------------------------------------------------------------------------
 // Other important features
 //------------------------------------------------------------------------------
 
-// Disable blackbox, my hardware doesn't have this. Plus this feature only
-// builds for OMNIBUSF4 target. Code isn't conditionalized to support NOX
-#undef BLACKBOX_LOGGING 
-
-// I think having this on led to the slow/awkward control I first experienced
+// I think having this on lead to the slow/awkward control I first experienced
 #undef STICKS_DEADBAND
 // But I'll try it again, but this time use 0.01 instead of 0.02
 #define STICKS_DEADBAND 0.01f
-
-// Disable inverted (3D) flight code
-#undef  INVERTED_ENABLE
 
 #endif
