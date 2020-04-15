@@ -18,10 +18,6 @@
 #undef DSHOT                // used by:              drv_dshot_dma.c, drv_dshot_bidir.c
 #undef MOTOR_POLE_COUNT     // used by:                               drv_dshot_bidir.c
 
-#define IDLE_OFFSET         20
-#define DSHOT               300
-#define MOTOR_POLE_COUNT    12  // For HappyModel SE0802 19000KV
-
 // If RPM_FILTER was defined (see _my_config.h) then we must enable drv_dshot_bidir.c to be compiled
 #if defined(RPM_FILTER)
     #define DSHOT_DMA_BIDIR
@@ -34,6 +30,13 @@
 #undef SOFTSPI_3WIRE
 #undef SOFTSPI_4WIRE
 
+//------------------------------------------------------------------------------
+// Above should usually be left alone but the following can (and should) be
+// adjusted to meet your needs
+//------------------------------------------------------------------------------
+#define IDLE_OFFSET         20  // IDLE_OFFSET is added to the throttle. Adjust its value so that the motors still spin at minimum throttle.
+#define DSHOT               300 // Acceptable values are 150, 300 (works on BB1), 600 (BLHeli_S BB2, not supported by BB1), 1200 (BLHeli_32 only)
+#define MOTOR_POLE_COUNT    12  // 08XX, 11XX, 12XX motors (typically found on whoop or micros) tend to have 12 poles.
 
 
 #endif
