@@ -4,14 +4,14 @@ Before building and flashing the firmware you must review and possibly adjust th
 
 The default configuration is for using the "JHEMCU Play F4" (or sometimes named "JMT Play F4") whoop
 sized flight controller coupled to an NRF24L01 transceiver module. RPM filtering is enabled (which
-requires flashing the onboard ESCs with bidirectional DSHOT support using either JESC or JazzMaverick.
+requires flashing the onboard ESCs with bidirectional DSHOT support using either [JESC](https://jflight.net/) or [JazzMaverick](https://github.com/JazzMaverick/BLHeli/tree/JazzMaverick-patch-1/BLHeli_S%20SiLabs).
 The RPM filtering configuration also expects your motors to have 12 poles (as I use 0802
 motors). Most small motors for whoop or micros (08XX, 11XX, 12XX) tend to have 12 poles.
 
 The above configuration is what I typically use but by adjusting various configuration files you should be
 able to customize SilverLite to match your needs.
 
-Only two [flight controller targets](Targets.md) are currently supported (NOX and OMNIBUSF4), while
+Only two [flight controller targets](Targets.md) are currently supported (`NOX` and `OMNIBUSF4`), while
 [4 different transceiver modules](Transceiver.md) can be used. IBUS support is currently a work in progress
 (my current plan is to use the [IBUS code](https://github.com/NotFastEnuf/NFE_Silverware/blob/master/Silverware/src/rx_ibus.c) found in NFE Silverware as a starting point; the comments in that code indicate that it was originally contributed by BobNova.
 
@@ -25,7 +25,10 @@ At a minimum the following two files should be carefully reviewed and edited to 
 * `_myConfig.h`
     * Defines for: rates (acro and level mode), expo curves, PID terms, looptime, RPM filter enable/disable, low pass filters, TX switches/channels, gyro (board) orientation, motor order, sticks deadband
 * `_myHardware.h`
-    * Defines for: DSHOT configuration, idle offest, motor pole count
+    * Defines for: DSHOT configuration, idle offest, motor pole count. Default config is DSHOT300, 12 pole motors, 
+
+I've structured and commented these header files so that it should hopefully be self explanatory when it comes to
+enabling and configuring the features.
 
 The choice of RX implementation (NRF24L01, XN297, LT8900, etc) may also require you to review and edit
 these files:
@@ -36,9 +39,11 @@ these files:
     * Used to define which STM32 pins to use for software SPI implementation. In other words what pads on your flight controller board
     will be wired up to the pads on the the transceiver module board.
 
-# Advanced configuration
-If you want to remap the motors or change how your flight controller board is oriented (flipped, or rotated 45 degrees, etc),
-or wish to use a different configuration then the default then this section will hopefully contain the information
-you need.
+> Note: While I may have written a lower level abstraction layer of code for the XN297 and XN297L modules, I have not yet had a chance to test them. ***More importantly***, the SPI code has not yet been conditionalized to support 3-wire SPI. It's actually pretty easy to complete but I just haven't had the opportunity to do this yet.
 
-## Rates and PID terms
+# Advanced configuration
+
+This is just a placeholder for now. I hope to provide more details on how to configure various features. A lot of useful info can be found
+on Markus's thread regarding his SilF4ware firmware.
+
+Motor order: https://www.rcgroups.com/forums/showpost.php?p=41995581&postcount=341

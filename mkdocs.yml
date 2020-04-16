@@ -5,7 +5,8 @@ nav:
     - Targets: Targets.md
     - Transceiver modules: Transceiver.md
     - Build and Flash: Develop.md
-    - Setup: DevToolsSetup.md
+    - Development Tools Setup: DevToolsSetup.md
+    - Play F4 and NRF24L01: PlayF4_NRF24L01.md
 
 
 

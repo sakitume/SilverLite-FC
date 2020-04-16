@@ -27,18 +27,27 @@ Or on Mac or Linux you would type:
 make -j12
 ```
 
+> Note: The `-j12` instructs the `make` tool (`mingw32-make.exe`) to use twelve jobs (threads) when compiling; this speeds up the build process
+substantially.
+
 This will build the default `make` target named `all` (look towards the bottom of the `Makefile`).
-In addition to the *"`make` target"* there is also the idea of a [*flight controller target*](Targets.md).
-This type of target can be specified in the command line like so:
+If you examine the `Makefile` you'll see that it will build the `NOX` flight controller target
+(due to the `TARGET` definition at the top of the file) and this will result in the following files being generated:
 
-```
-```
+* `NOX.bin`
+* `NOX.elf`
+* `NOX.hex`
 
+These will be found in the `gcc_release/NOX` folder. Any of these files can be used to flash the firmware
+onto a flight controller board. Which one to use depends on the flashing tool/software you wish to use. 
 
-Because I did not specify a target with this command line, the firmware will be built
-for the (default) NOX flight controller target. The `-j12` instructs the `make` tool 
-(`mingw32-make.exe`) to use twelve jobs (threads) when compiling which speeds the build process
-up substantially.
+The `Makefile` has several make targets that can be used to flash (or build then flash) the firmware
+using different tools/software. More on that later.
+
+## Specifying a Flight Controller Target
+Because I did not specify a target with the earlier command line, the firmware will be built
+for the (default) `NOX` flight controller target. See the [Targets](Targets.md) document for
+details regarding the targets supported by SilverLite.
 
 You can build the OMNIBUSF4 target by specifying it like so:
 
@@ -55,8 +64,7 @@ mingw32-make.exe clean
 
 > Note: When using `clean` make sure you specify the target if it isn't the default `NOX` target.
 
-
-# Flashing
+## Build and Flash
 
 To flash the firmware onto a flight controller you will need to have it connected via USB
 or via an ST-Link adapter.
@@ -64,6 +72,8 @@ or via an ST-Link adapter.
 The OMNIBUSF4 flight controller board (that I use) has breakout pads for the SWDIO and SWCLK pins
 of the STM32. This lets me use an ST-Link adapter which gives me the added ability to debug
 code in addition to flashing it.
+
+![OMNIBUSF4 with ST-Link](images/OMNIBUSF4_STLink.jpg)
 
 If you examine the `Makefile` and look for the `flash` target you will see that it uses `openocd`
 to flash the firmware when your build target is `OMNIBUSF4`. If your build target is `NOX`, the
@@ -104,8 +114,8 @@ to connect your TX to the flight controller.
 
 > Note: If you have an OMNIBUSF4 target and don't wish to use an ST-Link adapter then edit the `Makefile`
 so that it uses the [STM32CubeProgrammer](https://www.st.com/en/development-tools/stm32cubeprog.html)
-to flash the firmware. My OMNIBUSF4 flight controller board actually has a handy pushbutton to enter
-DFU mode.
+to build and flash the firmware. My OMNIBUSF4 flight controller board actually has a handy pushbutton to enter
+DFU mode. Alternatively you can build first (using the `all` target) and then use one of the flash targets described next.
 
 ## Flash only
 
@@ -115,7 +125,7 @@ Assuming you've built the firmware already you have your choice of two makefile 
 * `download` - This will use STMCubeProgrammer to flash the firmware over USB
 
 
-# Monitor
+## Monitor
 
 The `monitor.py` script (found in the project root folder) can be used to monitor the output of
 the firmware via USB connection to your PC.
@@ -191,6 +201,6 @@ Sending reset command
 You will also see in the windows Device Manager tool that the Virtual COM port has disappeared and a new "STM32 BOOTLOADER" device appears
 under the "Universal Serial Bus devices" section.
 
-You can now flash new firmware to your board. Either with the make tool and `flash` target in our `Makefile`, or you can use the STM32CubeProgrammer
+You can now flash new firmware to your board. Use the make tool and `flash` or `download` targets, or you can use the STM32CubeProgrammer
 tool. 
 
