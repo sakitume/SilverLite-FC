@@ -1,6 +1,6 @@
 # About
 
-SilverLite flight controller firmware is a derivative of [Silverware](http://sirdomsen.diskstation.me/dokuwiki/doku.php). 
+[SilverLite flight controller firmware](https://github.com/sakitume/SilverLite-FC) is a derivative of [Silverware](http://sirdomsen.diskstation.me/dokuwiki/doku.php). 
 Rather than forking the [BWhoop Silverware version](https://github.com/silver13/BoldClash-BWHOOP-B-03) (from Silver13/SilverXXX)
 or [NFE Silverware](https://github.com/NotFastEnuf/NFE_Silverware) (from Travis Shrock) I instead chose to fork [SilF4ware](https://www.rcgroups.com/forums/showthread.php?3294959-SilF4ware-an-STM32F4-port-of-SilverWare) (an STM32F4 port of Silverware from Markus Gritsch) and build up a set of features and extensions on top of that. By the way, SilF4ware is an amazing port of Silverware with some rather impressive features!
 
