@@ -1,0 +1,634 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.4.1">
+    
+    
+      
+        <title>Build and Flash - SilverLite FC Firmware</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application.30686662.css">
+      
+      
+    
+    
+      <script src="../assets/javascripts/modernizr.74668098.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#building" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href=".." title="SilverLite FC Firmware" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon"></i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              SilverLite FC Firmware
+            </span>
+            <span class="md-header-nav__topic">
+              
+                Build and Flash
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href=".." title="SilverLite FC Firmware" class="md-nav__button md-logo">
+      
+        <i class="md-icon"></i>
+      
+    </a>
+    SilverLite FC Firmware
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../Configuration/" title="Configuration" class="md-nav__link">
+      Configuration
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../Targets/" title="Targets" class="md-nav__link">
+      Targets
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../Transceiver/" title="Transceiver modules" class="md-nav__link">
+      Transceiver modules
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Build and Flash
+      </label>
+    
+    <a href="./" title="Build and Flash" class="md-nav__link md-nav__link--active">
+      Build and Flash
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#specifying-a-flight-controller-target" title="Specifying a Flight Controller Target" class="md-nav__link">
+    Specifying a Flight Controller Target
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-and-flash" title="Build and Flash" class="md-nav__link">
+    Build and Flash
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flash-only" title="Flash only" class="md-nav__link">
+    Flash only
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitor" title="Monitor" class="md-nav__link">
+    Monitor
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-the-monitor-to-enter-dfu-bootloader-mode" title="Using the monitor to enter DFU (bootloader) mode" class="md-nav__link">
+    Using the monitor to enter DFU (bootloader) mode
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../DevToolsSetup/" title="Development Tools Setup" class="md-nav__link">
+      Development Tools Setup
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../PlayF4_NRF24L01/" title="Play F4 and NRF24L01" class="md-nav__link">
+      Play F4 and NRF24L01
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#specifying-a-flight-controller-target" title="Specifying a Flight Controller Target" class="md-nav__link">
+    Specifying a Flight Controller Target
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-and-flash" title="Build and Flash" class="md-nav__link">
+    Build and Flash
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flash-only" title="Flash only" class="md-nav__link">
+    Flash only
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitor" title="Monitor" class="md-nav__link">
+    Monitor
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-the-monitor-to-enter-dfu-bootloader-mode" title="Using the monitor to enter DFU (bootloader) mode" class="md-nav__link">
+    Using the monitor to enter DFU (bootloader) mode
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="building">Building</h1>
+<p>Before you can run this firmware onto your flight controller you will need to build it
+and then flash it onto your board.</p>
+<p>This project uses <code>make</code> to build and optionally flash the firmware. On Mac OS you may
+(or may not) already have <code>make</code> installed. I had it on my Macs because I have
+Xcode installed on them (along with the command line tools).</p>
+<p>On my Windows 10 machine I had to install <a href="https://sourceforge.net/projects/mingw-w64/">MinGW-W64</a> which installs
+<code>mingw32-make.exe</code>; that is the name of the <code>make</code> tool that I use on Windows.</p>
+<p>Whether on Mac or on Windows you'll want a terminal (or CMD prompt) window to run and execute
+the <code>make</code> program.</p>
+<p>I typically use a "Terminal" window within Visual Studio. You can set that up to use the 
+Windows CMD.exe program but I prefer a <code>bash</code> command prompt. On my Windows PC I have git for
+windows installed which also installs a <code>bash</code> shell. Both work fine. I enter the following
+command in that terminal to build.</p>
+<pre><code>mingw32-make.exe -j12
+</code></pre>
+
+<p>Or on Mac or Linux you would type:</p>
+<pre><code>make -j12
+</code></pre>
+
+<blockquote>
+<p>Note: The <code>-j12</code> instructs the <code>make</code> tool (<code>mingw32-make.exe</code>) to use twelve jobs (threads) when compiling; this speeds up the build process
+substantially.</p>
+</blockquote>
+<p>This will build the default <code>make</code> target named <code>all</code> (look towards the bottom of the <code>Makefile</code>).
+If you examine the <code>Makefile</code> you'll see that it will build the <code>NOX</code> flight controller target
+(due to the <code>TARGET</code> definition at the top of the file) and this will result in the following files being generated:</p>
+<ul>
+<li><code>NOX.bin</code></li>
+<li><code>NOX.elf</code></li>
+<li><code>NOX.hex</code></li>
+</ul>
+<p>These will be found in the <code>gcc_release/NOX</code> folder. Any of these files can be used to flash the firmware
+onto a flight controller board. Which one to use depends on the flashing tool/software you wish to use. </p>
+<p>The <code>Makefile</code> has several make targets that can be used to flash (or build then flash) the firmware
+using different tools/software. More on that later.</p>
+<h2 id="specifying-a-flight-controller-target">Specifying a Flight Controller Target</h2>
+<p>Because I did not specify a target with the earlier command line, the firmware will be built
+for the (default) <code>NOX</code> flight controller target. See the <a href="../Targets/">Targets</a> document for
+details regarding the targets supported by SilverLite.</p>
+<p>You can build the OMNIBUSF4 target by specifying it like so:</p>
+<pre><code>mingw32-make.exe -j12 TARGET=OMNIBUSF4
+</code></pre>
+
+<p>If you're developing code and make changes and would like to clean up all intermediate
+object files (so you end up with a full rebuild) you can use the <code>clean</code> command like so:</p>
+<pre><code>mingw32-make.exe clean
+</code></pre>
+
+<blockquote>
+<p>Note: When using <code>clean</code> make sure you specify the target if it isn't the default <code>NOX</code> target.</p>
+</blockquote>
+<h2 id="build-and-flash">Build and Flash</h2>
+<p>To flash the firmware onto a flight controller you will need to have it connected via USB
+or via an ST-Link adapter.</p>
+<p>The OMNIBUSF4 flight controller board (that I use) has breakout pads for the SWDIO and SWCLK pins
+of the STM32. This lets me use an ST-Link adapter which gives me the added ability to debug
+code in addition to flashing it.</p>
+<p><img alt="OMNIBUSF4 with ST-Link" src="../images/OMNIBUSF4_STLink.jpg" /></p>
+<p>If you examine the <code>Makefile</code> and look for the <code>flash</code> target you will see that it uses <code>openocd</code>
+to flash the firmware when your build target is <code>OMNIBUSF4</code>. If your build target is <code>NOX</code>, the
+makefile will instead use the command line version of <a href="https://www.st.com/en/development-tools/stm32cubeprog.html">STM32CubeProgrammer</a>
+to flash the firmware.</p>
+<blockquote>
+<p>Note: The <code>flash</code> target in the makefile will <strong>build</strong> and <strong>flash</strong></p>
+</blockquote>
+<p>Enter the following command line to flash (and build if necessary) the default <code>NOX</code> target:</p>
+<pre><code>mingw32-make.exe -j12 flash
+</code></pre>
+
+<p>Or</p>
+<pre><code>make -j12 flash
+</code></pre>
+
+<blockquote>
+<p>Note: To flash the <code>OMNIBUSF4</code> target you must add <code>TARGET=OMNIBUSF4</code> to the command line</p>
+</blockquote>
+<p>The NOX flight controller boards that I've been using (the "JMT Play F4" also known as "JHEMCU Play F4")
+does not have the SWDIO and SWCLK pins exposed. This means I must reset the board into DFU (bootloader) mode
+and connect it to my PC via USB. There are 2 boot pads on the top side near the front corner (look for "BOOT"
+as shown in this pic):</p>
+<p><img alt="Play F4 Top" src="../images/Play-F4-Top.jpg" /></p>
+<p>Short those two boot pads together while powering up the board (either by connecting it to your PC
+via USB or by connecting a battery to the board). I find this to be rather tricky to do so I've
+added a feature to the firmware that lets you easily enter bootloader mode with a simple utility
+program. So after the first successful flashing of the firmware you won't have to use those
+boot pads again. More on this in the "Monitor" section of this document. </p>
+<p>Another method you can use to enter DFU mode is to use the "L-R-D" gesture (Left/Right/Down). But
+this (of course) means you need to have successfully flashed the firmware once already and are able
+to connect your TX to the flight controller.</p>
+<blockquote>
+<p>Note: If you have an OMNIBUSF4 target and don't wish to use an ST-Link adapter then edit the <code>Makefile</code>
+so that it uses the <a href="https://www.st.com/en/development-tools/stm32cubeprog.html">STM32CubeProgrammer</a>
+to build and flash the firmware. My OMNIBUSF4 flight controller board actually has a handy pushbutton to enter
+DFU mode. Alternatively you can build first (using the <code>all</code> target) and then use one of the flash targets described next.</p>
+</blockquote>
+<h2 id="flash-only">Flash only</h2>
+<p>Assuming you've built the firmware already you have your choice of two makefile targets</p>
+<ul>
+<li><code>stlinkflash</code> - This will use OpenOCD to flash the firmware using an ST-Link adapter</li>
+<li><code>download</code> - This will use STMCubeProgrammer to flash the firmware over USB</li>
+</ul>
+<h2 id="monitor">Monitor</h2>
+<p>The <code>monitor.py</code> script (found in the project root folder) can be used to monitor the output of
+the firmware via USB connection to your PC.</p>
+<blockquote>
+<p>Note: The <code>monitor.py</code> script requires you have the <code>PySerial</code> python module. Use <code>pip install PySerial</code> in case you don't already have it.</p>
+</blockquote>
+<p>If you've successfully flashed the firmware you can use a simple utility program written in Python
+to monitor the debug output of the firmware. Connect your board via USB to your PC. </p>
+<p>Invoke this script like so:</p>
+<pre><code>./monitor.py
+</code></pre>
+
+<p>Or like so:</p>
+<pre><code>python monitor.py
+</code></pre>
+
+<p>I usually open another "terminal" pane in Visual Studio for this. The output will look something like this:</p>
+<pre><code>Flight controller found on COM23
+
+looptime:  81
+osdTime:  43
+pps:  0 hit:  0
+hcrc:  0 bcrc:  0
+
+looptime:  88
+osdTime:  56
+pps:  0 hit:  0
+hcrc:  0 bcrc:  0
+
+looptime:  83
+osdTime:  43
+pps:  0 hit:  0
+hcrc:  0 bcrc:  0
+</code></pre>
+
+<p>The "looptime" stuff repeats like every second or so. The firmware has a few lines of code that emit log statements
+that this <code>monitor.py</code> script can echo to your screen. These values were helpful to me when I was developing the
+firmware. These will probably be removed but for now I'll document them here:</p>
+<ul>
+<li>"looptime" This is the time (in microseconds) for the longest loop within the past second. The firmware runs 4000 loop iterations per second.</li>
+<li>"osdtime" This is how long it took (in microseconds) to update the OSD. As you can see it is pretty expensive (I'm using a software SPI implementation)</li>
+<li>"pps" The number of packets <em>successfully</em> received and accepted per second. </li>
+<li>"hit" The number of packets received but not necessarily accepted per second</li>
+<li>"hcrc" The number of packet CRC failures (as detected by hardware)</li>
+<li>"bcrc" The number of bayang packet Checksum failures (as detected by software)</li>
+</ul>
+<blockquote>
+<p>Note: If hardware CRC checking is available then Bayang checksum failures will never occur (as the hardware CRC check will reject the packet before
+the Bayang checksum would occur)</p>
+</blockquote>
+<p>Use <code>Ctrl-C</code> in the terminal window to kill the monitor program. If it doesn't close right away you may need to use <code>Ctrl-C</code> repeatedly until it
+finally does. </p>
+<p>If you disconnect the flight controller the monitor program will continue to run and keep trying to re-connect to the flight controller. Plugging the controller back in will usually establish a reconnect with the monitor tool.</p>
+<blockquote>
+<p>Note: This <code>monitor.py</code> script might not work under Linux. I've used it on Windows 10 and Mac OS, however when trying to use it with Ubuntu running in Windows Subsystem for Linux 
+it was not able to connect.</p>
+</blockquote>
+<h2 id="using-the-monitor-to-enter-dfu-bootloader-mode">Using the <code>monitor</code> to enter DFU (bootloader) mode</h2>
+<p>While the monitor tool is connected and running you can press your <code>r</code> key on your keyboard to reset the board into DFU mode. The terminal should
+display the following when you do this:</p>
+<pre><code>Sending reset command
+</code></pre>
+
+<p>You will also see in the windows Device Manager tool that the Virtual COM port has disappeared and a new "STM32 BOOTLOADER" device appears
+under the "Universal Serial Bus devices" section.</p>
+<p>You can now flash new firmware to your board. Use the make tool and <code>flash</code> or <code>download</code> targets, or you can use the STM32CubeProgrammer
+tool. </p>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../Transceiver/" title="Transceiver modules" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Transceiver modules
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../DevToolsSetup/" title="Development Tools Setup" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Development Tools Setup
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/application.c648116f.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
+      
+    
+  </body>
+</html>

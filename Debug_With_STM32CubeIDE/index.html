@@ -1,0 +1,364 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.4.1">
+    
+    
+      
+        <title>Debug With STM32CubeIDE - SilverLite FC Firmware</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application.30686662.css">
+      
+      
+    
+    
+      <script src="../assets/javascripts/modernizr.74668098.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#-" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href=".." title="SilverLite FC Firmware" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon"></i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              SilverLite FC Firmware
+            </span>
+            <span class="md-header-nav__topic">
+              
+                Debug With STM32CubeIDE
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href=".." title="SilverLite FC Firmware" class="md-nav__button md-logo">
+      
+        <i class="md-icon"></i>
+      
+    </a>
+    SilverLite FC Firmware
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../Configuration/" title="Configuration" class="md-nav__link">
+      Configuration
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../Targets/" title="Targets" class="md-nav__link">
+      Targets
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../Transceiver/" title="Transceiver modules" class="md-nav__link">
+      Transceiver modules
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../Develop/" title="Build and Flash" class="md-nav__link">
+      Build and Flash
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../DevToolsSetup/" title="Development Tools Setup" class="md-nav__link">
+      Development Tools Setup
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../PlayF4_NRF24L01/" title="Play F4 and NRF24L01" class="md-nav__link">
+      Play F4 and NRF24L01
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <p>Run <code>openocd</code> like so:</p>
+<pre><code>openocd -f interface/stlink.cfg -f target/stm32f4x.cfg
+</code></pre>
+
+<p>Under "Debug Configurations", "Main" tab:
+"Project" shold be the project you're using 
+For "C/C++ Application"
+<code>obj\main\betaflight_OMNIBUSF4.elf</code>.</p>
+<p>Don't use the "Browse" button and select the elf, this results in a full path being specified
+which will cause a weird error. It needs to be relative to the project and use windows slash characters
+Also select the "Disable auto build" option</p>
+<p>Under "Debug Configurations", "Debugger" tab. For "GDB Command:" browse and select this file:
+<code>C:\Tools\armcc\bin\arm-none-eabi-gdb.exe</code></p>
+<p>For "Remote Target" tick the "Use remote target" checkbox.
+For "JTAG Device" Choose "ST-Link (OpenOCD)"
+The host and port should already be correct: localhost, 3333</p>
+<p>Under "Debug Configurations", "Startup" tab. 
+Uncheck the "Load image" box. This just causes problems. Better to use a separate build/flash process for that.</p>
+<h1 id="-">--------------</h1>
+<p>Using this guide: https://github.com/ethanhuanginst/STM32CubeIDE-Workshop-2019/tree/master/hands-on/02_stm32_hp141_lcd</p>
+<p>Create a new STM32 project</p>
+<p>Enter STM32F405RG. Then in the "Project Setup" dialog be sure to
+* Name the project "Betaflight"
+* Uncheck "Use default location" and then click "Browse" and navigate to where you want the project and create a new folder and select it.
+* Under "Target Project Type" be sure to choose "Empty" instead of the default "STM32Cube".</p>
+<p>Delete all of the source files (from the Prjoect Explorer). Then in Windows explorer navigate to that folder and you'll see you have these
+* <code>.settings</code> folder
+* <code>.cproject</code> file
+* <code>.project</code> file</p>
+<p>Copy these three into your Betaflight local repo folder. Then you can double-click the <code>.project</code> file to launch STM32CubeIDe.
+Right click the "Betaflight" project in "Project Explorer" and in the popup menu choose "Properties". Under "C/C++ Build", "Builder Setttings"
+be sure to uncheck the "Generate Makefiles automatically" option. For the "Builder" section the "Builder type" should be "External Builder".
+And uncheck the "Use default build command" and in the "Build command" input field enter:</p>
+<pre><code>mingw32-make -j12
+</code></pre>
+
+<p>specify 
+SHELL="C:\Program Files\Git\git-bash.exe"</p>
+<h1 id="using-mingw32-make">Using <code>mingw32-make</code></h1>
+<p>Building Betaflight with mingw32-make. Set <code>ARM_SDK_DIR</code> to the location of your gcc arm toolchain. For me it would be <code>/c/Tools/armcc</code>.</p>
+<pre><code>mingw32-make -j12 TARGET=NOX ARM_SDK_DIR=/c/Tools/armcc
+</code></pre>
+
+<pre><code>mingw32-make -j12 TARGET=NOX ARM_SDK_DIR=/c/Tools/armcc DEBUG=GDB
+</code></pre>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/application.c648116f.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
+      
+    
+  </body>
+</html>

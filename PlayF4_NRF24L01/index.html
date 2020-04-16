@@ -1,0 +1,525 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.4.1">
+    
+    
+      
+        <title>Play F4 and NRF24L01 - SilverLite FC Firmware</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application.30686662.css">
+      
+      
+    
+    
+      <script src="../assets/javascripts/modernizr.74668098.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#top-side-of-the-play-f4-board" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href=".." title="SilverLite FC Firmware" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon"></i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              SilverLite FC Firmware
+            </span>
+            <span class="md-header-nav__topic">
+              
+                Play F4 and NRF24L01
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href=".." title="SilverLite FC Firmware" class="md-nav__button md-logo">
+      
+        <i class="md-icon"></i>
+      
+    </a>
+    SilverLite FC Firmware
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../Configuration/" title="Configuration" class="md-nav__link">
+      Configuration
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../Targets/" title="Targets" class="md-nav__link">
+      Targets
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../Transceiver/" title="Transceiver modules" class="md-nav__link">
+      Transceiver modules
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../Develop/" title="Build and Flash" class="md-nav__link">
+      Build and Flash
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../DevToolsSetup/" title="Development Tools Setup" class="md-nav__link">
+      Development Tools Setup
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Play F4 and NRF24L01
+      </label>
+    
+    <a href="./" title="Play F4 and NRF24L01" class="md-nav__link md-nav__link--active">
+      Play F4 and NRF24L01
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#top-side-of-the-play-f4-board" title="Top side of the Play F4 board" class="md-nav__link">
+    Top side of the Play F4 board
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bottom-side-of-the-board" title="Bottom side of the board" class="md-nav__link">
+    Bottom side of the board
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#defining-the-pins" title="Defining the pins" class="md-nav__link">
+    Defining the pins
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dont-do-the-following" title="Don't do the following!" class="md-nav__link">
+    Don't do the following!
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#top-side-of-the-play-f4-board" title="Top side of the Play F4 board" class="md-nav__link">
+    Top side of the Play F4 board
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bottom-side-of-the-board" title="Bottom side of the board" class="md-nav__link">
+    Bottom side of the board
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#defining-the-pins" title="Defining the pins" class="md-nav__link">
+    Defining the pins
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dont-do-the-following" title="Don't do the following!" class="md-nav__link">
+    Don't do the following!
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  <h1>Play F4 and NRF24L01</h1>
+                
+                <p>This describes how I use a "Play F4" whoop sized flight controller board with an NRF24L01 micro transceiver board.</p>
+<p><img alt="75mm whoop" src="../images/75mm_SilverLite.jpg" /></p>
+<p><img alt="GR1FF Race" src="../images/PlayF4_GR1FF_1.jpg" /></p>
+<p>The interface between the STM32 microcontroller and the NRF24L01 transceiver board is via software SPI. This consists
+of the following control signals:</p>
+<ul>
+<li>MOSI (master out slave in)</li>
+<li>MISO (master in slave out)</li>
+<li>CS or CSN (chip Select NOT where active LOW signal means chip is selected)</li>
+<li>SCK (serial clock)</li>
+</ul>
+<p>You can see why this is sometimes called 4-wire SPI. The XN297(L) sometimes comes in a 3-wire version where
+MISO and MOSI are run on a single wire as the XN297 (slave) will never output at the same time that STM32 (master) is outputting.</p>
+<p>In addition to the 4 signal wires we also need power (3.3 volts) and ground wire leads. That's a total of 6 wires
+needed to interface the NRF24L01 to the Play F4 flight controller board.</p>
+<h2 id="top-side-of-the-play-f4-board">Top side of the Play F4 board</h2>
+<p><img alt="Play F4 Top" src="../images/Play-F4-Top.jpg" /></p>
+<p>The 3.3v power and ground pads are readily available. The remaining pads that we can repurpose for our own use are:</p>
+<ul>
+<li>TX1 - Labeled T1 on the board. This is TX of USART1 (PB6)</li>
+<li>DSM/IBUS/PPM - Labeled RX2 on the board but please note that it really isn't an RX pin of a UART/USART (PB10)</li>
+<li>SBUS - This connects to a configurable logic inverter (enabled/disabled by PC14) before going to RX of USART2 (PA3)</li>
+</ul>
+<h2 id="bottom-side-of-the-board">Bottom side of the board</h2>
+<p><img alt="Play F4 Bottom" src="../images/Play-F4-Bot.jpg" /></p>
+<ul>
+<li>RX1       - Labeled R1 on the board. Goes directly to PB7 (verified with multimeter) (USART1 RX)</li>
+<li>TX2       - Labeled T2 on the board. Goes directly to PA2 (verified with multimeter) (USART2 TX)</li>
+<li>LED_STRIP - Labeled LED on the board. Goes directly to PA0 (verified with multimeter)</li>
+<li>BZ-       - Labeled BZ- on the board. Does not seem to be directly tied to STM32, probably uses a driver transistor to PC13</li>
+</ul>
+<p>All of the pads that are directly tied to the STM32 processor can be used to connect the NRF24L01. This is because
+the input/output pins of the STM32 are easily configurable. </p>
+<p>Let me re-list the port pins we can use:</p>
+<ul>
+<li><code>PA0</code>     LED_STRIP</li>
+<li><code>PA2</code>     TX2</li>
+<li><code>PB6</code>     TX1</li>
+<li><code>PB7</code>     RX1</li>
+<li><code>PB10</code>    DSM/IBUS/PPM</li>
+</ul>
+<p>Most any pin of the STM32 can be configured for either input or output. This makes it easy for us
+to use any of those pads for any SPI signal. The header file <code>trx_spi_config.h</code> is
+where you perform this configuration. Here is a copy/paste of the default configuration I use:</p>
+<pre><code>static Pin&lt;'A', 2&gt;      TRX_CS_PIN;     // PA2      TX2
+static Pin&lt;'A', 0&gt;      SPI_SCK;        // PA0      LED_STRIP
+static Pin&lt;'B', 6&gt;      SPI_MOSI;       // PB6      TX1
+static Pin&lt;'B', 10&gt;     SPI_MISO;       // PB10     DSM/IBUS/PPM
+</code></pre>
+
+<p>Here you can see pin <code>PA2</code> is assigned to the <code>CS</code> signal, <code>PA0</code> is assigned to <code>SCK</code> signal, and so on.
+This is the wiring method that works for me when I mount the NRF24L01 micro board on top front side of the flight controller board.</p>
+<p><img alt="Micro NRF24L01 on top front" src="../images/75mm_SilverLite2.jpg" /></p>
+<p>Only two of the wires have to reach around to the bottom side, and those FC pads are actually very close to the corresponding NRF24L01 pads
+since I oriented the NRF24L01 to have its pads to the left (as shown in the pic).</p>
+<blockquote>
+<p>Note: You'll notice that I removed the onboard PCB antenna (I simply snapped it off) and replaced it with a length of enamel wire.</p>
+</blockquote>
+<p>Below is a different orientation where I had the transceiver module on the bottom side of the flight controller board (as used on the
+black micro shown at the top of this page):</p>
+<p><img alt="Micro NRF24L01 on bottom" src="../images/PlayF4_NRF24L01_Alt1.jpg" /></p>
+<blockquote>
+<p>Note: Here you can see I'm using the built-in PCB antenna. If you look at the black GR1FF Race micro at the top of this page you'll also be able to see the antenna</p>
+</blockquote>
+<p>I chose to use the <code>RX1</code> pad on the bottom side for <code>CS</code></p>
+<pre><code>static Pin&lt;'B', 7&gt;      TRX_CS_PIN;     // PB7      RX1
+static Pin&lt;'A', 0&gt;      SPI_SCK;        // PA0      LED_STRIP
+static Pin&lt;'B', 6&gt;      SPI_MOSI;       // PB6      TX1
+static Pin&lt;'B', 10&gt;     SPI_MISO;       // PB10     DSM/IBUS/PPM
+</code></pre>
+
+<h3 id="defining-the-pins">Defining the pins</h3>
+<p>As you've probably noticed, the <code>Pin&lt;&gt;</code> template takes an uppercase character (like 'A', 'B', etc) to specify which STM32 port the pin is on
+and the second parameter is the pin number. It's that simple. No need to use <a href="https://www.st.com/en/development-tools/stm32cubemx.html">STM32CubeMX</a>,
+just edit <code>SilverLite\trx_spi_config.h</code>.</p>
+<h2 id="dont-do-the-following">Don't do the following!</h2>
+<p><img alt="Micro NRF24L01 poorly wired" src="../images/PlayF4_NRF24L01_Bad1.jpg" /></p>
+<p>Please be very careful with how you wire the board. The above picture shows an orientation (where the NRF24L01 was rotated 90degrees
+so that the module's pins were facing towards the bottom corner). You'll see that several wires are very close to
+the black squarish component which is an inductor (with 100 printed on it). This led to a significant amount of electrical/rf noise traveling to the module
+and pretty much prevented any reception!</p>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../DevToolsSetup/" title="Development Tools Setup" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Development Tools Setup
+              </span>
+            </div>
+          </a>
+        
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/application.c648116f.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
+      
+    
+  </body>
+</html>
