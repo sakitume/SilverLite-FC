@@ -51,7 +51,7 @@ else:
 def handlePacket(cmdID, packet):
     if cmdID == 0xFF:
         print str(packet),
-    elif cmdID == 0x01:
+    elif cmdID == 0x01: # For when RX is SilverLite SPI 
         if len(packet) >= 12:
             loopTime, pps, pktHit, hwCRC, bCRC, osdTime = struct.unpack("<hhhhhh", packet)
             print "looptime: ", loopTime
@@ -68,6 +68,25 @@ def handlePacket(cmdID, packet):
 
         elif len(packet) >= 2:
             print struct.unpack("<h", packet)
+    elif cmdID == 0x02: # For when RX is IBUS
+        if len(packet) >= 10:
+            loopTime, osdTime, pps, pktHit, bCRC = struct.unpack("<hhhhh", packet)
+            print "looptime: ", loopTime
+            print "osdTime: ", osdTime
+            print "pps: ", pps, "hit: ", pktHit
+            print "bcrc: ", bCRC
+            print
+    elif cmdID == 0x03: # Debug logging of USART reception, 32bytes at a time
+        if len(packet) == 28:
+            channels = struct.unpack("<" + ('h'*14), packet)
+            for chan in channels:
+                print chan,
+            print "\n"
+
+        else:    
+            for b in packet:
+                print hex(b),
+            print "\n"
     else:
         print "Unknown packet type: ", hex(cmdID), len(packet)
 

@@ -175,7 +175,7 @@ bool silverlite_postupdate(uint32_t max_used_loop_time)
         osd_print(row++, 1, "\x9B \x9C \x70 \x71 \x01 \x06");
 #endif
 
-#if 1			
+#if defined(RX_SILVERLITE_BAYANG_PROTOCOL)    
         // Sending this packet takes approx 500us
         console_openPacket();
         console_appendPacket16(max_used_loop_time);
@@ -186,7 +186,17 @@ bool silverlite_postupdate(uint32_t max_used_loop_time)
         console_appendPacket16(osd_time);
         console_closePacket(0x01);
 #endif
-        
+
+#if defined(RX_IBUS)    
+        console_openPacket();
+        console_appendPacket16(max_used_loop_time);
+        console_appendPacket16(osd_time);
+        console_appendPacket16(packetpersecond);
+        console_appendPacket16(pkt_hits);
+        console_appendPacket16(b_crc_errors);
+        console_closePacket(0x02);
+#endif
+
         max_used_loop_time = 0;
         secondTimer=  gettime();
         osd_time = secondTimer - now;

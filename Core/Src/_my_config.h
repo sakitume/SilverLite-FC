@@ -25,8 +25,9 @@
 #undef RADIO_XN297
 #undef RADIO_XN297L
 
-// Enable SilverLite RX implementation
-#define RX_SILVERLITE_BAYANG_PROTOCOL
+// Enable only one of the following defines
+//#define RX_SILVERLITE_BAYANG_PROTOCOL   // Enable SilverLite SPI Transceiver RX implementation
+#define RX_IBUS // Enable IBUS protocol support on a USART RX pin
 
 //------------------------------------------------------------------------------
 // Ignore this section. Here we are resetting or clearing various config flags

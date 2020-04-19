@@ -1,6 +1,8 @@
 #ifndef __TRX_H__
 #define __TRX_H__
 
+#include "_my_config.h"	// for RX_SILVERLITE_BAYANG_PROTOCOL
+#if defined(RX_SILVERLITE_BAYANG_PROTOCOL)
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -53,4 +55,5 @@ extern void delay_us(uint32_t us);
 	#define XPRINTF(fmt, ...)
 #endif
 
+#endif 	// #if defined(RX_SILVERLITE_BAYANG_PROTOCOL)
 #endif 
