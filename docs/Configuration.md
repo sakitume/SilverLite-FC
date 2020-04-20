@@ -12,8 +12,10 @@ The above configuration is what I typically use but by adjusting various configu
 able to customize SilverLite to match your needs.
 
 Only two [flight controller targets](Targets.md) are currently supported (`NOX` and `OMNIBUSF4`), while
-[4 different transceiver modules](Transceiver.md) can be used. IBUS support is currently a work in progress
-(my current plan is to use the [IBUS code](https://github.com/NotFastEnuf/NFE_Silverware/blob/master/Silverware/src/rx_ibus.c) found in NFE Silverware as a starting point; the comments in that code indicate that it was originally contributed by BobNova.
+[4 different transceiver modules](Transceiver.md) can be used. 
+
+> Note: IBUS support is currently a work in progress and a proof of concept has been bench tested. I'll update this
+document further once I've verified it is usable.
 
 The Play F4 board is a `NOX` flight controller target. There are enough pads on this FC board to support a few different ways to wire it up to
 an NRF24L01 (or XN297 etc). I've tried at least two different wiring configurations as well as a few different
