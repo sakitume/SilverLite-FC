@@ -3,3 +3,7 @@
 /.vscode/.cortex-debug*
 
 /site/
+
+# STM32CubeIDE files
+/*Debug.launch
+
