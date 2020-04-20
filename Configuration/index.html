@@ -295,8 +295,11 @@ motors). Most small motors for whoop or micros (08XX, 11XX, 12XX) tend to have 1
 <p>The above configuration is what I typically use but by adjusting various configuration files you should be
 able to customize SilverLite to match your needs.</p>
 <p>Only two <a href="../Targets/">flight controller targets</a> are currently supported (<code>NOX</code> and <code>OMNIBUSF4</code>), while
-<a href="../Transceiver/">4 different transceiver modules</a> can be used. IBUS support is currently a work in progress
-(my current plan is to use the <a href="https://github.com/NotFastEnuf/NFE_Silverware/blob/master/Silverware/src/rx_ibus.c">IBUS code</a> found in NFE Silverware as a starting point; the comments in that code indicate that it was originally contributed by BobNova.</p>
+<a href="../Transceiver/">4 different transceiver modules</a> can be used. </p>
+<blockquote>
+<p>Note: IBUS support is currently a work in progress and a proof of concept has been bench tested. I'll update this
+document further once I've verified it is usable.</p>
+</blockquote>
 <p>The Play F4 board is a <code>NOX</code> flight controller target. There are enough pads on this FC board to support a few different ways to wire it up to
 an NRF24L01 (or XN297 etc). I've tried at least two different wiring configurations as well as a few different
 locations and orientations to mount the board. If you want to do something different than the default
