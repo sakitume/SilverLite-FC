@@ -15,19 +15,12 @@
 // Disable inverted (3D) flight code
 #undef  INVERTED_ENABLE
 
-//------------------------------------------------------------------------------
-// RX protocol and configuration
-//------------------------------------------------------------------------------
 // Disable all SilF4ware RX implementations
 #undef DISPLAY_MAX_USED_LOOP_TIME_INSTEAD_OF_RX_PACKETS
 #undef RX_NRF24_BAYANG_TELEMETRY
 #undef RX_BAYANG_PROTOCOL_TELEMETRY
 #undef RADIO_XN297
 #undef RADIO_XN297L
-
-// Enable only one of the following defines
-//#define RX_SILVERLITE_BAYANG_PROTOCOL   // Enable SilverLite SPI Transceiver RX implementation
-#define RX_IBUS // Enable IBUS protocol support on a USART RX pin
 
 //------------------------------------------------------------------------------
 // Ignore this section. Here we are resetting or clearing various config flags
@@ -63,6 +56,13 @@
 #undef MOTOR_FL
 #undef MOTOR_BR
 #undef MOTOR_FR
+
+//------------------------------------------------------------------------------
+// RX protocol and configuration
+//------------------------------------------------------------------------------
+// Enable only one of the following defines
+//#define RX_SILVERLITE_BAYANG_PROTOCOL   // Enable SilverLite SPI Transceiver RX implementation
+#define RX_IBUS // Enable IBUS protocol support on a USART RX pin
 
 //------------------------------------------------------------------------------
 // Rates
@@ -219,7 +219,7 @@
 
 #define INVERT_CH_HEADFREE                  // Invert CH_HEADFREE logic
 #undef RATES
-#define RATES                   CH_HEADFREE // SwD/2   ==  MULTI_CHAN_9/DEVO_CHAN_9
+#define RATES                   CH_HEADFREE // SwD/1   ==  MULTI_CHAN_9/DEVO_CHAN_9
 
 #undef LEDS_ON
 #define LEDS_ON                 CH_ON

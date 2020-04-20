@@ -77,12 +77,16 @@ def handlePacket(cmdID, packet):
             print "bcrc: ", bCRC
             print
     elif cmdID == 0x03: # Debug logging of USART reception, 32bytes at a time
-        if len(packet) == 28:
+        if len(packet) == 12:
+            channels = struct.unpack("<" + ('h'*6), packet)
+            for chan in channels:
+                print chan,
+            print "\n"
+        elif len(packet) == 28:
             channels = struct.unpack("<" + ('h'*14), packet)
             for chan in channels:
                 print chan,
             print "\n"
-
         else:    
             for b in packet:
                 print hex(b),

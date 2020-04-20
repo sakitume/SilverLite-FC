@@ -9,14 +9,64 @@ extern "C" {
 
 #if defined(RX_IBUS)
 
-static uint8_t ibus_aux_mapping[6] =
+//------------------------------------------------------------------------------
+// IBUS supports 14 channels but in reality our transmitters and receivers
+// only ever support 10 channels (unless you use custom firmware).
+// The first 4 channels are AETR (Aileron, Elevator, Thrust, Rudder)
+// corresponding to Roll, Pitch, Throttle, Yaw. The remaining 6 channels
+// can be considered auxiliary channels.
+//
+// Channel values are (nominally) between 1000 to 2000. Although they can be
+// a little below 1000 or a little above 2000.
+//
+// Below is an enumeration list of constants to describe the IBUS channels.
+// The comments after each aux channel describe which switch/output of the
+// FlySky FS-i6 my SilverLite firmware uses for that channel. For switches
+// the "Up" position of a switch corresponds to a low value of 1000
+// while the "Down" position corresponds to a high value of 2000
+enum e_IBUSChannels
 {
-    0,
-    1,
-    2,
-    3,
-    4,
-    5
+    kIBUS_A,
+    kIBUS_E,
+    kIBUS_T,
+    kIBUS_R,
+    kIBUS_Aux1,     // VrA
+    kIBUS_Aux2,     // VrB
+    kIBUS_Aux3,     // SwB
+    kIBUS_Aux4,     // SwC  - This is a 3 position switch
+    kIBUS_Aux5,     // SwA
+    kIBUS_Aux6,     // SwD
+};
+
+//------------------------------------------------------------------------------
+// The following array is used to map an IBUS aux channel value to one of our
+// internal aux[] boolean. Each entry of the array consists of 4 values:
+//  * aux[] channel to set/clear (See header file "defines.h")
+//  * IBUS aux channel index (kIBUS_Aux1...kIBUS_Aux6)
+//  * min value
+//  * max value 
+//
+// An IBUS channel value is normalized to the range of 0..100 (inclusive) and
+// if its value is between the min/max values (inclusive) then the corresponding
+// aux[] channel is set, otherwise it is cleared
+//
+// Internal aux[] channels are used to switch on/off various features. Examine
+// _my_config.h to see how those features are tied to aux channels. Below
+// is the configuration I generally use.
+//
+//  Feature                 FlySky i6
+//  -------                 ---------
+//  THROTTLE_KILL_SWITCH    SwA/1
+//  LEVELMODE               SwB/1
+//  MOTOR_BEEPS_CHANNEL     SwC/3
+//  RATES                   SwD/1
+//
+static uint8_t aux_map[][4] =
+{
+    { THROTTLE_KILL_SWITCH,     kIBUS_Aux5,     0,  50  },
+    { LEVELMODE,                kIBUS_Aux3,     0,  50  },
+    { MOTOR_BEEPS_CHANNEL,      kIBUS_Aux4,     25, 100 },
+    { RATES,                    kIBUS_Aux6,     0,  50 }
 };
 
 //------------------------------------------------------------------------------
@@ -49,6 +99,7 @@ static uint32_t secondtimer;
 static uint16_t crc_errors;
 static uint16_t packetrx;
 static uint16_t packet_hits;
+static uint32_t lastRXTime;
 
 //------------------------------------------------------------------------------
 // Need an interrupt driven receiver with a buffer of at least 8 bytes
@@ -113,11 +164,12 @@ void rx_init()
 static void handlePacket(const uint16_t *channels)
 {
 #if 0    
+    // log IBUS AUX1 thru AUX6
     static uint32_t last;
     uint32_t now = gettime();
     if ((now - last) > (100000 * 4))
     {
-        console_sendPacket(3, (uint8_t*)channels, 14*2);
+        console_sendPacket(3, (uint8_t*)(channels+4), 6*2);
         last = now;
     }
 #endif
@@ -154,28 +206,56 @@ static void handlePacket(const uint16_t *channels)
         if (ACRO_EXPO_YAW > 0.01) 	rx[2] = rcexpo(rx[2], ACRO_EXPO_YAW);
     }
 
-    for (int i=0; i<6; i++)
+    const int kNumMapped = sizeof(aux_map) / sizeof(aux_map[0]);
+    for (int i=0; i<kNumMapped; i++)
     {
-        aux[i] = (channels[4 + ibus_aux_mapping[i]] > 1600) ? 1 : 0;
+        const uint8_t *mapping = aux_map[i];
+        const uint8_t internal_aux_index = mapping[0];
+        const uint8_t ibus_aux_index = mapping[1];
+
+        // Map IBUS channel value from range 1000...2000 to 0..100
+        uint16_t chVal = channels[ibus_aux_index];
+        if (chVal <= 1000)
+        {
+            chVal = 0;
+        }
+        else if (chVal >= 2000)
+        {
+            chVal = 100;
+        }
+        else
+        {
+            chVal = (chVal - 1000) / 10;
+        }
+
+        // Set internal aux[] boolean if IBUS channel value fell within min/max, otherwise clear the boolean
+        aux[internal_aux_index] = ((chVal >= mapping[2]) && (chVal <= mapping[3]));
     }
 }
 
 //------------------------------------------------------------------------------
 void checkrx()
 {
-#if 0
-    static int cntr;
-    static uint8_t buff[32];
-    while (uart.readable())
+    uint32_t now = gettime();
+
+#if 0   // Show state of aux[] channels that we manage
+    static uint32_t emit_timer;
+	if ( now - emit_timer > 200000 )
     {
-        buff[cntr++] = uart.getc();
-        if (cntr >= 1)
+        emit_timer = now;
+        static uint8_t buff[10];
+
+        const int kNumMapped = sizeof(aux_map) / sizeof(aux_map[0]);
+        for (int i=0; i<kNumMapped; i++)
         {
-            cntr = 0;
-            console_sendPacket(3, buff, 1);
+            const uint8_t *mapping = aux_map[i];
+            const uint8_t internal_aux_index = mapping[0];
+            buff[i] = aux[internal_aux_index];
         }
+        console_sendPacket(3, buff, kNumMapped);
     }
-#else    
+#endif
+
     while (uart.readable())
     {
         uint8_t ch = uart.getc();
@@ -219,6 +299,9 @@ void checkrx()
                 {
                     handlePacket(state.channels);
                     packetrx++;
+
+                    lastRXTime = now;
+                    failsafe = false;
                 }
                 else
                 {
@@ -245,16 +328,27 @@ void checkrx()
         }
     }
 
-	if ( gettime() - secondtimer > 1000000 ) {
+    if ((rxmode == RXMODE_NORMAL) && !failsafe)
+    {
+        if ((now - lastRXTime) >= FAILSAFETIME)
+        {
+            failsafe = true;
+            for ( int i = 0; i < 4; ++i ) 
+            {
+                rx[ i ] = 0.0f;
+            }
+        }
+    }
+
+	if ( now - secondtimer > 1000000 ) {
 		b_crc_errors = crc_errors;
 		crc_errors = 0;
 		packetpersecond = packetrx;
 		packetrx = 0;
         pkt_hits = packet_hits;
         packet_hits = 0;
-		secondtimer = gettime();
+		secondtimer = now;
 	}
-#endif    
 }
 
 #endif // #if defined(RX_IBUS)
