@@ -122,3 +122,12 @@ the PID term being modified.
 so that the new mode will work correctly.
 
 
+# STM32 Processors
+
+Processor (example chip)	Processor Speed	no. of UART on FC	Flash Memory*
+F1 (STM32F103CBT6)	72MHz	2	128KB
+F3 (STM32F303CCT6)	72MHz	3	256KB
+F4 (STM32F405RGT6)	168MHz	3	1MB
+F7 (STM32F745VG)	216MHz	8	1MB
+H7 (STM32H750)	480MHz	TBC	128KB
+
