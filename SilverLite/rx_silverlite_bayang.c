@@ -488,12 +488,13 @@ static int decodepacket( void )
 
 			// Check for silverLite flag. Although we do something similar when we check bind packets
 			// we also check here in case auto-bind kicked in and bind packets were skipped altogether
-			if (rxdata[12] == (rxaddress[2] ^ 0xAA))
+			if (!silverLiteCapable)
 			{
-				if (!silverLiteCapable)
+				if (rxdata[12] == (rxaddress[2] ^ 0xAA))
 				{
-					XPRINTF("AutoBound to SilverLite capable TX\n");
 					silverLiteCapable = 1;
+					telemetry_enabled = 1;
+					packet_period = PACKET_PERIOD_TELEMETRY;
 				}
 			}
 
@@ -645,6 +646,8 @@ void checkrx( void )
 				{
 					XPRINTF("Bound to SilverLite capable TX\n");
 					silverLiteCapable = 1;
+					telemetry_enabled = 1;
+					packet_period = PACKET_PERIOD_TELEMETRY;
 				}
 
 
