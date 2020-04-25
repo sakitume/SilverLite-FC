@@ -14,7 +14,7 @@ RPM filtering, blackbox logging, enhanced DSHOT implementations, etc. Please che
 
 SilverLite supports a minimal OSD and features a very low latency Bayang protocol implementation: theoretical 3ms or 5ms if using telemetry, but real world is likely a bit higher.
 Some of the other features unique to SilverLite flight controller firmware are the enhanced telemetry and configuration that can be 
-performed when using my [SilverLite Firmware for the FlySky FS-i6](https://github.com/sakitume/FS-i6-SilverLite) or
+performed when using my [SilverLite Firmware for the FlySky FS-i6](https://github.com/sakitume/SilverLite-FS-i6) or
 my SilverLite TX firmware for STM32, ESP32, ESP8266 (unreleased).
 
 # Quick Start
