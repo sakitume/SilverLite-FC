@@ -1,6 +1,7 @@
 MIT License
 
-Copyright (c) 2020 Michael Donovan Mandap (sakitume)
+Copyright (c) silverx and contributors. STM32F4 port by Markus Gritsch.
+SilverLite derivative by Michael Donovan Mandap (sakitume)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
