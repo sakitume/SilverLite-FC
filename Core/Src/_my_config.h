@@ -85,11 +85,11 @@
 
 #define ACRO_EXPO_ROLL      0.85
 #define ACRO_EXPO_PITCH     0.85
-#define ACRO_EXPO_YAW       0.10
+#define ACRO_EXPO_YAW       0.60
 
 #define ANGLE_EXPO_ROLL     0.55
 #define ANGLE_EXPO_PITCH    0.0
-#define ANGLE_EXPO_YAW      0.25
+#define ANGLE_EXPO_YAW      0.60
 
 //------------------------------------------------------------------------------
 // PID term overrides
