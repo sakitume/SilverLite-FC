@@ -70,7 +70,7 @@
 
 // rate in deg/sec for acro mode
 #define MAX_RATE            800
-#define MAX_RATEYAW         650
+#define MAX_RATEYAW         675
 
 #define LEVEL_MAX_ANGLE     80
 #define LEVEL_MAX_RATE      900
@@ -85,11 +85,11 @@
 
 #define ACRO_EXPO_ROLL      0.85
 #define ACRO_EXPO_PITCH     0.85
-#define ACRO_EXPO_YAW       0.60
+#define ACRO_EXPO_YAW       0.26
 
 #define ANGLE_EXPO_ROLL     0.55
-#define ANGLE_EXPO_PITCH    0.0
-#define ANGLE_EXPO_YAW      0.60
+#define ANGLE_EXPO_PITCH    0.55
+#define ANGLE_EXPO_YAW      0.30
 
 //------------------------------------------------------------------------------
 // PID term overrides
