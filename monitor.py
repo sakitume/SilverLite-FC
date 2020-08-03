@@ -82,6 +82,11 @@ def handlePacket(cmdID, packet):
             for chan in channels:
                 print chan,
             print "\n"
+        elif len(packet) == 16:  # 4 floats rx[] (roll, pitch, yaw, throttle)
+            channels = struct.unpack("<" + ('f'*4), packet)
+            for chan in channels:
+                print chan,
+            print "\n"
         elif len(packet) == 28:
             channels = struct.unpack("<" + ('h'*14), packet)
             for chan in channels:

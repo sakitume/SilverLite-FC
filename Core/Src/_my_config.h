@@ -61,8 +61,8 @@
 // RX protocol and configuration
 //------------------------------------------------------------------------------
 // Enable only one of the following defines
-#define RX_SILVERLITE_BAYANG_PROTOCOL   // Enable SilverLite SPI Transceiver RX implementation
-//#define RX_IBUS // Enable IBUS protocol support on a USART RX pin
+//#define RX_SILVERLITE_BAYANG_PROTOCOL   // Enable SilverLite SPI Transceiver RX implementation
+#define RX_IBUS // Enable IBUS protocol support on a USART RX pin
 
 //------------------------------------------------------------------------------
 // Rates

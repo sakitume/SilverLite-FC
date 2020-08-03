@@ -30,12 +30,14 @@ enum e_IBUSChannels
     kIBUS_E,
     kIBUS_T,
     kIBUS_R,
-    kIBUS_Aux1,     // VrA
-    kIBUS_Aux2,     // VrB
-    kIBUS_Aux3,     // SwB
-    kIBUS_Aux4,     // SwC  - This is a 3 position switch
-    kIBUS_Aux5,     // SwA
-    kIBUS_Aux6,     // SwD
+
+                    // FlySky i6    Turnigy Evolution
+    kIBUS_Aux1,     // VrA          SwB/LeftSw(1-3)     // 1000, 1500, 2000
+    kIBUS_Aux2,     // VrB          SwA/MidSw(1-2)      // 1000(up), 2000(dn)
+    kIBUS_Aux3,     // SwB          VrA(Rotary)         // 1000, 2000
+    kIBUS_Aux4,     // SwC(1-3)     SwC/RightSw(1-3)    // 1000, 1500, 2000
+    kIBUS_Aux5,     // SwA(1-2)
+    kIBUS_Aux6,     // SwD(1-2)
 };
 
 //------------------------------------------------------------------------------
@@ -61,6 +63,7 @@ enum e_IBUSChannels
 //  MOTOR_BEEPS_CHANNEL     SwC/3
 //  RATES                   SwD/1
 //
+#if 0
 static uint8_t aux_map[][4] =
 {
     { THROTTLE_KILL_SWITCH,     kIBUS_Aux5,     0,  50  },
@@ -68,6 +71,28 @@ static uint8_t aux_map[][4] =
     { MOTOR_BEEPS_CHANNEL,      kIBUS_Aux4,     25, 100 },
     { RATES,                    kIBUS_Aux6,     0,  50 }
 };
+#endif
+
+// Turnigy Evolution
+//  Feature                 Turnigy Evolution
+//  -------                 ---------
+//  THROTTLE_KILL_SWITCH    SwB/1   kIBUS_Aux1
+//  LEVELMODE               SwB/2   kIBUS_Aux1
+//  MOTOR_BEEPS_CHANNEL     SwA/2   kIBUS_Aux3
+//  RATES                   SwC/1   kIBUS_Aux4
+//    kIBUS_Aux1,     // VrA          SwB/LeftSw(1-3)     // 1000, 1500, 2000
+//    kIBUS_Aux2,     // VrB          SwA/MidSw(1-2)      // 1000(up), 2000(dn)
+//    kIBUS_Aux3,     // SwB          VrA(Rotary)         // 1000, 2000
+//    kIBUS_Aux4,     // SwC(1-3)     SwC/RightSw(1-3)    // 1000, 1500, 2000
+static uint8_t aux_map[][4] =
+{
+    { THROTTLE_KILL_SWITCH,     kIBUS_Aux1,     0,  30  },
+    { LEVELMODE,                kIBUS_Aux1,     35, 75  },
+    { MOTOR_BEEPS_CHANNEL,      kIBUS_Aux2,     50, 100 },
+    { RATES,                    kIBUS_Aux4,     0,  35  },
+};
+
+
 
 //------------------------------------------------------------------------------
 extern "C" {
@@ -108,7 +133,7 @@ static uint32_t lastRXTime;
 static UartBufDev< PinA<9>, PinA<10>, 16 > uart;    // USART1
 //static UartDev< PinA<9>, PinA<10> > uart;         // USART1
 #elif defined(STM32F411xE)  // NOX
-static UartBufDev< PinA<2>, PinA<3>, 32 > uart;     // USART2
+static UartBufDev< PinB<6>, PinB<7>, 16 > uart;     // USART1
 #endif
 
 //------------------------------------------------------------------------------
@@ -152,43 +177,82 @@ void rx_init()
     // to work correctly. I'll investigate further but will punt for now.
 #ifdef STM32F405xx
     int hz = 168000000;      // OMNIBUSF4 uses F405 running at 168
+    uart.baud(115200 * 2, hz);
 #elif defined STM32F411xE
     int hz = 96000000;       //NOX/NOXE uses F411 running at 96
+    uart.baud(115200, hz);
 #else
     #error "Unable to determine what F4 variant to target"
 #endif    
-    uart.baud(115200 * 2, hz);
+}
+
+//------------------------------------------------------------------------------
+static float AER_to_Neg1_to_Pos1(int v)
+{
+     v -= 1500;
+    if (v < -500)
+    {
+        v = -500;
+    }
+    else if (v > 500)
+    {
+        v = 500;
+    }
+    return v * 0.002f;
+}
+
+//------------------------------------------------------------------------------
+static float T_to_0_to_1(int v)
+{
+     v -= 1000;
+    if (v < 0)
+    {
+        v = 0;
+    }
+    else if (v > 1000)
+    {
+        v = 1000;
+    }
+    return v * 0.001f;
 }
 
 //------------------------------------------------------------------------------
 static void handlePacket(const uint16_t *channels)
 {
-#if 0    
-    // log IBUS AUX1 thru AUX6
+#if 0
     static uint32_t last;
     uint32_t now = gettime();
     if ((now - last) > (100000 * 4))
     {
+    #if 0        
+        // log IBUS AUX1 thru AUX6
         console_sendPacket(3, (uint8_t*)(channels+4), 6*2);
+    #else
+        // Log AETR, AUX1, AUX2
+        console_sendPacket(3, (uint8_t*)(channels+0), 6*2);
+    #endif        
+        last = now;
+    }
+#endif
+
+#if 0
+    // log rx[] (Roll, Pitch, Yaw and Throttle)
+    static uint32_t last;
+    uint32_t now = gettime();
+    if ((now - last) > (100000 * 4))
+    {
+        console_sendPacket(3, (uint8_t*)rx, 4*sizeof(rx[0]));
         last = now;
     }
 #endif
 
     // Channels are in the range of 1000 to 2000 inclusive (but can be as low as 988 and high as 2020)
     // So we convert to range -1.0f to +1.0f and clamp as necessary
-    for (int i=0; i<4; i++)
-    {
-        int v = channels[i] - 1500;
-        if (v < -500)
-        {
-            v = -500;
-        }
-        else if (v > 500)
-        {
-            v = 500;
-        }
-        rx[i] = v * 0.002f;
-    }
+    // Except for THROTTLE which we convert to range of 0.0f to 1.0f
+    rx[0] = AER_to_Neg1_to_Pos1(channels[0]);   // Aileron / Roll
+    rx[1] = AER_to_Neg1_to_Pos1(channels[1]);   // Elevator / Pitch
+    rx[2] = AER_to_Neg1_to_Pos1(channels[3]);   // Rudder / Yaw
+    rx[3] = T_to_0_to_1(channels[2]);
 
 #ifdef LEVELMODE
     // level mode expo
