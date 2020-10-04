@@ -142,7 +142,12 @@ static uint32_t lastRXTime;
 static UartBufDev< PinA<9>, PinA<10>, 16 > uart;    // USART1
 //static UartDev< PinA<9>, PinA<10> > uart;         // USART1
 #elif defined(STM32F411xE)  // NOX
-static UartBufDev< PinB<6>, PinB<7>, 16 > uart;     // USART1
+    #ifdef __NOX_UART2__
+    static UartBufDev< PinB<2>, PinB<3>, 16 > uart;     // USART2
+    static Pin<'C', 14>		INVERTER_PIN;	            // PC14
+    #else
+    static UartBufDev< PinB<6>, PinB<7>, 16 > uart;     // USART1
+    #endif
 #endif
 
 //------------------------------------------------------------------------------
@@ -190,6 +195,11 @@ void rx_init()
 #elif defined STM32F411xE
     int hz = 96000000;       //NOX/NOXE uses F411 running at 96
     uart.baud(115200, hz);
+
+    #ifdef __NOX_UART2__
+    INVERTER_PIN.mode(Pinmode::out);
+    INVERTER_PIN.write(1);
+    #endif    
 #else
     #error "Unable to determine what F4 variant to target"
 #endif    
