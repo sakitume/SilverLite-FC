@@ -9,6 +9,14 @@ extern "C" {
 
 #if defined(RX_IBUS)
 
+
+//------------------------------------------------------------------------------
+// Define only one of the following
+#define FLYSKY_i6_MAPPING
+//#define TURNIGY_EVOLUTION_MAPPING
+
+
+
 //------------------------------------------------------------------------------
 // IBUS supports 14 channels but in reality our transmitters and receivers
 // only ever support 10 channels (unless you use custom firmware).
@@ -63,7 +71,7 @@ enum e_IBUSChannels
 //  MOTOR_BEEPS_CHANNEL     SwC/3
 //  RATES                   SwD/1
 //
-#if 0
+#ifdef FLYSKY_i6_MAPPING
 static uint8_t aux_map[][4] =
 {
     { THROTTLE_KILL_SWITCH,     kIBUS_Aux5,     0,  50  },
@@ -84,6 +92,7 @@ static uint8_t aux_map[][4] =
 //    kIBUS_Aux2,     // VrB          SwA/MidSw(1-2)      // 1000(up), 2000(dn)
 //    kIBUS_Aux3,     // SwB          VrA(Rotary)         // 1000, 2000
 //    kIBUS_Aux4,     // SwC(1-3)     SwC/RightSw(1-3)    // 1000, 1500, 2000
+#ifdef TURNIGY_EVOLUTION_MAPPING
 static uint8_t aux_map[][4] =
 {
     { THROTTLE_KILL_SWITCH,     kIBUS_Aux1,     0,  30  },
@@ -91,7 +100,7 @@ static uint8_t aux_map[][4] =
     { MOTOR_BEEPS_CHANNEL,      kIBUS_Aux2,     50, 100 },
     { RATES,                    kIBUS_Aux4,     0,  35  },
 };
-
+#endif
 
 
 //------------------------------------------------------------------------------
