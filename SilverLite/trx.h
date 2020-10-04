@@ -7,11 +7,16 @@
 #include <stdbool.h>
 
 //------------------------------------------------------------------------------
-// Enable only one of these definitions
-#define TRX_NRF
+// Exactly one of these definitions should be provided. This should normally be
+// done within file '_my_config.h'
+//#define TRX_NRF
 //#define TRX_XN297
 //#define TRX_XN297L
 //#define TRX_LT8900
+#if !defined(TRX_NRF) && !defined(TRX_XN297) && !defined(TRX_XN297L) && !defined(TRX_LT8900)
+#error "Edit _myc_config.h and enable exactly one of the TRX_??? definitions"
+#endif
+
 
 #ifdef __cplusplus
 extern "C" {

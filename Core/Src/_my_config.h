@@ -6,63 +6,42 @@
 #define __MY_CONFIG_H__
 
 //------------------------------------------------------------------------------
-// Disable some SilF4ware features
+// Include "reset_defs.h" to disable some SilF4ware features as well as undefine
+// numerous definitions that we will redefine here
 //------------------------------------------------------------------------------
-// Disable blackbox, my hardware doesn't have this. Plus this feature only
-// builds for OMNIBUSF4 target. Code isn't properly conditionalized to support NOX
-#undef BLACKBOX_LOGGING 
-
-// Disable inverted (3D) flight code
-#undef  INVERTED_ENABLE
-
-// Disable all SilF4ware RX implementations
-#undef DISPLAY_MAX_USED_LOOP_TIME_INSTEAD_OF_RX_PACKETS
-#undef RX_NRF24_BAYANG_TELEMETRY
-#undef RX_BAYANG_PROTOCOL_TELEMETRY
-#undef RADIO_XN297
-#undef RADIO_XN297L
-
-//------------------------------------------------------------------------------
-// Ignore this section. Here we are resetting or clearing various config flags
-// and/or values so that later sections won't be so cluttered; those later
-// sections can then focus solely on things you can customize.
-//------------------------------------------------------------------------------
-// Rates
-#undef MAX_RATE
-#undef MAX_RATEYAW
-#undef LEVEL_MAX_ANGLE
-#undef LEVEL_MAX_RATE
-#undef LOW_RATES_MULTI
-
-// Battery
-#undef WARN_ON_LOW_BATTERY
-#undef LVC_LOWER_THROTTLE
-
-// Filters
-#undef GYRO_LPF_1ST_HZ_BASE
-#undef GYRO_LPF_1ST_HZ_MAX
-#undef GYRO_LPF_1ST_HZ_THROTTLE
-
-#undef GYRO_LPF_2ND_HZ_BASE
-#undef GYRO_LPF_2ND_HZ_MAX
-#undef GYRO_LPF_2ND_HZ_THROTTLE
-
-#undef DTERM_LPF_2ND_HZ_BASE
-#undef DTERM_LPF_2ND_HZ_MAX
-#undef DTERM_LPF_2ND_HZ_THROTTLE
-
-// Motor order
-#undef MOTOR_BL
-#undef MOTOR_FL
-#undef MOTOR_BR
-#undef MOTOR_FR
+#include "reset_defs.h" 
 
 //------------------------------------------------------------------------------
 // RX protocol and configuration
-//------------------------------------------------------------------------------
 // Enable only one of the following defines
-//#define RX_SILVERLITE_BAYANG_PROTOCOL   // Enable SilverLite SPI Transceiver RX implementation
-#define RX_IBUS // Enable IBUS protocol support on a USART RX pin
+//------------------------------------------------------------------------------
+#define RX_SILVERLITE_BAYANG_PROTOCOL   // Enable SilverLite SPI Transceiver RX implementation
+//#define RX_IBUS // Enable IBUS protocol support on a USART RX pin, double-check rx_ibus.cpp and define one of: FLYSKY_i6_MAPPING, TURNIGY_EVOLUTION_MAPPING
+
+//------------------------------------------------------------------------------
+// When using RX_SILVERLITE_BAYANG_PROTOCOL you must specify which transceiver
+// module you're using and whether or not you're using 3-wire SPI or 4-wire SPI.
+//
+// Note:  The software SPI pins used for interfacing with the module are defined 
+// in file: trx_spi_config.h
+//------------------------------------------------------------------------------
+#ifdef RX_SILVERLITE_BAYANG_PROTOCOL
+
+// Define only one of the TRX_??? values below
+//#define TRX_NRF
+//#define TRX_XN297
+#define TRX_XN297L
+//#define TRX_LT8900
+
+// Define TRX_SPI_3WIRE if using 3-wire SPI, otherwise comment it out
+#define TRX_SPI_3WIRE
+
+#if defined(TRX_XN297L) && !defined(TRX_SPI_3WIRE)
+    #warning "TRX_XN297L was defined but TRX_SPI_3WIRE wasn't, are you sure about that"
+#endif
+
+#endif  // #ifdef RX_SILVERLITE_BAYANG_PROTOCOL
+
 
 //------------------------------------------------------------------------------
 // Rates
