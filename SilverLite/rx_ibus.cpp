@@ -140,13 +140,13 @@ static uint32_t lastRXTime;
 // or we will lose bytes
 #if defined(STM32F405xx)    // OMNIBUSF4
 static UartBufDev< PinA<9>, PinA<10>, 16 > uart;    // USART1
-//static UartDev< PinA<9>, PinA<10> > uart;         // USART1
 #elif defined(STM32F411xE)  // NOX
+    //#define __NOX_UART2__
     #ifdef __NOX_UART2__
-    static UartBufDev< PinB<2>, PinB<3>, 16 > uart;     // USART2
+    static UartBufDev< PinA<2>, PinA<3>, 16 > uart;     // USART2 (SBUS pad on NOX board)
     static Pin<'C', 14>		INVERTER_PIN;	            // PC14
     #else
-    static UartBufDev< PinB<6>, PinB<7>, 16 > uart;     // USART1
+    static UartBufDev< PinB<6>, PinB<7>, 16 > uart;     // USART1 (R1 on center of board, backside. T1 on top/right center of board, topside)
     #endif
 #endif
 
