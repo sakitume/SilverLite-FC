@@ -1,0 +1,103 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "clean TARGET=OMNIBUSF4",
+            "type": "shell",
+            "command": "make TARGET=OMNIBUSF4 clean",
+            "windows": {
+                "command": "mingw32-make TARGET=OMNIBUSF4 clean",
+            },
+            "options": {
+                "cwd": "${workspaceRoot}"
+            }, 
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "make TARGET=OMNIBUSF4",
+            "type": "shell",
+            "command": "make -j8 TARGET=OMNIBUSF4",
+            "windows": {
+                "command": "mingw32-make -j12 TARGET=OMNIBUSF4",
+            },
+            "options": {
+                "cwd": "${workspaceRoot}"
+            }, 
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "make and flash TARGET=OMNIBUSF4",
+            "type": "shell",
+            "command": "make -j8 TARGET=OMNIBUSF4 flash",
+            "windows": {
+                "command": "mingw32-make -j12 TARGET=OMNIBUSF4 flash",
+            },
+            "options": {
+                "cwd": "${workspaceRoot}"
+            }, 
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "clean TARGET=NOX",
+            "type": "shell",
+            "command": "make TARGET=NOX clean",
+            "windows": {
+                "command": "mingw32-make TARGET=NOX clean",
+            },
+            "options": {
+                "cwd": "${workspaceRoot}"
+            }, 
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "make TARGET=NOX",
+            "type": "shell",
+            "command": "make -j12 TARGET=NOX",
+            "windows": {
+                "command": "mingw32-make -j12 TARGET=NOX",
+            },
+            "options": {
+                "cwd": "${workspaceRoot}"
+            }, 
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "make and flash TARGET=NOX",
+            "type": "shell",
+            "command": "make -j12 TARGET=NOX flash",
+            "windows": {
+                "command": "mingw32-make -j12 TARGET=NOX flash",
+            },
+            "options": {
+                "cwd": "${workspaceRoot}"
+            }, 
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+    ]
+}
