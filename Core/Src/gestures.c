@@ -19,9 +19,16 @@ extern char aux[ AUXNUMBER ];
 int rx_bind_enable;
 static int skip_accel_cal_on_save = 0;
 
+#ifdef PID_STICK_TUNING
+bool update_pid_tuning_display;
+#endif
+
 void gestures( void )
 {
 	if ( ! onground ) {
+#ifdef PID_STICK_TUNING
+		update_pid_tuning_display = false;
+#endif
 		return;
 	}
 
@@ -120,6 +127,7 @@ void gestures( void )
 	static unsigned long next_update_time = 0;
 	const unsigned long time = gettime();
 	if ( time > next_update_time ) {
+		update_pid_tuning_display = false;
 		bool is_stick_tuning_active = false;
 		extern float rx[ 4 ];
 		#define STICK_DEAD_ZONE 0.75f
@@ -133,10 +141,12 @@ void gestures( void )
 			set_current_pid_term( 2 ); // D
 			is_stick_tuning_active = true;
 		} else if ( rx[ 0 ] < -STICK_DEAD_ZONE && rx[ 1 ] < -STICK_DEAD_ZONE ) { // left + back
+			update_pid_tuning_display = true;
 			next_pid_axis();
 			next_update_time = time + 500000; // 0.5 seconds
 		}
 		if ( is_stick_tuning_active ) {
+			update_pid_tuning_display = true;
 			const float tuning_dead_band = 0.1f; // 10% deadband
 			if ( fabsf( rx[ 2 ] ) > tuning_dead_band ) { //
 				const float multiplier = 1.01f; // 1% change per update
