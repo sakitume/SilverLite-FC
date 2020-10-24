@@ -21,6 +21,12 @@ extern "C" {
     extern float apidkp[];
     extern float apidkd[];
 
+#ifdef PID_STICK_TUNING
+    extern int current_pid_axis;
+    extern int current_pid_term;
+    extern bool update_pid_tuning_display;
+#endif
+
     extern uint32_t gettime();
     extern const char *tprintf(const char* fmt, ...);
 }
@@ -81,11 +87,14 @@ static void update_osd()
     // RSSI (packets per second), on upper right
     const char *s = tprintf("\x01%3d", packetpersecond);
     osd_print(row, 30 - strlen(s) - 1, s);
+
+#if 0 
+    // Max loop time and osd time
     s = tprintf("%3d", _max_loop_time);
     osd_print(row+1, 24, s);
     s = tprintf("%3d", osd_time);
     osd_print(row+2, 24, s);
-
+#endif
 
     // Battery voltage on lower left
     uint8_t maxRows = osd_get_max_rows();
@@ -101,16 +110,89 @@ static void update_osd()
     s = tprintf("\x9C%d:%02d", minutes, flyTimeSec%60);
     osd_print(row, 30 - strlen(s) - 1, s);
 
-    s = "LOW BATTERY";
+    s = "LOW BATTERY";      // length is 11
     const int sLen = 11;    // strlen(s);
+    row = maxRows/4*3;
+    static bool hadLowBattery;
     if (lowbatt)
     {
-        osd_print(maxRows/4*3, (30 - sLen) / 2, s);
+        hadLowBattery = true;
+        osd_print(row, (30 - sLen) / 2, s);
     }
-    else
+    else if (hadLowBattery)
     {
-        osd_erase(maxRows/4*3, (30 - sLen) / 2, sLen);
+        hadLowBattery = false;
+        osd_erase(row, (30 - sLen) / 2, sLen);
     }
+
+#ifdef PID_STICK_TUNING
+    row = 3;
+    static uint32_t stick_tuning_active_last;
+    if (update_pid_tuning_display)
+    {
+        stick_tuning_active_last = gettime();
+    }
+    else if (stick_tuning_active_last)
+    {
+        // Wait 1/2 second before erasing
+        if ((gettime() - stick_tuning_active_last) > (1000 * 500))
+        {
+            stick_tuning_active_last = 0;
+            int x = (30 - 7) / 2;
+            osd_erase(row, x, 5);
+            osd_erase(row+1, x, 7);
+            osd_erase(row+2, x, 10);
+        }
+    }
+
+    // If stick tuning active within the past 1/2 second
+    if (stick_tuning_active_last)
+    {
+        float term;
+        switch (current_pid_term)
+        {
+            case 0: 
+                s = "P";
+                term = pidkp[current_pid_axis];
+                break;
+            case 1: 
+                s = "I";    
+                term = pidki[current_pid_axis];
+                break;
+            case 2: 
+                s = "D";    
+                term = pidkd[current_pid_axis];
+                break;
+            default: 
+                s = "?";   
+                break;
+        }
+        int value = (int)(term * 1000 + 0.5f);
+
+        int x = (30 - 7) / 2;
+        const char *temp = tprintf("%01d.%03d", value / 1000, value % 1000);    // length will be 5
+        osd_print(row, x, temp);
+
+        temp = tprintf("TERM: %s",s);   // length will be 7
+        osd_print(row+1, x, temp);
+
+        switch (current_pid_axis)
+        {
+#ifdef COMBINE_PITCH_ROLL_PID_TUNING
+            case 0:
+            case 1: s = "ROLL+PITCH";   break;  // length is 10
+#else
+            case 0: s = "ROLL";     break;
+            case 1: s = "PITCH";    break;
+#endif            
+            case 2: s = "YAW";      break;
+            default: s = "?";       break;
+        }
+        temp = tprintf("%10s", s);
+        osd_print(row+2, x, temp);
+    }
+#endif
+
     osd_refresh();
 }
 
