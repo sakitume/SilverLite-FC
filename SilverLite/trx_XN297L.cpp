@@ -146,13 +146,21 @@ void trx_SendTelemetryPacket(int data[], int size)
 //------------------------------------------------------------------------------
 uint8_t trx_PacketAvailable()
 {
-	int status = xn_readreg( 7 );
-#if 1
+	int status = xn_readreg( STATUS );
+
+#if 0
+    // SilF4ware enables this code path but NFE Silverware says this doesn't 
+    // method doesn't work well. I've tested on an H8Mini built with PAN163CX
+    // (which uses an internal XN297L) and can confirm this method didn't work
+    // well with that device. It believes the packet is available and then
+    // tries to read the packet and finds it is full of zeroes.
+
     if ( status & ( 1 << RX_DR ) ) { // RX packet received
         xn_writereg( STATUS, 1 << RX_DR ); // rx clear bit
         return 1;
     }
 #else
+    // As described in my comment above, this test works best
     if ( ( status & B00001110 ) != B00001110 ) { // rx fifo not empty
         return 2;
     }
