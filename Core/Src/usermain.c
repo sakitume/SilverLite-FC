@@ -43,10 +43,12 @@ void usermain()
 	sixaxis_init();
 	adc_init(); // DMA takes about 1 us once installed. Must be done early, adc is used in battery_init().
 	flash_calculate_pid_c_identifier(); // Must be called before flash_load().
-	flash_load(); // Must be called before rx_init() for autobind to work.
 #ifdef USE_SILVERLITE
-	silverlite_init();
+	// silverlite_init() must be called before flash_load() so PIDs defined by _my_config.h can 
+	// be initialized into pidkp[], pidki[], pidkd[] and be checked against by flash_load
+	silverlite_init();	
 #endif
+	flash_load(); // Must be called before rx_init() for autobind to work.
 	rx_init();
 	battery_init(); // Must be called before gyro_cal() to send initial battery voltage there.
 	gyro_cal();
