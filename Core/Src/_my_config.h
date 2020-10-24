@@ -37,7 +37,11 @@
 #define TRX_SPI_3WIRE
 
 #if defined(TRX_XN297L) && !defined(TRX_SPI_3WIRE)
-    #warning "TRX_XN297L was defined but TRX_SPI_3WIRE wasn't, are you sure about that"
+    #error "TRX_XN297L was defined but TRX_SPI_3WIRE wasn't, are you sure about that"
+#endif
+
+#if defined(TRX_NRF) && defined(TRX_SPI_3WIRE)
+    #error "TRX_NRF was defined but so was TRX_SPI_3WIRE, are you sure about that"
 #endif
 
 #endif  // #ifdef RX_SILVERLITE_BAYANG_PROTOCOL
