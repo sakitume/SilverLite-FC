@@ -21,6 +21,7 @@ static int skip_accel_cal_on_save = 0;
 
 #ifdef PID_STICK_TUNING
 bool update_pid_tuning_display;
+uint32_t update_flash_saved_display;
 #endif
 
 void gestures( void )
@@ -47,6 +48,11 @@ void gestures( void )
 			}
 			flash_save();
 			flash_load();
+
+#ifdef PID_STICK_TUNING
+			update_flash_saved_display = gettime();
+#endif		
+
 #ifdef PID_GESTURE_TUNING
 			// reset flash numbers
 			extern int number_of_increments[ 3 ][ 3 ];

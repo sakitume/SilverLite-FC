@@ -25,6 +25,7 @@ extern "C" {
     extern int current_pid_axis;
     extern int current_pid_term;
     extern bool update_pid_tuning_display;
+    extern uint32_t update_flash_saved_display;
 #endif
 
     extern uint32_t gettime();
@@ -110,19 +111,17 @@ static void update_osd()
     s = tprintf("\x9C%d:%02d", minutes, flyTimeSec%60);
     osd_print(row, 30 - strlen(s) - 1, s);
 
-    s = "LOW BATTERY";      // length is 11
-    const int sLen = 11;    // strlen(s);
-    row = maxRows/4*3;
+    static const int kBatteryRow = maxRows/4*3;
     static bool hadLowBattery;
     if (lowbatt)
     {
         hadLowBattery = true;
-        osd_print(row, (30 - sLen) / 2, s);
+        osd_print(kBatteryRow, (30 - 11) / 2, "LOW BATTERY");
     }
     else if (hadLowBattery)
     {
         hadLowBattery = false;
-        osd_erase(row, (30 - sLen) / 2, sLen);
+        osd_erase(kBatteryRow, (30 - 11) / 2, 11);
     }
 
 #ifdef PID_STICK_TUNING
@@ -190,6 +189,20 @@ static void update_osd()
         }
         temp = tprintf("%10s", s);
         osd_print(row+2, x, temp);
+    }
+
+    if (update_flash_saved_display)
+    {
+        row = 6;
+        if ((gettime() - update_flash_saved_display) >= (2 * 1000000))
+        {
+            update_flash_saved_display = 0;
+            osd_erase(row, (30-7)/2, 10);
+        }
+        else
+        {
+            osd_print(row, (30-7)/2, "FLASHED");
+        }
     }
 #endif
 
