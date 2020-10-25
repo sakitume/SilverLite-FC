@@ -28,9 +28,9 @@
 #ifdef RX_SILVERLITE_BAYANG_PROTOCOL
 
 // Define only one of the TRX_??? values below
-//#define TRX_NRF
+#define TRX_NRF
 //#define TRX_XN297
-#define TRX_XN297L
+//#define TRX_XN297L
 //#define TRX_LT8900
 
 // Define TRX_SPI_3WIRE if using 3-wire SPI, otherwise comment it out
