@@ -34,7 +34,17 @@
 //#define TRX_LT8900
 
 // Define TRX_SPI_3WIRE if using 3-wire SPI, otherwise comment it out
-#define TRX_SPI_3WIRE
+//#define TRX_SPI_3WIRE
+
+// NRF24L01 module uses 4-wire, not 3-wire SPI
+#if defined(TRX_NRF)
+    #undef TRX_SPI_3WIRE
+#endif
+
+// XN297L module uses 3-wire SPI
+#if defined(TRX_XN297L)
+    #define TRX_SPI_3WIRE
+#endif
 
 #if defined(TRX_XN297L) && !defined(TRX_SPI_3WIRE)
     #error "TRX_XN297L was defined but TRX_SPI_3WIRE wasn't, are you sure about that"
