@@ -148,6 +148,8 @@ static UartBufDev< PinA<9>, PinA<10>, 16 > uart;    // USART1
     #else
     static UartBufDev< PinB<6>, PinB<7>, 16 > uart;     // USART1 (R1 on center of board, backside. T1 on top/right center of board, topside)
     #endif
+#elif defined(MATEKF411RX)
+static UartBufDev< PinA<9>, PinA<10>, 16 > uart;        // USART1
 #else
     #error "Pin assignements must be defined for this target"
 #endif
