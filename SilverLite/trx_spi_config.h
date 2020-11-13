@@ -62,8 +62,8 @@ static Pin<'A', 9>		SPI_MOSI;	    // PA9
 #if defined(TRX_SPI_3WIRE) && defined(NOX)
 //------------------------------------------------------------------------------
 // 3-wire SPI pin configuration for NOX target
-static Pin<'A', 2>		TRX_CS_PIN;	    // PA2		TX2
-static Pin<'A', 0>		SPI_SCK;	    // PA0		LED_STRIP
+static Pin<'A', 0>		TRX_CS_PIN;	    // PA0		LED_STRIP
+static Pin<'A', 2>		SPI_SCK;	    // PA2		TX2
 static Pin<'B', 10> 	SPI_DATA;	    // PB10		DSM/IBUS/PPM
 #endif
 
