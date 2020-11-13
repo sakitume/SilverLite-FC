@@ -255,7 +255,7 @@
     #define MOTOR_FL 1
     #define MOTOR_BR 4
     #define MOTOR_FR 3
-#elif defined(MATEXF411RX)
+#elif defined(MATEKF411RX)
     // TODO: This has yet to be determined
     #define MOTOR_BL 3
     #define MOTOR_FL 4
