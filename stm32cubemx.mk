@@ -7,8 +7,11 @@ SOURCES +=  \
 else ifeq ($(TARGET),NOX)
 SOURCES +=  \
 	startup_stm32f411xe.s
+else ifeq ($(TARGET),MATEKF411RX)
+SOURCES +=  \
+	startup_stm32f411xe.s
 else
-	$(error TARGET must be either OMNIBUSF4 or NOX, it is: $(TARGET))
+	$(error TARGET must be either OMNIBUSF4, NOX or MATEKF411RX, it is: $(TARGET))
 endif
 
 SOURCES +=  \
@@ -40,8 +43,11 @@ DEFINES += \
 else ifeq ($(TARGET),NOX)
 DEFINES += \
 	STM32F411xE	
+else ifeq ($(TARGET),MATEKF411RX)
+DEFINES += \
+	STM32F411xE	
 else
-	$(error TARGET must be either OMNIBUSF4 or NOX, it is: $(TARGET))
+	$(error TARGET must be either OMNIBUSF4, NOX or MATEKF411RX, it is: $(TARGET))
 endif
 
 #-------------------------------------------------------------------------------
@@ -60,6 +66,8 @@ ifeq ($(TARGET),OMNIBUSF4)
 LDSCRIPT = STM32F405RGTx_FLASH.ld
 else ifeq ($(TARGET),NOX)
 LDSCRIPT = STM32F411CEUx_FLASH.ld
+else ifeq ($(TARGET),MATEKF411RX)
+LDSCRIPT = STM32F411CEUx_FLASH.ld
 else
-	$(error TARGET must be either OMNIBUSF4 or NOX, it is: $(TARGET))
+	$(error TARGET must be either OMNIBUSF4, NOX or MATEKF411RX, it is: $(TARGET))
 endif
