@@ -138,9 +138,9 @@ static uint32_t lastRXTime;
 //------------------------------------------------------------------------------
 // Need an interrupt driven receiver with a buffer of at least 8 bytes
 // or we will lose bytes
-#if defined(STM32F405xx)    // OMNIBUSF4
+#if defined(OMNIBUSF4)
 static UartBufDev< PinA<9>, PinA<10>, 16 > uart;    // USART1
-#elif defined(STM32F411xE)  // NOX
+#elif defined(NOX)  // NOX
     //#define __NOX_UART2__
     #ifdef __NOX_UART2__
     static UartBufDev< PinA<2>, PinA<3>, 16 > uart;     // USART2 (SBUS pad on NOX board)
@@ -148,6 +148,8 @@ static UartBufDev< PinA<9>, PinA<10>, 16 > uart;    // USART1
     #else
     static UartBufDev< PinB<6>, PinB<7>, 16 > uart;     // USART1 (R1 on center of board, backside. T1 on top/right center of board, topside)
     #endif
+#else
+    #error "Pin assignements must be defined for this target"
 #endif
 
 //------------------------------------------------------------------------------
