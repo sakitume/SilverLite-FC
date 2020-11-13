@@ -65,3 +65,87 @@ On back (bottom) side of board are:
 This information is important if you want to change which pads to use to interface
 to your transceiver board (NRF24L01, XN297, XN297L or LT8900). More information can be found
 in the [Configuration](Configuration.md) section.
+
+
+# Adding support for new targets
+
+This section will contain my notes on what is required to add support for new targets.
+
+The project folder structure contains a `Targets` folder that in turn contains subfolders for each of the
+targets (such as `NOX`, `OMNIBUSF4`). In turn these folders contain two subfolders containing source code
+for the processors and peripherals associated with the target boards, and also a `.ioc` file
+
+* Core - STM32CubeMX generated source files
+* Drivers - Various STM32 source files
+* `????.ioc` - This is an STM32CubeMX project file used to configure the generated source code
+
+I want to add support for the Mobula6 flight controller which is the "HappyModel Crazybee F4 Lite 1S" board.
+In Betaflight it is known as the `MATEKF411RX` target. So I would create a new folder with that name within
+our `Targets` folder. 
+
+Using STM32CubeMX you'll want to configure the various pins and perhipherals of the STM32 chip.
+
+
+Required by Silverware:
+
+* SPI interface for the MPU (4-wire soft spi implementation)
+    * SPI_MPU_SS - PA4 (GPIO output)
+    * SPI2_CLK  - PA5 (GPIO output)
+    * SPI2_MISO - PA6 (GPIO input)
+    * SPI2_MOSI - PA7 (GPIO output)
+* SPI interface for the OSD
+    * This is actually configured by editing `drv_sd_spi.config.h` rather than via Stm32CubeMX
+* SWD pins (SWDIO, SWCLK) - If available
+    * SWD is not available on `MATEKF411RX`, in fact PA14 and/or PA13 are used for other purposes
+* ESC1 (GPIO output)
+* ESC2 (GPIO output)
+* ESC3 (GPIO output)
+* ESC4 (GPIO output)
+
+* VOLTAGE_DIVIDER - PB0 (ADC input)
+* LED - PC13 (GPIO output)
+
+
+Additional/Available on this FC board
+* CURRENT_METER_ADC_PIN - PB1 (ADC)
+
+
+RX SPI (FlySky A7105)
+* SPI3_SCK_PIN  - PB3 (GPIO output)
+* SPI3_MISO_PIN - PB4 (GPIO input)
+* SPI3_MOSI_PIN - PB5 (GPIO output)
+* RX_NSS_PIN    - PA15 (GPIO output)
+* RX_SPI_EXTI_PIN - PA14 (GPIO External interrupt mode), should it be Rising, Falling, or both Rising/Falling edge detection?
+* RX_SPI_LED_PIN - PB9 (GPIO output)
+* RX_SPI_BIND_PIN - PB2 (GPIO input), Should we enable pull up or pull down?
+
+
+RX SPI (normally used for NRF2401 or XN297 but we'll use it for the A7105)
+
+* SPI_CLK[SPI1_SCK] - PB3
+* SPI_MISO [SPI1_MISO] - PB4
+* SPI_MOSI [SPI1_MOSI] - PB5
+
+
+## STM32 resources
+SystemClock
+ADC1                - Battery voltage
+TIM1
+    NOX
+        TIM1_UP:    DMA2, Stream 5, NVIC global interrupt enabled
+        TIM1_CH:    DMA2, Stream 1, NVIC global interrupt enabled
+        TIM1_CH2:   DMA2, Stream 2, NVIC global interrupt enabled
+    OMNIBUSF4
+        TIM1_UP:    DMA2, Stream 5, NVIC global interrupt enabled
+        TIM1_CH:    DMA2, Stream 1, NVIC global interrupt enabled
+        TIM1_CH2:   DMA2, Stream 2, NVIC global interrupt enabled
+
+TIM2 for gettime()
+
+Blackbox
+    NOX:        USART2, 2MB, 8N1  
+        USART2_TX: DMA1, Stream 6
+    OMNIBUSF4:  UART4, 2MB, 8N1
+        UART4_TX: DMA1, Stream 4
+
+DSHOT (drv_dshot_bdir and drv_dshot_dma) uses TIM1, DMA2

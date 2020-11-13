@@ -125,11 +125,11 @@
 //
 #undef RPM_FILTER
 #undef LOOPTIME
-#if defined(NOX)
-    // Note: The F411 processor on the NOX target runs typically at 209us when RPM_FILTER
-    // is enabled. An OSD update and takes around 71us to 81us which causes us to exceed 
-    // the 250 looptime; since this only happens 10 out of every 4000 times I'm
-    // more than fine with that. 
+#if defined(NOX) || defined(MATEKF411RX)
+    // Note: The F411 processor on the NOX and MATEKF411RX targets executes the
+    // main loop at around 209us when RPM_FILTER is enabled. An OSD update 
+    // takes around 71us to 81us which would cause us to exceed the 250 looptime;
+    // since this only happens 10 out of every 4000 times I'm more than fine with that. 
     #define RPM_FILTER
     #define LOOPTIME    250     
 #elif defined(OMNIBUSF4)
@@ -231,10 +231,15 @@
 #undef SENSOR_INVERT 
 
 #if defined(NOX)
-    // Play F4 board is oriented this way
+    // You would rotate the Play F4 board 90 degrees clockwise so that the
+    // pin 1 dot on the MPU chip would orient correctly and be on the upper
+    // left corner
     #define SENSOR_ROTATE_90_CW
 #elif defined(OMNIBUSF4)
     #define SENSOR_ROTATE_90_CCW
+#elif defined(MATEKF411RX)
+    // MPU on HappyModel Crazybee F4 Lite 1S is already correctly oriented
+    // so no adjustments necessary
 #endif
 
 //------------------------------------------------------------------------------
@@ -250,6 +255,12 @@
     #define MOTOR_FL 1
     #define MOTOR_BR 4
     #define MOTOR_FR 3
+#elif defined(MATEXF411RX)
+    // TODO: This has yet to be determined
+    #define MOTOR_BL 3
+    #define MOTOR_FL 4
+    #define MOTOR_BR 1
+    #define MOTOR_FR 2
 #else
     #error "Unsupported flight controller target. Define your motor order here"
 #endif

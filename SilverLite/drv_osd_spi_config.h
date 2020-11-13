@@ -20,5 +20,17 @@ static Pin<'A', 10>		OSD_CS_Pin;	// A10
 static Pin<'B', 13>		SPI_SCK;	// B13
 static Pin<'B', 14>		SPI_MISO;	// B14
 static Pin<'B', 15>		SPI_MOSI;	// B15
+
+#elif defined(MATEKF411RX)
+//------------------------------------------------------------------------------
+// MATEKF411RX connects to the MAX7456 via SPI using the following pins
+//
+static Pin<'B', 12>		OSD_CS_Pin;	// B12
+static Pin<'B', 13>		SPI_SCK;	// B13
+static Pin<'B', 14>		SPI_MISO;	// B14
+static Pin<'B', 15>		SPI_MOSI;	// B15
+
+#else
+    #error "Unknown hardware, cannot support OSD"
 #endif
 
