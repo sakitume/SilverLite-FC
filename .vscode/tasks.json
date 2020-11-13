@@ -99,5 +99,53 @@
             },
             "problemMatcher": []
         },
-    ]
+        {
+            "label": "clean TARGET=MATEKF411RX",
+            "type": "shell",
+            "command": "make TARGET=MATEKF411RX clean",
+            "windows": {
+                "command": "mingw32-make TARGET=MATEKF411RX clean",
+            },
+            "options": {
+                "cwd": "${workspaceRoot}"
+            }, 
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "make TARGET=MATEKF411RX",
+            "type": "shell",
+            "command": "make -j12 TARGET=MATEKF411RX",
+            "windows": {
+                "command": "mingw32-make -j12 TARGET=MATEKF411RX",
+            },
+            "options": {
+                "cwd": "${workspaceRoot}"
+            }, 
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "make and flash TARGET=MATEKF411RX",
+            "type": "shell",
+            "command": "make -j12 TARGET=MATEKF411RX flash",
+            "windows": {
+                "command": "mingw32-make -j12 TARGET=MATEKF411RX flash",
+            },
+            "options": {
+                "cwd": "${workspaceRoot}"
+            }, 
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+   ]
 }
