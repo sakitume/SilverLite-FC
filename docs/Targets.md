@@ -97,10 +97,10 @@ Required by Silverware:
     * This is actually configured by editing `drv_sd_spi.config.h` rather than via Stm32CubeMX
 * SWD pins (SWDIO, SWCLK) - If available
     * SWD is not available on `MATEKF411RX`, in fact PA14 and/or PA13 are used for other purposes
-* ESC1 (GPIO output)
-* ESC2 (GPIO output)
-* ESC3 (GPIO output)
-* ESC4 (GPIO output)
+* ESC1 - PB10 (GPIO output)
+* ESC2 - PB6 (GPIO output)
+* ESC3 - PB7 (GPIO output)
+* ESC4 - PB8 (GPIO output)
 
 * VOLTAGE_DIVIDER - PB0 (ADC input)
 * LED - PC13 (GPIO output)
@@ -115,16 +115,33 @@ RX SPI (FlySky A7105)
 * SPI3_MISO_PIN - PB4 (GPIO input)
 * SPI3_MOSI_PIN - PB5 (GPIO output)
 * RX_NSS_PIN    - PA15 (GPIO output)
-* RX_SPI_EXTI_PIN - PA14 (GPIO External interrupt mode), should it be Rising, Falling, or both Rising/Falling edge detection?
+* RX_SPI_EXTI_PIN - PA14 (GPIO External interrupt mode)
+    * Examining `A7105Init()` in Betaflight source code reveals it is configured for `EXTI_TRIGGER_RISING`
 * RX_SPI_LED_PIN - PB9 (GPIO output)
 * RX_SPI_BIND_PIN - PB2 (GPIO input), Should we enable pull up or pull down?
 
 
-RX SPI (normally used for NRF2401 or XN297 but we'll use it for the A7105)
+Note: For ESC pinouts look inside Betaflight for the corresponding `target.c` and you'll see a table like this:
+```
+const timerHardware_t timerHardware[USABLE_TIMER_CHANNEL_COUNT] = {
+    DEF_TIM(TIM9, CH2, PA3,  TIM_USE_PPM,   0, 0), // PPM/RX2
 
-* SPI_CLK[SPI1_SCK] - PB3
-* SPI_MISO [SPI1_MISO] - PB4
-* SPI_MOSI [SPI1_MOSI] - PB5
+    DEF_TIM(TIM2, CH3, PB10, TIM_USE_MOTOR, 0, 0), // S1_OUT - DMA1_ST1
+    DEF_TIM(TIM4, CH1, PB6,  TIM_USE_MOTOR, 0, 0), // S2_OUT - DMA1_ST0
+    DEF_TIM(TIM4, CH2, PB7,  TIM_USE_MOTOR, 0, 0), // S3_OUT - DMA1_ST3
+    DEF_TIM(TIM4, CH3, PB8,  TIM_USE_MOTOR, 0, 0), // S4_OUT - DMA1_ST7
+
+    DEF_TIM(TIM5, CH1, PA0,  TIM_USE_LED,   0, 0), // 2812LED - DMA1_ST2
+
+    DEF_TIM(TIM9, CH1, PA2,  TIM_USE_PWM,   0, 0 ), // TX2
+    DEF_TIM(TIM1, CH2, PA9,  TIM_USE_PWM,   0, 0 ), // TX1
+    DEF_TIM(TIM1, CH3, PA10, TIM_USE_PWM,   0, 0 ), // RX1
+};
+```
+
+This describes the timer peripherals used on the STM32 and you'll notice that
+4 entries are tagged with `TIM_USE_MOTOR`; these are the ESC pins in order
+from ESC1 thru ESC4.
 
 
 ## STM32 resources

@@ -62,8 +62,6 @@ void Error_Handler(void);
 #define LED_GPIO_Port GPIOC
 #define BEEPER_PIN_Pin GPIO_PIN_15
 #define BEEPER_PIN_GPIO_Port GPIOC
-#define ESC1_Pin GPIO_PIN_1
-#define ESC1_GPIO_Port GPIOA
 #define SPI_MPU_SS_Pin GPIO_PIN_4
 #define SPI_MPU_SS_GPIO_Port GPIOA
 #define SPI2_CLK_Pin GPIO_PIN_5
@@ -78,8 +76,8 @@ void Error_Handler(void);
 #define CURRENT_METER_ADC_PIN_GPIO_Port GPIOB
 #define RX_SPI_BIND_PIN_Pin GPIO_PIN_2
 #define RX_SPI_BIND_PIN_GPIO_Port GPIOB
-#define PB10_Pin GPIO_PIN_10
-#define PB10_GPIO_Port GPIOB
+#define ESC1_Pin GPIO_PIN_10
+#define ESC1_GPIO_Port GPIOB
 #define RX_SPI_EXTI_PIN_Pin GPIO_PIN_14
 #define RX_SPI_EXTI_PIN_GPIO_Port GPIOA
 #define RX_NSS_PIN_Pin GPIO_PIN_15
@@ -90,8 +88,12 @@ void Error_Handler(void);
 #define SPI3_MISO_PIN_GPIO_Port GPIOB
 #define SPI3_MOSI_PIN_Pin GPIO_PIN_5
 #define SPI3_MOSI_PIN_GPIO_Port GPIOB
-#define ESC3_Pin GPIO_PIN_8
+#define ESC2_Pin GPIO_PIN_6
+#define ESC2_GPIO_Port GPIOB
+#define ESC3_Pin GPIO_PIN_7
 #define ESC3_GPIO_Port GPIOB
+#define ESC4_Pin GPIO_PIN_8
+#define ESC4_GPIO_Port GPIOB
 #define RX_SPI_LED_PIN_Pin GPIO_PIN_9
 #define RX_SPI_LED_PIN_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
