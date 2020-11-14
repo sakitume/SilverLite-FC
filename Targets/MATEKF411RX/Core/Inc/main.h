@@ -80,6 +80,7 @@ void Error_Handler(void);
 #define ESC1_GPIO_Port GPIOB
 #define RX_SPI_EXTI_PIN_Pin GPIO_PIN_14
 #define RX_SPI_EXTI_PIN_GPIO_Port GPIOA
+#define RX_SPI_EXTI_PIN_EXTI_IRQn EXTI15_10_IRQn
 #define RX_NSS_PIN_Pin GPIO_PIN_15
 #define RX_NSS_PIN_GPIO_Port GPIOA
 #define SPI3_SCK_PIN_Pin GPIO_PIN_3
