@@ -12,8 +12,12 @@ UsbDev console;
 extern "C" {
     extern const char *tprintf(const char* fmt, ...);
     extern void jump_to_bootloader( void );
+
+#if defined(RX_FLYSKY)
+    extern void rxSpiBind(void);
+    extern void A7105Shutdown();
+#endif    
 }
-extern uint32_t micros();
 
 //------------------------------------------------------------------------------
 void console_poll(void)
@@ -28,7 +32,17 @@ void console_poll(void)
         int ch = console.getc();
         if (ch == 'r')
         {
+#if defined(RX_FLYSKY)
+            // Disable interrupts used by A7105 code
+            A7105Shutdown();
+#endif
             jump_to_bootloader();
+        }
+        else if (ch == 'b')
+        {
+#if defined(RX_FLYSKY)
+            rxSpiBind();
+#endif    
         }
         console.putc(ch);
     }

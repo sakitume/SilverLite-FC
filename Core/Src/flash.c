@@ -3,6 +3,10 @@
 #include "config.h"
 #include "drv_fmc.h"
 
+#if defined(RX_FLYSKY)
+	#include "rx_afhds2a/afhds2a.h"	// For flySkyConfig_t
+#endif
+
 extern float accelcal[]; // sixaxis.c
 extern float * pids_array[ 3 ]; // pid.c
 
@@ -54,7 +58,7 @@ void flash_save( void )
 	fmc_write_float( addresscount++, accelcal[ 1 ] );
 	fmc_write_float( addresscount++, accelcal[ 2 ] );
 
-#if ( defined RX_BAYANG_PROTOCOL_TELEMETRY || defined RX_NRF24_BAYANG_TELEMETRY || defined USE_SILVERLITE)
+#if ( defined RX_BAYANG_PROTOCOL_TELEMETRY || defined RX_NRF24_BAYANG_TELEMETRY || defined RX_SILVERLITE_BAYANG_PROTOCOL)
 
 	if ( rx_bind_enable ) {
 		fmc_write( 50, rxaddress[ 4 ] | ( telemetry_enabled << 8 ) );
@@ -64,6 +68,21 @@ void flash_save( void )
 		// this will leave 0xFF's so it will be picked up as disabled
 	}
 
+#endif
+
+#if defined(RX_FLYSKY)
+	const flySkyConfig_t* config = flySkyConfig();
+	if (config->txId)
+	{
+		fmc_write(addresscount++, config->txId);
+
+		uint32_t* data = (uint32_t*)(config->rfChannelMap);
+		int numValues = (sizeof(config->rfChannelMap)+3) / 4;
+		while (numValues--)
+		{
+			fmc_write(addresscount++, *data++);
+		}
+	}
 #endif
 
 	fmc_write( 4095, FMC_HEADER );
@@ -98,7 +117,7 @@ void flash_load( void )
 		accelcal[ 1 ] = fmc_read_float( addresscount++ );
 		accelcal[ 2 ] = fmc_read_float( addresscount++ );
 
-#if ( defined RX_BAYANG_PROTOCOL_TELEMETRY || defined RX_NRF24_BAYANG_TELEMETRY || defined USE_SILVERLITE)
+#if ( defined RX_BAYANG_PROTOCOL_TELEMETRY || defined RX_NRF24_BAYANG_TELEMETRY || defined RX_SILVERLITE_BAYANG_PROTOCOL)
 
 		int temp = fmc_read( 52 );
 		int error = 0;
@@ -125,6 +144,22 @@ void flash_load( void )
 			}
 		}
 
+#endif
+
+#if defined(RX_FLYSKY)
+		uint32_t txId = fmc_read(addresscount++);
+		if ((txId != 0) && (txId != (uint32_t)-1))
+		{
+			flySkyConfig_t* config = flySkyConfigMutable();
+			config->txId = txId;
+
+			uint32_t* data = (uint32_t*)(config->rfChannelMap);
+			int numValues = (sizeof(config->rfChannelMap)+3) / 4;
+			while (numValues--)
+			{
+				*data++ = fmc_read(addresscount++);
+			}
+		}
 #endif
 
 		if ( pid_c_identifier == -10.0f ) {

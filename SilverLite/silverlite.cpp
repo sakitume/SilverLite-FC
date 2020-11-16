@@ -292,6 +292,17 @@ bool silverlite_postupdate(uint32_t max_used_loop_time)
         console_closePacket(0x02);
 #endif
 
+#if defined(RX_FLYSKY)    
+        console_openPacket();
+        console_appendPacket16(max_used_loop_time);
+        console_appendPacket16(osd_time);
+        console_appendPacket16(packetpersecond);
+        console_appendPacket16(pkt_hits);
+        console_appendPacket16(b_crc_errors);
+        console_closePacket(0x02);
+#endif
+
+
         max_used_loop_time = 0;
         secondTimer=  gettime();
         osd_time = secondTimer - now;

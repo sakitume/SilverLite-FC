@@ -16,7 +16,8 @@
 // Enable only one of the following defines
 //------------------------------------------------------------------------------
 //#define RX_SILVERLITE_BAYANG_PROTOCOL   // Enable SilverLite SPI Transceiver RX implementation
-#define RX_IBUS // Enable IBUS protocol support on a USART RX pin, double-check rx_ibus.cpp and define one of: FLYSKY_i6_MAPPING, TURNIGY_EVOLUTION_MAPPING
+//#define RX_IBUS // Enable IBUS protocol support on a USART RX pin, double-check rx_ibus.cpp and define one of: FLYSKY_i6_MAPPING, TURNIGY_EVOLUTION_MAPPING
+#define RX_FLYSKY   // Enable FlySky SPI transceiver implementation
 
 //------------------------------------------------------------------------------
 // When using RX_SILVERLITE_BAYANG_PROTOCOL you must specify which transceiver

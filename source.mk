@@ -10,6 +10,8 @@ SOURCES =  \
 	$(wildcard Core/Src/*.c) \
 	$(wildcard SilverLite/*.c) \
 	$(wildcard SilverLite/*.cpp) \
+	$(wildcard SilverLite/rx_afhds2a/*.c) \
+	$(wildcard SilverLite/rx_afhds2a/*.cpp) \
 
 #-------------------------------------------------------------------------------
 # Include directories
