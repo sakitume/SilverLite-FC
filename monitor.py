@@ -109,6 +109,10 @@ def checkForInput(ser):
         if ser:
             print 'Sending reset command'
             ser.write(ch)
+    elif ch == 'b':
+        if ser:
+            print 'Sending bind command'
+            ser.write(ch)
 
 def main():
     signal(SIGINT, handler)
