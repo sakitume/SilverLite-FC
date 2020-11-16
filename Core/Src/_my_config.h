@@ -126,11 +126,14 @@
 //
 #undef RPM_FILTER
 #undef LOOPTIME
-#if defined(NOX) || defined(MATEKF411RX)
+#if defined(NOX)
     // Note: The F411 processor on the NOX and MATEKF411RX targets executes the
     // main loop at around 209us when RPM_FILTER is enabled. An OSD update 
     // takes around 71us to 81us which would cause us to exceed the 250 looptime;
     // since this only happens 10 out of every 4000 times I'm more than fine with that. 
+    #define RPM_FILTER
+    #define LOOPTIME    250     
+#elif defined(MATEKF411RX)
     #define RPM_FILTER
     #define LOOPTIME    250     
 #elif defined(OMNIBUSF4)
