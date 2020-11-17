@@ -8,6 +8,10 @@
 #include "rx_afhds2a/afhds2a_defs.h"    // for FLYSKY_2A_PAYLOAD_SIZE
 #include "console.h"
 
+extern "C" {
+#include "util.h"
+}
+
 //------------------------------------------------------------------------------
 // Globals referenced by code outside of this module
 extern "C" {
@@ -212,6 +216,23 @@ void checkrx( void )
             rx[1] = AER_to_Neg1_to_Pos1(rcData[1]);   // Elevator / Pitch
             rx[2] = AER_to_Neg1_to_Pos1(rcData[3]);   // Rudder / Yaw
             rx[3] = T_to_0_to_1(rcData[2]);
+
+            // Apply expo
+#ifdef LEVELMODE
+            if (aux[ LEVELMODE ])
+            { 
+                if (ANGLE_EXPO_ROLL > 0.01) 	rx[0] = rcexpo(rx[0], ANGLE_EXPO_ROLL);
+                if (ANGLE_EXPO_PITCH > 0.01) 	rx[1] = rcexpo(rx[1], ANGLE_EXPO_PITCH);
+                if (ANGLE_EXPO_YAW > 0.01) 		rx[2] = rcexpo(rx[2], ANGLE_EXPO_YAW);
+            }
+            else
+#endif			
+            {
+                if (ACRO_EXPO_ROLL > 0.01) 	rx[0] = rcexpo(rx[0], ACRO_EXPO_ROLL);
+                if (ACRO_EXPO_PITCH > 0.01)	rx[1] = rcexpo(rx[1], ACRO_EXPO_PITCH);
+                if (ACRO_EXPO_YAW > 0.01) 	rx[2] = rcexpo(rx[2], ACRO_EXPO_YAW);
+            }
+
 
             // Aux channels
             const int kNumMapped = sizeof(aux_map) / sizeof(aux_map[0]);
