@@ -34,14 +34,10 @@
 #include "afhds2a.h"
 #include "rx_a7105.h"
 
-//MDMFIX -----------------------------------------------------------------------
-
+//------------------------------------------------------------------------------
+// Some scaffolding to keep this source file as close to the original as possible
+//------------------------------------------------------------------------------
 #include "afhds2a_support.h"
-//#define RX_SPI_EXTI_PIN_Pin GPIO_PIN_14
-//#define RX_SPI_EXTI_PIN_GPIO_Port GPIOA
-//#define RX_SPI_EXTI_PIN_EXTI_IRQn EXTI15_10_IRQn
-//#include "main.h"   // for: RX_SPI_EXTI_PIN_Pin, RX_SPI_EXTI_PIN_GPIO_Port, RX_SPI_EXTI_PIN_EXTI_IRQn
-
 
 extern uint32_t gettime(void);  // drv_time.h
 #define micros gettime
@@ -58,8 +54,7 @@ extern uint32_t gettime(void);  // drv_time.h
 typedef enum { RSSI_SOURCE_NONE, RSSI_SOURCE_RX_PROTOCOL } rssiSource_e;
 static rssiSource_e rssiSource;
 static void setRssiDirect(int _ignore, int _ignore2) { (void)_ignore; (void)_ignore2; }
-
-//MDMFIX -----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 
 
