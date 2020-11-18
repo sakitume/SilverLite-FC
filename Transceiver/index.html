@@ -214,9 +214,45 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Transceiver modules
+      </label>
+    
     <a href="./" title="Transceiver modules" class="md-nav__link md-nav__link--active">
       Transceiver modules
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#using-onboard-spi" title="Using onboard SPI" class="md-nav__link">
+    Using onboard SPI
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#for-external-spi-rx-modules" title="For external SPI RX modules" class="md-nav__link">
+    For external SPI RX modules
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -274,6 +310,29 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#using-onboard-spi" title="Using onboard SPI" class="md-nav__link">
+    Using onboard SPI
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#for-external-spi-rx-modules" title="For external SPI RX modules" class="md-nav__link">
+    For external SPI RX modules
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -286,8 +345,58 @@
                 
                 
                 <h1 id="todo">TODO</h1>
-<p>This is where I'll document how to install a transceiver board onto your NOX or OMNIBUSF4 flight controllers
+<p>This is where I'll document how to install a transceiver board onto your flight controllers
 as well as how what adjustments you may need to perform to various configuration files (mostly header files).</p>
+<h2 id="using-onboard-spi">Using onboard SPI</h2>
+<p>Currently only the FlySky version of the "HappyModel Crazybee F4 Lite 1S" flight controller (found on the Mobula6) us supported.
+Since this is built into the flight controller board the only thing you need to configure is whether you want
+to use the older AFHDS protocol (which has a minimal latency of 1.5ms) or the newer AFHDS2A protocol (minimal latency of 3.850ms).</p>
+<h2 id="for-external-spi-rx-modules">For external SPI RX modules</h2>
+<p>Things to discuss:</p>
+<ul>
+<li>Describe the available choices of transceiver modules<ul>
+<li>NRF24L01 <ul>
+<li>Comes in different form factors<ul>
+<li>The micro version like <a href="https://www.amazon.com/SMAKN%C2%AE-NRF24L01-Wireless-Transceiver-Arduino/dp/B0181PDTNU">this one on Amazon</a> works well.</li>
+</ul>
+</li>
+<li>Many ebay, Aliexpress listings say they are NRF24L01 but are something completely different (not even a clone of the NRF24L01), so beware!</li>
+<li>With Play F4 board you must use capacitor across +3.3v and GND due to the noisy power supply. In comparison the XN297L seemed okay without a cap on the Play F4.</li>
+</ul>
+</li>
+<li>XN297L<ul>
+<li>Uses 3-wire SPI</li>
+<li>Easily harvested from H8mini transmitter</li>
+</ul>
+</li>
+<li>LT8900<ul>
+<li>Requires an extra pin or a resister/capacitor combo to perform a reset on power-on.</li>
+<li>Requires a customized multiprotocol module firmware. I built a custom TX variant for this but never pushed this up to github.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Need to edit <code>_my_config.h</code> to specify which transceiver module you're using. Just need to define only one of the following choices:<ul>
+<li><code>TRX_NRF</code></li>
+<li><code>TRX_XN297</code></li>
+<li><code>TRX_XN297L</code></li>
+<li><code>TRX_LT8900</code></li>
+</ul>
+</li>
+<li>Need to edit <code>_my_config.h</code> to specify if you'll be using 3-wire SPI or 4-wire SPI<ul>
+<li>Enable the <code>TRX_SPI_3WIRE</code> for 3-wire, otherwise it will be 4-wire</li>
+</ul>
+</li>
+<li>Need to edit <code>trx_spi_config.h</code> to specify which STM32 pins to use for the software SPI.<ul>
+<li>The <a href="../PlayF4_NRF24L01/">Play F4 and NRF24L01</a> section has more detail on this.</li>
+</ul>
+</li>
+<li>Wiring considerations<ul>
+<li>Avoid inductor coil</li>
+</ul>
+</li>
+<li>Antenna mods</li>
+</ul>
                 
                   
                 

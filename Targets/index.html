@@ -75,7 +75,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#processor-and-flight-controller-targets" tabindex="1" class="md-skip">
+      <a href="#flight-controller-targets" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -202,9 +202,59 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Targets
+      </label>
+    
     <a href="./" title="Targets" class="md-nav__link md-nav__link--active">
       Targets
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#matekf411rx" title="MATEKF411RX" class="md-nav__link">
+    MATEKF411RX
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nox" title="NOX" class="md-nav__link">
+    NOX
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-support-for-new-targets" title="Adding support for new targets" class="md-nav__link">
+    Adding support for new targets
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stm32-resources" title="STM32 resources" class="md-nav__link">
+    STM32 resources
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -274,6 +324,43 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#matekf411rx" title="MATEKF411RX" class="md-nav__link">
+    MATEKF411RX
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nox" title="NOX" class="md-nav__link">
+    NOX
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-support-for-new-targets" title="Adding support for new targets" class="md-nav__link">
+    Adding support for new targets
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stm32-resources" title="STM32 resources" class="md-nav__link">
+    STM32 resources
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -285,39 +372,37 @@
               
                 
                 
-                <h1 id="processor-and-flight-controller-targets">Processor and Flight Controller Targets</h1>
-<p>This codebase currently supports the STM32F411 and STM32405 processors. The <code>Makefile</code> 
-will define <code>STM32F405xx</code> or <code>STM32F411xE</code> as appropriate based on the <em>Flight Controller Target</em>.</p>
-<p>There are a few places in the code that are conditionally compiled based on those definitions.</p>
+                <h1 id="flight-controller-targets">Flight Controller Targets</h1>
+<p>This codebase currently supports several <em>targets</em> using the STM32F411 or STM32405 processors. A <em>target</em> is simply the name of a hardware configuration (processor and peripherals) that was defined for use with Betaflight. Different flight controller boards can be made that correspond to a given target.</p>
+<p>The target names I'm using come straight from Betaflight. By examining various source files in Betaflight I'm able to reverse engineer what peripherals are used on the flight controller boards and also what pins are used.</p>
 <p>The following flight controller targets are currently defined:</p>
 <ul>
 <li><code>OMNIBUSF4</code>   - This uses the STM32F405 processor which runs at 168Mhz</li>
 <li><code>NOX</code>         - This uses the STM32F411 processor which runs at 98Mhz or 100Mhz (we must use 98Mhz for proper USB Virtual Com Port support)</li>
+<li><code>MATEKF411RX</code> - This uses the STM32F411 processor. At this time only the "HappyModel Crazybee F4 Lite 1S FlySky" flight controller is currently supported.</li>
 </ul>
-<blockquote>
-<p>Note: A <em>target</em> is simply the name of a hardware configuration (processor and peripherals) that
-was defined for use with Betaflight. Different flight controller boards can be made that
-correspond to a given target. </p>
-</blockquote>
-<p>The <code>Makefile</code> defaults to building for the <code>NOX</code> target but this can be overriden when invoking
-the makefile by specifying the <code>TARGET</code> on the command line like so:</p>
+<p>I had also planned on supporting the CrazyBee F3 flight controller but have yet to do so.</p>
+<p>Note: The <code>Makefile</code> defaults to building for the <code>NOX</code> target but this can be overriden when invoking the makefile by specifying the <code>TARGET</code> on the command line like so:</p>
 <pre><code>mingw32-make.exe -j12 flash TARGET=OMNIBUSF4
 </code></pre>
 
 <p>The above command will build the <code>OMNIBUSF4</code> target and flash the build onto the flight controller board.
 For more details on how to build and flash (and develop) this software read the <a href="../Develop/">Develop</a> page</p>
-<blockquote>
-<p>Note: I'm still in the early stages of adding support for the F3 processor and will update this
-document when it becomes available. The first F3 based flight controller target I plan to support
-will be the OMNIBUS board and then the CRAZYBEEF3 (FlySky) board.</p>
-</blockquote>
-<h1 id="nox">NOX</h1>
-<p>I've been using the "Play F4" flight controller (sometimes described as "JMT Play F4" or "JHEMC Play F4").
-This board is a NOX target. This is what it looks like:</p>
+<p>If using Visual Studio Code then you can click on the "Run build task" icon in the status bar...
+<img alt="VSCode-RunBuildTasks" src="../images/VSCode-RunBuildTasks.png" /></p>
+<p>..or use the <code>Ctrl-Alt-T</code> combination to bring up this menu which will let you clean, build and flash for any of the supported targets:</p>
+<p><img alt="VSCode Tasks" src="../images/VSCode-Tasks.png" /></p>
+<h2 id="matekf411rx"><code>MATEKF411RX</code></h2>
+<p>The "HappyModel Crazybee F4 Lite 1S FlySky" flight controller is a <code>MATEKF411RX</code> target board. This board is used on the Mobula 6.</p>
+<p>This flight controller (and target) also supports an FrSky SPI receiver as well. However I only possess the FlySky version and therefore only built support for the AFHDS/AFHDS2A receiver.</p>
+<p><img alt="CrazebeeF4Lite-Top" src="../images/CrazyBee_F4_Lite_1s_top.jpg" />
+<img alt="CrazebeeF4Lite-Bottom" src="../images/CrazyBee_F4_Lite_1s_bottom.jpg" /></p>
+<p>This is the easiest board to use with SilverLite-FC. </p>
+<h2 id="nox"><code>NOX</code></h2>
+<p>I've been using the "Play F4" flight controller (sometimes described as "JHEMCU Play F4" or "JMT Play F4"). This board is a NOX target. This is what it looks like:</p>
 <p><img alt="Play F4 Top" src="../images/Play-F4-Top.jpg" />
 <img alt="Play F4 Bottom" src="../images/Play-F4-Bot.jpg" /></p>
-<p>By examining the Betaflight source code and <code>target.h</code> files for any
-Betaflight target (as well as using the <code>resource</code> and <code>resource list</code> commands) we can learn
+<p>By examining the Betaflight source code and <code>target.h</code> files for this Betaflight target (as well as using the <code>resource</code> and <code>resource list</code> commands) we can learn
 how the STM32 processor interfaces with the MPU, OSD and other peripherals.</p>
 <p>For example, the following pads of the Play F4 board map to the STM32 pins:</p>
 <p>On top side of board are:</p>
@@ -338,7 +423,109 @@ how the STM32 processor interfaces with the MPU, OSD and other peripherals.</p>
 </ul>
 <p>This information is important if you want to change which pads to use to interface
 to your transceiver board (NRF24L01, XN297, XN297L or LT8900). More information can be found
-in the <a href="../Configuration/">Configuration</a> section.</p>
+in the <a href="../Transceiver/">Transceiver Modules</a> section.</p>
+<h2 id="adding-support-for-new-targets">Adding support for new targets</h2>
+<p>This section will contain my notes on what is required to add support for new targets. The notes are largely based on what I performed for adding the <code>MATEKF411RX</code> target.</p>
+<p>The project folder structure contains a <code>Targets</code> folder that in turn contains subfolders for each of the targets (such as <code>NOX</code>, <code>OMNIBUSF4</code>). In turn these folders contain the following:</p>
+<ul>
+<li><code>TARGET_NAME.ioc</code> - This is an STM32CubeMX project file used to configure the STM32 and its peripherals.. The <code>TARGET_NAME</code> will be something like <code>NOX</code> or <code>OMNIBUS</code>, etc.</li>
+<li>Core - STM32CubeMX generated source files</li>
+</ul>
+<p>I want to add support for the Mobula6 flight controller which is the "HappyModel Crazybee F4 Lite 1S" board.
+In Betaflight it is known as the <code>MATEKF411RX</code> target. So I would create a new folder with that name within
+our <code>Targets</code> folder. </p>
+<p>Using STM32CubeMX you'll want to configure the various pins and perhipherals of the STM32 chip.</p>
+<p>Required by Silverware:</p>
+<ul>
+<li>SPI interface for the MPU (4-wire soft spi implementation)<ul>
+<li>SPI_MPU_SS - PA4 (GPIO output)</li>
+<li>SPI2_CLK  - PA5 (GPIO output)</li>
+<li>SPI2_MISO - PA6 (GPIO input)</li>
+<li>SPI2_MOSI - PA7 (GPIO output)</li>
+</ul>
+</li>
+<li>SPI interface for the OSD<ul>
+<li>This is actually configured by editing <code>drv_sd_spi.config.h</code> rather than via Stm32CubeMX</li>
+</ul>
+</li>
+<li>SWD pins (SWDIO, SWCLK) - If available<ul>
+<li>SWD is not available on <code>MATEKF411RX</code>, in fact PA14 and/or PA13 are used for other purposes</li>
+</ul>
+</li>
+<li>ESC1 - PB10 (GPIO output)</li>
+<li>ESC2 - PB6 (GPIO output)</li>
+<li>ESC3 - PB7 (GPIO output)</li>
+<li>
+<p>ESC4 - PB8 (GPIO output)</p>
+</li>
+<li>
+<p>VOLTAGE_DIVIDER - PB0 (ADC input)</p>
+</li>
+<li>LED - PC13 (GPIO output)</li>
+</ul>
+<p>Additional/Available on this FC board</p>
+<ul>
+<li>CURRENT_METER_ADC_PIN - PB1 (ADC)</li>
+</ul>
+<p>RX SPI (FlySky A7105)
+* SPI3_SCK_PIN  - PB3 (GPIO output)
+* SPI3_MISO_PIN - PB4 (GPIO input)
+* SPI3_MOSI_PIN - PB5 (GPIO output)
+* RX_NSS_PIN    - PA15 (GPIO output)
+* RX_SPI_EXTI_PIN - PA14 (GPIO External interrupt mode)
+    * Examining <code>A7105Init()</code> in Betaflight source code reveals it is configured for <code>EXTI_TRIGGER_RISING</code>
+* RX_SPI_LED_PIN - PB9 (GPIO output)
+* RX_SPI_BIND_PIN - PB2 (GPIO input), Should we enable pull up or pull down? After completing support for this target I discovered it did not need any pull up or pull down.</p>
+<p>Note: For ESC pinouts look inside Betaflight for the corresponding <code>target.c</code> and you'll see a table like this:</p>
+<pre><code>const timerHardware_t timerHardware[USABLE_TIMER_CHANNEL_COUNT] = {
+    DEF_TIM(TIM9, CH2, PA3,  TIM_USE_PPM,   0, 0), // PPM/RX2
+
+    DEF_TIM(TIM2, CH3, PB10, TIM_USE_MOTOR, 0, 0), // S1_OUT - DMA1_ST1
+    DEF_TIM(TIM4, CH1, PB6,  TIM_USE_MOTOR, 0, 0), // S2_OUT - DMA1_ST0
+    DEF_TIM(TIM4, CH2, PB7,  TIM_USE_MOTOR, 0, 0), // S3_OUT - DMA1_ST3
+    DEF_TIM(TIM4, CH3, PB8,  TIM_USE_MOTOR, 0, 0), // S4_OUT - DMA1_ST7
+
+    DEF_TIM(TIM5, CH1, PA0,  TIM_USE_LED,   0, 0), // 2812LED - DMA1_ST2
+
+    DEF_TIM(TIM9, CH1, PA2,  TIM_USE_PWM,   0, 0 ), // TX2
+    DEF_TIM(TIM1, CH2, PA9,  TIM_USE_PWM,   0, 0 ), // TX1
+    DEF_TIM(TIM1, CH3, PA10, TIM_USE_PWM,   0, 0 ), // RX1
+};
+</code></pre>
+
+<p>This describes the timer peripherals used on the STM32 and you'll notice that
+4 entries are tagged with <code>TIM_USE_MOTOR</code>; these are the ESC pins in order
+from ESC1 thru ESC4.</p>
+<h2 id="stm32-resources">STM32 resources</h2>
+<p>These are just some notes on various STM32 resources used by the firmware.</p>
+<ul>
+<li>SystemClock</li>
+<li>ADC1 - Battery voltage</li>
+<li>TIM1 and DMA2 are used for implementing DSHOT.<ul>
+<li>TIM1_UP:    DMA2, Stream 5, NVIC global interrupt enabled</li>
+<li>TIM1_CH:    DMA2, Stream 1, NVIC global interrupt enabled</li>
+<li>TIM1_CH2:   DMA2, Stream 2, NVIC global interrupt enabled</li>
+</ul>
+</li>
+<li>TIM2 for gettime()</li>
+</ul>
+<p>If blackbox is enabled (default is disabled) the following are used:</p>
+<ul>
+<li>NOX:<ul>
+<li>USART2_TX, 2MB, 8N1<ul>
+<li>DMA1, Stream 6</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>OMNIBUSF4<ul>
+<li>UART4_TX, 2MB, 8N1<ul>
+<li>DMA1, Stream 4</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
                 
                   
                 

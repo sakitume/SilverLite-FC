@@ -36,7 +36,7 @@
     
     
       
-        <title>Configuration - SilverLite FC Firmware</title>
+        <title>Debugging - SilverLite FC Firmware</title>
       
     
     
@@ -75,10 +75,6 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#hardware-configuration" tabindex="1" class="md-skip">
-        Skip to content
-      </a>
-    
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid">
@@ -101,7 +97,7 @@
             </span>
             <span class="md-header-nav__topic">
               
-                Configuration
+                Debugging
               
             </span>
           
@@ -180,20 +176,11 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-    <a href="./" title="Configuration" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../Configuration/" title="Configuration" class="md-nav__link">
       Configuration
     </a>
-    
   </li>
 
     
@@ -264,84 +251,16 @@
               </div>
             
             
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-</nav>
-                  </div>
-                </div>
-              </div>
-            
           
           <div class="md-content">
             <article class="md-content__inner md-typeset">
               
                 
                 
-                <h1 id="hardware-configuration">Hardware Configuration</h1>
-<p>Before building and flashing the firmware you must review and possibly adjust the hardware configuration.</p>
-<p>Here is a short checklist of things to consider:</p>
-<ul>
-<li>What flight controller board will you be using? <a href="../Targets/">Several boards are supported.</a></li>
-<li>What type of receiver will you be using?<ul>
-<li>On-board SPI AFHDS/AFHDS2A is available when using the "HappyModel Crazybee F4 Lite 1S" flight controller (found on the Mobula6). This is a <code>MATEKF411RX</code> target board.</li>
-<li>External SPI Bayang is available using various <a href="../Transceiver/">transceiver modules.</a>.<ul>
-<li>I've had great success with the <a href="../PlayF4_NRF24L01/">Play F4 board and an NRF24L01</a>.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Configure your aux channels: throttle kill switch (similar to an arm switch), level mode enable/disable, motor beeps, etc</li>
-<li>Will you be using RPM filtering?<ul>
-<li>If so, you'll want to make sure your ESCs are flashed with</li>
-</ul>
-</li>
-</ul>
-<p>The default configuration is for using the "JHEMCU Play F4" (or sometimes named "JMT Play F4") whoop
-sized flight controller coupled to an NRF24L01 transceiver module. RPM filtering is enabled (which
-requires flashing the onboard ESCs with bidirectional DSHOT support using either <a href="https://jflight.net/">JESC</a> or <a href="https://github.com/JazzMaverick/BLHeli/tree/JazzMaverick-patch-1/BLHeli_S%20SiLabs">JazzMaverick</a>.
-The RPM filtering configuration also expects your motors to have 12 poles (as I use 0802
-motors). Most small motors for whoop or micros (08XX, 11XX, 12XX) tend to have 12 poles.</p>
-<p>The above configuration is what I typically use but by adjusting various configuration files you should be
-able to customize SilverLite to match your needs.</p>
-<p>Only three <a href="../Targets/">flight controller targets</a> are currently supported (<code>MATEKF411RX</code>, <code>NOX</code>, <code>OMNIBUSF4</code>). The <code>MATEKF411RX</code> target can support an on-board SPI transceiver (only FlySky AFHDS/AFHDS2A is supported at this time). If you wish to use an external SPI RX transceiver <a href="../Transceiver/">4 different modules</a> are supported. Lastly, IBUS support is available; I've successfully used the FlySky FS-RX2A receiver with IBUS on the <code>NOX</code> and <code>OMNIBUSF4</code> targets.</p>
-<p>The Play F4 board is a <code>NOX</code> flight controller target. There are enough pads on this FC board to support a few different ways to wire it up to
-an NRF24L01 (or XN297 etc). I've tried at least two different wiring configurations as well as a few different
-locations and orientations to mount the board. If you want to do something different than the default
-there should be enough information in this document to help you figure it out. If not, please open an issue on my github project page so I can help.</p>
-<p>At a minimum the following two files should be carefully reviewed and edited to meet your custom needs:</p>
-<ul>
-<li><code>_myConfig.h</code><ul>
-<li>Defines for: RX implementation to use, rates (acro and level mode), expo curves, PID terms, looptime, RPM filter enable/disable, low pass filters, TX switches/channels, gyro (board) orientation, motor order, sticks deadband</li>
-</ul>
-</li>
-<li><code>_myHardware.h</code><ul>
-<li>Defines for: DSHOT configuration, idle offest, motor pole count. Default config is DSHOT300, 12 pole motors, </li>
-</ul>
-</li>
-</ul>
-<p>I've structured and commented these header files so that it should hopefully be self explanatory when it comes to
-enabling and configuring the features.</p>
-<p>If you choose an SPI RX implementation which uses an external transceiver module (NRF24L01, XN297, LT8900, etc) you may also need to review and edit
-this file:</p>
-<ul>
-<li><code>trx_spi_config.h</code><ul>
-<li>Used to define which STM32 pins to use for software SPI implementation. In other words what pads on your flight controller board
-will be wired up to the pads on the the transceiver module board.</li>
-</ul>
-</li>
-</ul>
-<h1 id="advanced-configuration">Advanced configuration</h1>
-<p>This is just a placeholder for now. I hope to provide more details on how to configure various features. A lot of useful info can be found
-on Markus's thread regarding his SilF4ware firmware.</p>
-<p>Motor order: https://www.rcgroups.com/forums/showpost.php?p=41995581&amp;postcount=341</p>
+                  <h1>Debugging</h1>
+                
+                <p>I was able to get STM32CubeIDE to build and debug the project using the information
+here: https://github.com/ethanhuanginst/STM32CubeIDE-Workshop-2019/blob/master/hands-on/02_stm32_hp141_lcd/README.md</p>
                 
                   
                 
@@ -358,41 +277,6 @@ on Markus's thread regarding his SilF4ware firmware.</p>
       
         
 <footer class="md-footer">
-  
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid">
-        
-          <a href=".." title="Home" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
-            <div class="md-flex__cell md-flex__cell--shrink">
-              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-            </div>
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-              <span class="md-flex__ellipsis">
-                <span class="md-footer-nav__direction">
-                  Previous
-                </span>
-                Home
-              </span>
-            </div>
-          </a>
-        
-        
-          <a href="../Targets/" title="Targets" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-              <span class="md-flex__ellipsis">
-                <span class="md-footer-nav__direction">
-                  Next
-                </span>
-                Targets
-              </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink">
-              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
-          </a>
-        
-      </nav>
-    </div>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
