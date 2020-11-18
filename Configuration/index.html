@@ -190,9 +190,92 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Configuration
+      </label>
+    
     <a href="./" title="Configuration" class="md-nav__link md-nav__link--active">
       Configuration
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#specifying-the-flight-controller" title="Specifying the flight controller" class="md-nav__link">
+    Specifying the flight controller
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#specifying-the-receiver" title="Specifying the receiver" class="md-nav__link">
+    Specifying the receiver
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuring-spi" title="Configuring SPI" class="md-nav__link">
+    Configuring SPI
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-rates-and-expo" title="Configuring Rates and Expo" class="md-nav__link">
+    Configuring Rates and Expo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-pid-terms" title="Configuring PID terms" class="md-nav__link">
+    Configuring PID terms
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#more-and-more" title="More and more" class="md-nav__link">
+    More and more
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#even-more-config" title="Even more config" class="md-nav__link">
+    Even more config
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -274,6 +357,76 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#specifying-the-flight-controller" title="Specifying the flight controller" class="md-nav__link">
+    Specifying the flight controller
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#specifying-the-receiver" title="Specifying the receiver" class="md-nav__link">
+    Specifying the receiver
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuring-spi" title="Configuring SPI" class="md-nav__link">
+    Configuring SPI
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-rates-and-expo" title="Configuring Rates and Expo" class="md-nav__link">
+    Configuring Rates and Expo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-pid-terms" title="Configuring PID terms" class="md-nav__link">
+    Configuring PID terms
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#more-and-more" title="More and more" class="md-nav__link">
+    More and more
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#even-more-config" title="Even more config" class="md-nav__link">
+    Even more config
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -300,48 +453,141 @@
 </li>
 <li>Configure your aux channels: throttle kill switch (similar to an arm switch), level mode enable/disable, motor beeps, etc</li>
 <li>Will you be using RPM filtering?<ul>
-<li>If so, you'll want to make sure your ESCs are flashed with</li>
+<li>If so, you'll want to make sure your ESCs are flashed with either <a href="https://jflight.net/">JESC</a> or <a href="https://github.com/JazzMaverick/BLHeli/tree/JazzMaverick-patch-1/BLHeli_S%20SiLabs">JazzMaverick</a>.</li>
 </ul>
 </li>
 </ul>
-<p>The default configuration is for using the "JHEMCU Play F4" (or sometimes named "JMT Play F4") whoop
-sized flight controller coupled to an NRF24L01 transceiver module. RPM filtering is enabled (which
-requires flashing the onboard ESCs with bidirectional DSHOT support using either <a href="https://jflight.net/">JESC</a> or <a href="https://github.com/JazzMaverick/BLHeli/tree/JazzMaverick-patch-1/BLHeli_S%20SiLabs">JazzMaverick</a>.
-The RPM filtering configuration also expects your motors to have 12 poles (as I use 0802
-motors). Most small motors for whoop or micros (08XX, 11XX, 12XX) tend to have 12 poles.</p>
-<p>The above configuration is what I typically use but by adjusting various configuration files you should be
-able to customize SilverLite to match your needs.</p>
-<p>Only three <a href="../Targets/">flight controller targets</a> are currently supported (<code>MATEKF411RX</code>, <code>NOX</code>, <code>OMNIBUSF4</code>). The <code>MATEKF411RX</code> target can support an on-board SPI transceiver (only FlySky AFHDS/AFHDS2A is supported at this time). If you wish to use an external SPI RX transceiver <a href="../Transceiver/">4 different modules</a> are supported. Lastly, IBUS support is available; I've successfully used the FlySky FS-RX2A receiver with IBUS on the <code>NOX</code> and <code>OMNIBUSF4</code> targets.</p>
-<p>The Play F4 board is a <code>NOX</code> flight controller target. There are enough pads on this FC board to support a few different ways to wire it up to
-an NRF24L01 (or XN297 etc). I've tried at least two different wiring configurations as well as a few different
-locations and orientations to mount the board. If you want to do something different than the default
-there should be enough information in this document to help you figure it out. If not, please open an issue on my github project page so I can help.</p>
-<p>At a minimum the following two files should be carefully reviewed and edited to meet your custom needs:</p>
+<h2 id="specifying-the-flight-controller">Specifying the flight controller</h2>
+<p>Only three <a href="../Targets/">flight controller targets</a> are currently supported (<code>MATEKF411RX</code>, <code>NOX</code>, <code>OMNIBUSF4</code>). The <code>MATEKF411RX</code> target can support an on-board SPI transceiver (only FlySky AFHDS/AFHDS2A is supported at this time). My fleet of whoops and micros are currently using the "Play F4" board (<code>NOX</code>) or the "HappyModel Crazybee F4 Lite 1S" flight controller (found on the Mobula6). This is a <code>MATEKF411RX</code> target.</p>
+<p>You will not need to edit any source files to specify your target board. Instead you just need to make note of the target name
+(such as <code>NOX</code> or <code>MATEKF411RX</code>). You'll need to know this when you build the firmware as described in the <a href="../Develop/">Develop</a> section of this document.</p>
+<h2 id="specifying-the-receiver">Specifying the receiver</h2>
+<p>If you wish to use an external SPI RX transceiver <a href="../Transceiver/">4 different modules</a> are supported. IBUS support is also available; I've successfully used the FlySky FS-RX2A receiver with IBUS on the <code>NOX</code> and <code>OMNIBUSF4</code> targets. And if you're using that Mobula6 board, then you can use the on-board SPI AFHDS/AFHDS2A receiver.</p>
+<p>You will edit the <code>_my_config.h</code> source file to specify your receiver option. Using a text editor (I suggest Visual Studio Code) open the file and look near the top of the file for something that looks like this:</p>
+<pre><code class="c++">//------------------------------------------------------------------------------
+// RX protocol and configuration
+// Enable only one of the following defines
+//------------------------------------------------------------------------------
+//#define RX_SILVERLITE_BAYANG_PROTOCOL   // Enable SilverLite SPI Transceiver RX implementation
+//#define RX_IBUS // Enable IBUS protocol support on a USART RX pin, double-check rx_ibus.cpp and define one of: FLYSKY_i6_MAPPING, TURNIGY_EVOLUTION_MAPPING
+#define RX_FLYSKY   // Enable FlySky SPI transceiver implementation
+</code></pre>
+
+<p>The lines that start with <code>//</code> are "commented out", meaning they don't do anything.
+You basically want to comment out 2 of the 3 choices. The example above enables
+the FlySky (AFHDS/AFHDS2A) SPI transceiver option. If instead you want to use an external RX module
+with IBUS protocol then you'd edit that text to look like this intead:</p>
+<pre><code class="c++">//------------------------------------------------------------------------------
+// RX protocol and configuration
+// Enable only one of the following defines
+//------------------------------------------------------------------------------
+//#define RX_SILVERLITE_BAYANG_PROTOCOL   // Enable SilverLite SPI Transceiver RX implementation
+#define RX_IBUS // Enable IBUS protocol support on a USART RX pin, double-check rx_ibus.cpp and define one of: FLYSKY_i6_MAPPING, TURNIGY_EVOLUTION_MAPPING
+//#define RX_FLYSKY   // Enable FlySky SPI transceiver implementation
+</code></pre>
+
+<p>If you choose the <code>RX_SILVERLITE_BAYANG_PROTOCOL</code> option (an external SPI transceiver module
+configured to run Bayang protocol), then it would look like the snippet below, <em>plus</em> you'll
+also want to review and possibly edit the text immediately below that.</p>
+<pre><code class="c++">//------------------------------------------------------------------------------
+// RX protocol and configuration
+// Enable only one of the following defines
+//------------------------------------------------------------------------------
+#define RX_SILVERLITE_BAYANG_PROTOCOL   // Enable SilverLite SPI Transceiver RX implementation
+//#define RX_IBUS // Enable IBUS protocol support on a USART RX pin, double-check rx_ibus.cpp and define one of: FLYSKY_i6_MAPPING, TURNIGY_EVOLUTION_MAPPING
+//#define RX_FLYSKY   // Enable FlySky SPI transceiver implementation
+
+//------------------------------------------------------------------------------
+// When using RX_SILVERLITE_BAYANG_PROTOCOL you must specify which transceiver
+// module you're using and whether or not you're using 3-wire SPI or 4-wire SPI.
+//
+// Note:  The software SPI pins used for interfacing with the module are defined 
+// in file: trx_spi_config.h
+//------------------------------------------------------------------------------
+#ifdef RX_SILVERLITE_BAYANG_PROTOCOL
+
+// Define only one of the TRX_??? values below
+#define TRX_NRF
+//#define TRX_XN297
+//#define TRX_XN297L
+//#define TRX_LT8900
+</code></pre>
+
+<p>See the line that says <code>// Define only one of the TRX_??? values below</code>?
+You'll do something similar here, you'll comment out 3 of the 4 choices.
+The snippet above has enabled only the <code>TRX_NRF</code> option. This means you'll be
+using an NRF24L01 transceiver module for your receiver (and also to transmit back
+telemetry).</p>
+<h3 id="configuring-spi">Configuring SPI</h3>
+<p>When using an external SPI transceiver module you will want to review the pin assignments that
+connect the STM32 processor to your external module. </p>
+<p>Examine the <code>trx_spi_config.h</code> header file and it should be commented well enough to figure out how
+things are hooked up and how you can change things if needed.</p>
+<p>The <a href="../PlayF4_NRF24L01/">Play F4 and NRF24L01 section</a> provides a pretty good walkthru of how to
+connect an NRF24L01 module to a "Play F4" flight controller board.</p>
+<h2 id="configuring-rates-and-expo">Configuring Rates and Expo</h2>
+<p>The next section of the <code>_my_config.h</code> file is where you'll define your rates and expo.</p>
+<pre><code class="c++">//------------------------------------------------------------------------------
+// Rates
+//------------------------------------------------------------------------------
+
+// rate in deg/sec for acro mode
+#define MAX_RATE            800
+#define MAX_RATEYAW         675
+
+#define LEVEL_MAX_ANGLE     80
+#define LEVEL_MAX_RATE      900
+
+#define LOW_RATES_MULTI     0.65
+
+//------------------------------------------------------------------------------
+// Expo
+//  Allowed values are 0.00 to 1.00. A value of 0 means no expo applied
+//  The higher the value, the less sensitive near center
+//------------------------------------------------------------------------------
+
+#define ACRO_EXPO_ROLL      0.85
+#define ACRO_EXPO_PITCH     0.85
+#define ACRO_EXPO_YAW       0.26
+
+#define ANGLE_EXPO_ROLL     0.55
+#define ANGLE_EXPO_PITCH    0.55
+#define ANGLE_EXPO_YAW      0.30
+
+</code></pre>
+
+<h2 id="configuring-pid-terms">Configuring PID terms</h2>
+<p>The next section in <code>_my_config.h</code> is where you'll define your PID terms for acro and angle (level) modes.</p>
+<pre><code class="c++">//------------------------------------------------------------------------------
+// PID term overrides
+//------------------------------------------------------------------------------
+                        //  Roll    Pitch   Yaw
+#define     ACRO_P      {   .040,   .040,   .01     };
+#define     ACRO_I      {   .250,   .250,   .50     };
+#define     ACRO_D      {   .035,   .035,   .0      };
+
+// Angle mode P and D terms
+#define     ANGLE_P1    10.
+#define     ANGLE_D1    3.0
+</code></pre>
+
+<p>The values shown here are decent starting points for 65mm or 75mm whoops as well as 2.5" and 3" micros using 0802, 1102 or 1103 motors.</p>
+<p>You can always fine tune them in the field using stick gestures and the on screen display.</p>
+<p><em>TODO</em>: Document the PID tuning feature</p>
+<h2 id="more-and-more">More and more</h2>
+<p>The rest of the <code>_my_config.h</code> file is where you configure even more options that 
+are available to you. I won't go into great detail on them but here's a list of what to expect:</p>
 <ul>
-<li><code>_myConfig.h</code><ul>
-<li>Defines for: RX implementation to use, rates (acro and level mode), expo curves, PID terms, looptime, RPM filter enable/disable, low pass filters, TX switches/channels, gyro (board) orientation, motor order, sticks deadband</li>
-</ul>
-</li>
-<li><code>_myHardware.h</code><ul>
-<li>Defines for: DSHOT configuration, idle offest, motor pole count. Default config is DSHOT300, 12 pole motors, </li>
-</ul>
-</li>
-</ul>
-<p>I've structured and commented these header files so that it should hopefully be self explanatory when it comes to
-enabling and configuring the features.</p>
-<p>If you choose an SPI RX implementation which uses an external transceiver module (NRF24L01, XN297, LT8900, etc) you may also need to review and edit
-this file:</p>
-<ul>
-<li><code>trx_spi_config.h</code><ul>
-<li>Used to define which STM32 pins to use for software SPI implementation. In other words what pads on your flight controller board
-will be wired up to the pads on the the transceiver module board.</li>
+<li><code>RPM_FILTER</code> - If defined, this will enable RPM filtering. By default this is defined for all targets. Be sure you've already flashed your ESCs with firmware that supports RPM filtering.</li>
+<li><code>LOOPTIME</code> - By default the looptime is configured for 250us (4k loop). You really can't go higher unless you disable RPM filtering and/or overclock. This value works very well with the targets supported by SilverLite.</li>
+<li>Various filters. Read the comments in the source file for more info</li>
+<li>Switches/Channels - What aux channels (switches on your transmitter) are supported and what they should do. This section is used to map 4 features (<code>THROTTLE_KILL_SWITCH</code>, <code>LEVELMODE</code>, <code>MOTOR_BEEPS_CHANNEL</code> and <code>RATES</code>) to some Bayang channels. It requires you know what Bayang channels your TX is setup to use when it transmits with the Bayang protocol.<ul>
+<li>Note: If you're using IBUS or AFHDS/AFHDS2 protocol you will instead need to edit some code in <code>rx_flysky.cpp</code> or <code>rx_ibus.cpp</code>. I apologize in advance for not documenting this further. </li>
 </ul>
 </li>
 </ul>
-<h1 id="advanced-configuration">Advanced configuration</h1>
-<p>This is just a placeholder for now. I hope to provide more details on how to configure various features. A lot of useful info can be found
-on Markus's thread regarding his SilF4ware firmware.</p>
-<p>Motor order: https://www.rcgroups.com/forums/showpost.php?p=41995581&amp;postcount=341</p>
+<h3 id="even-more-config">Even more config</h3>
+<p>If you have need to tweak the DSHOT configuration, or motor idle offset or motor pole count then you'll want to review and edit the <code>_myHardware.h</code> file.</p>
                 
                   
                 
