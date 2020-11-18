@@ -2,50 +2,171 @@
 
 Before building and flashing the firmware you must review and possibly adjust the hardware configuration.
 
-The default configuration is for using the "JHEMCU Play F4" (or sometimes named "JMT Play F4") whoop
-sized flight controller coupled to an NRF24L01 transceiver module. RPM filtering is enabled (which
-requires flashing the onboard ESCs with bidirectional DSHOT support using either [JESC](https://jflight.net/) or [JazzMaverick](https://github.com/JazzMaverick/BLHeli/tree/JazzMaverick-patch-1/BLHeli_S%20SiLabs).
-The RPM filtering configuration also expects your motors to have 12 poles (as I use 0802
-motors). Most small motors for whoop or micros (08XX, 11XX, 12XX) tend to have 12 poles.
+Here is a short checklist of things to consider:
 
-The above configuration is what I typically use but by adjusting various configuration files you should be
-able to customize SilverLite to match your needs.
+* What flight controller board will you be using? [Several boards are supported.](Targets.md)
+* What type of receiver will you be using?
+    * On-board SPI AFHDS/AFHDS2A is available when using the "HappyModel Crazybee F4 Lite 1S" flight controller (found on the Mobula6). This is a `MATEKF411RX` target board.
+    * External SPI Bayang is available using various [transceiver modules.](Transceiver.md).
+        * I've had great success with the [Play F4 board and an NRF24L01](PlayF4_NRF24L01.md).
+* Configure your aux channels: throttle kill switch (similar to an arm switch), level mode enable/disable, motor beeps, etc
+* Will you be using RPM filtering?
+    * If so, you'll want to make sure your ESCs are flashed with either [JESC](https://jflight.net/) or [JazzMaverick](https://github.com/JazzMaverick/BLHeli/tree/JazzMaverick-patch-1/BLHeli_S%20SiLabs).
 
-Only two [flight controller targets](Targets.md) are currently supported (`NOX` and `OMNIBUSF4`), while
-[4 different transceiver modules](Transceiver.md) can be used. 
+## Specifying the flight controller
 
-> Note: IBUS support is currently a work in progress and a proof of concept has been bench tested. I'll update this
-document further once I've verified it is usable.
+Only three [flight controller targets](Targets.md) are currently supported (`MATEKF411RX`, `NOX`, `OMNIBUSF4`). The `MATEKF411RX` target can support an on-board SPI transceiver (only FlySky AFHDS/AFHDS2A is supported at this time). My fleet of whoops and micros are currently using the "Play F4" board (`NOX`) or the "HappyModel Crazybee F4 Lite 1S" flight controller (found on the Mobula6). This is a `MATEKF411RX` target.
 
-The Play F4 board is a `NOX` flight controller target. There are enough pads on this FC board to support a few different ways to wire it up to
-an NRF24L01 (or XN297 etc). I've tried at least two different wiring configurations as well as a few different
-locations and orientations to mount the board. If you want to do something different than the default
-there should be enough information in this document to help you figure it out. If not, please open an issue on my github project page so I can help.
+You will not need to edit any source files to specify your target board. Instead you just need to make note of the target name
+(such as `NOX` or `MATEKF411RX`). You'll need to know this when you build the firmware as described in the [Develop](Develop.md) section of this document.
 
-At a minimum the following two files should be carefully reviewed and edited to meet your custom needs:
+## Specifying the receiver
 
-* `_myConfig.h`
-    * Defines for: rates (acro and level mode), expo curves, PID terms, looptime, RPM filter enable/disable, low pass filters, TX switches/channels, gyro (board) orientation, motor order, sticks deadband
-* `_myHardware.h`
-    * Defines for: DSHOT configuration, idle offest, motor pole count. Default config is DSHOT300, 12 pole motors, 
+If you wish to use an external SPI RX transceiver [4 different modules](Transceiver.md) are supported. IBUS support is also available; I've successfully used the FlySky FS-RX2A receiver with IBUS on the `NOX` and `OMNIBUSF4` targets. And if you're using that Mobula6 board, then you can use the on-board SPI AFHDS/AFHDS2A receiver.
 
-I've structured and commented these header files so that it should hopefully be self explanatory when it comes to
-enabling and configuring the features.
+You will edit the `_my_config.h` source file to specify your receiver option. Using a text editor (I suggest Visual Studio Code) open the file and look near the top of the file for something that looks like this:
 
-The choice of RX implementation (NRF24L01, XN297, LT8900, etc) may also require you to review and edit
-these files:
+```c++
+//------------------------------------------------------------------------------
+// RX protocol and configuration
+// Enable only one of the following defines
+//------------------------------------------------------------------------------
+//#define RX_SILVERLITE_BAYANG_PROTOCOL   // Enable SilverLite SPI Transceiver RX implementation
+//#define RX_IBUS // Enable IBUS protocol support on a USART RX pin, double-check rx_ibus.cpp and define one of: FLYSKY_i6_MAPPING, TURNIGY_EVOLUTION_MAPPING
+#define RX_FLYSKY   // Enable FlySky SPI transceiver implementation
+```
 
-* `trx.h`
-    * Define exactly one of the following (`TRX_NRF`, `TRX_XN297`, `TRX_XN297L`, `TRX_LT8900`) to specify which transceiver board you'll be using. Make sure the others are commented out.
-* `trx_spi_config.h`
-    * Used to define which STM32 pins to use for software SPI implementation. In other words what pads on your flight controller board
-    will be wired up to the pads on the the transceiver module board.
+The lines that start with `//` are "commented out", meaning they don't do anything.
+You basically want to comment out 2 of the 3 choices. The example above enables
+the FlySky (AFHDS/AFHDS2A) SPI transceiver option. If instead you want to use an external RX module
+with IBUS protocol then you'd edit that text to look like this intead:
 
-> Note: While I may have written a lower level abstraction layer of code for the XN297 and XN297L modules, I have not yet had a chance to test them. ***More importantly***, the SPI code has not yet been conditionalized to support 3-wire SPI. It's actually pretty easy to complete but I just haven't had the opportunity to do this yet.
+```c++
+//------------------------------------------------------------------------------
+// RX protocol and configuration
+// Enable only one of the following defines
+//------------------------------------------------------------------------------
+//#define RX_SILVERLITE_BAYANG_PROTOCOL   // Enable SilverLite SPI Transceiver RX implementation
+#define RX_IBUS // Enable IBUS protocol support on a USART RX pin, double-check rx_ibus.cpp and define one of: FLYSKY_i6_MAPPING, TURNIGY_EVOLUTION_MAPPING
+//#define RX_FLYSKY   // Enable FlySky SPI transceiver implementation
+```
 
-# Advanced configuration
+If you choose the `RX_SILVERLITE_BAYANG_PROTOCOL` option (an external SPI transceiver module
+configured to run Bayang protocol), then it would look like the snippet below, *plus* you'll
+also want to review and possibly edit the text immediately below that.
 
-This is just a placeholder for now. I hope to provide more details on how to configure various features. A lot of useful info can be found
-on Markus's thread regarding his SilF4ware firmware.
+```c++
+//------------------------------------------------------------------------------
+// RX protocol and configuration
+// Enable only one of the following defines
+//------------------------------------------------------------------------------
+#define RX_SILVERLITE_BAYANG_PROTOCOL   // Enable SilverLite SPI Transceiver RX implementation
+//#define RX_IBUS // Enable IBUS protocol support on a USART RX pin, double-check rx_ibus.cpp and define one of: FLYSKY_i6_MAPPING, TURNIGY_EVOLUTION_MAPPING
+//#define RX_FLYSKY   // Enable FlySky SPI transceiver implementation
 
-Motor order: https://www.rcgroups.com/forums/showpost.php?p=41995581&postcount=341
+//------------------------------------------------------------------------------
+// When using RX_SILVERLITE_BAYANG_PROTOCOL you must specify which transceiver
+// module you're using and whether or not you're using 3-wire SPI or 4-wire SPI.
+//
+// Note:  The software SPI pins used for interfacing with the module are defined 
+// in file: trx_spi_config.h
+//------------------------------------------------------------------------------
+#ifdef RX_SILVERLITE_BAYANG_PROTOCOL
+
+// Define only one of the TRX_??? values below
+#define TRX_NRF
+//#define TRX_XN297
+//#define TRX_XN297L
+//#define TRX_LT8900
+```
+
+See the line that says `// Define only one of the TRX_??? values below`?
+You'll do something similar here, you'll comment out 3 of the 4 choices.
+The snippet above has enabled only the `TRX_NRF` option. This means you'll be
+using an NRF24L01 transceiver module for your receiver (and also to transmit back
+telemetry).
+
+### Configuring SPI
+
+When using an external SPI transceiver module you will want to review the pin assignments that
+connect the STM32 processor to your external module. 
+
+Examine the `trx_spi_config.h` header file and it should be commented well enough to figure out how
+things are hooked up and how you can change things if needed.
+
+The [Play F4 and NRF24L01 section](PlayF4_NRF24L01.md) provides a pretty good walkthru of how to
+connect an NRF24L01 module to a "Play F4" flight controller board.
+
+
+## Configuring Rates and Expo
+The next section of the `_my_config.h` file is where you'll define your rates and expo.
+
+```c++
+//------------------------------------------------------------------------------
+// Rates
+//------------------------------------------------------------------------------
+
+// rate in deg/sec for acro mode
+#define MAX_RATE            800
+#define MAX_RATEYAW         675
+
+#define LEVEL_MAX_ANGLE     80
+#define LEVEL_MAX_RATE      900
+
+#define LOW_RATES_MULTI     0.65
+
+//------------------------------------------------------------------------------
+// Expo
+//  Allowed values are 0.00 to 1.00. A value of 0 means no expo applied
+//  The higher the value, the less sensitive near center
+//------------------------------------------------------------------------------
+
+#define ACRO_EXPO_ROLL      0.85
+#define ACRO_EXPO_PITCH     0.85
+#define ACRO_EXPO_YAW       0.26
+
+#define ANGLE_EXPO_ROLL     0.55
+#define ANGLE_EXPO_PITCH    0.55
+#define ANGLE_EXPO_YAW      0.30
+
+```
+
+## Configuring PID terms
+
+The next section in `_my_config.h` is where you'll define your PID terms for acro and angle (level) modes.
+
+```c++
+//------------------------------------------------------------------------------
+// PID term overrides
+//------------------------------------------------------------------------------
+                        //  Roll    Pitch   Yaw
+#define     ACRO_P      {   .040,   .040,   .01     };
+#define     ACRO_I      {   .250,   .250,   .50     };
+#define     ACRO_D      {   .035,   .035,   .0      };
+
+// Angle mode P and D terms
+#define     ANGLE_P1    10.
+#define     ANGLE_D1    3.0
+```
+
+The values shown here are decent starting points for 65mm or 75mm whoops as well as 2.5" and 3" micros using 0802, 1102 or 1103 motors.
+
+You can always fine tune them in the field using stick gestures and the on screen display.
+
+*TODO*: Document the PID tuning feature
+
+
+## More and more
+The rest of the `_my_config.h` file is where you configure even more options that 
+are available to you. I won't go into great detail on them but here's a list of what to expect:
+
+* `RPM_FILTER` - If defined, this will enable RPM filtering. By default this is defined for all targets. Be sure you've already flashed your ESCs with firmware that supports RPM filtering.
+* `LOOPTIME` - By default the looptime is configured for 250us (4k loop). You really can't go higher unless you disable RPM filtering and/or overclock. This value works very well with the targets supported by SilverLite.
+* Various filters. Read the comments in the source file for more info
+* Switches/Channels - What aux channels (switches on your transmitter) are supported and what they should do. This section is used to map 4 features (`THROTTLE_KILL_SWITCH`, `LEVELMODE`, `MOTOR_BEEPS_CHANNEL` and `RATES`) to some Bayang channels. It requires you know what Bayang channels your TX is setup to use when it transmits with the Bayang protocol.
+    * Note: If you're using IBUS or AFHDS/AFHDS2 protocol you will instead need to edit some code in `rx_flysky.cpp` or `rx_ibus.cpp`. I apologize in advance for not documenting this further. 
+
+### Even more config
+
+If you have need to tweak the DSHOT configuration, or motor idle offset or motor pole count then you'll want to review and edit the `_myHardware.h` file.
+

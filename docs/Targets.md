@@ -1,23 +1,21 @@
 
 
-# Processor and Flight Controller Targets
+# Flight Controller Targets
 
-This codebase currently supports the STM32F411 and STM32405 processors. The `Makefile` 
-will define `STM32F405xx` or `STM32F411xE` as appropriate based on the *Flight Controller Target*.
+This codebase currently supports several *targets* using the STM32F411 or STM32405 processors. A *target* is simply the name of a hardware configuration (processor and peripherals) that was defined for use with Betaflight. Different flight controller boards can be made that correspond to a given target.
 
-There are a few places in the code that are conditionally compiled based on those definitions.
+The target names I'm using come straight from Betaflight. By examining various source files in Betaflight I'm able to reverse engineer what peripherals are used on the flight controller boards and also what pins are used.
 
 The following flight controller targets are currently defined:
 
 * `OMNIBUSF4` 	- This uses the STM32F405 processor which runs at 168Mhz
 * `NOX`         - This uses the STM32F411 processor which runs at 98Mhz or 100Mhz (we must use 98Mhz for proper USB Virtual Com Port support)
+* `MATEKF411RX` - This uses the STM32F411 processor. At this time only the "HappyModel Crazybee F4 Lite 1S FlySky" flight controller is currently supported.
 
-> Note: A *target* is simply the name of a hardware configuration (processor and peripherals) that
-was defined for use with Betaflight. Different flight controller boards can be made that
-correspond to a given target. 
+I had also planned on supporting the CrazyBee F3 flight controller but have yet to do so.
 
-The `Makefile` defaults to building for the `NOX` target but this can be overriden when invoking
-the makefile by specifying the `TARGET` on the command line like so:
+
+Note: The `Makefile` defaults to building for the `NOX` target but this can be overriden when invoking the makefile by specifying the `TARGET` on the command line like so:
 
 ```
 mingw32-make.exe -j12 flash TARGET=OMNIBUSF4
@@ -26,22 +24,35 @@ mingw32-make.exe -j12 flash TARGET=OMNIBUSF4
 The above command will build the `OMNIBUSF4` target and flash the build onto the flight controller board.
 For more details on how to build and flash (and develop) this software read the [Develop](Develop.md) page
 
-> Note: I'm still in the early stages of adding support for the F3 processor and will update this
-document when it becomes available. The first F3 based flight controller target I plan to support
-will be the OMNIBUS board and then the CRAZYBEEF3 (FlySky) board.
+If using Visual Studio Code then you can click on the "Run build task" icon in the status bar...
+![VSCode-RunBuildTasks](images/VSCode-RunBuildTasks.png)
+
+..or use the `Ctrl-Alt-T` combination to bring up this menu which will let you clean, build and flash for any of the supported targets:
+
+![VSCode Tasks](images/VSCode-Tasks.png)
 
 
-# NOX 
+## `MATEKF411RX`
 
-I've been using the "Play F4" flight controller (sometimes described as "JMT Play F4" or "JHEMC Play F4").
-This board is a NOX target. This is what it looks like:
+The "HappyModel Crazybee F4 Lite 1S FlySky" flight controller is a `MATEKF411RX` target board. This board is used on the Mobula 6.
+
+This flight controller (and target) also supports an FrSky SPI receiver as well. However I only possess the FlySky version and therefore only built support for the AFHDS/AFHDS2A receiver.
+
+![CrazebeeF4Lite-Top](images/CrazyBee_F4_Lite_1s_top.jpg)
+![CrazebeeF4Lite-Bottom](images/CrazyBee_F4_Lite_1s_bottom.jpg)
+
+This is the easiest board to use with SilverLite-FC. 
+
+
+## `NOX`
+
+I've been using the "Play F4" flight controller (sometimes described as "JHEMCU Play F4" or "JMT Play F4"). This board is a NOX target. This is what it looks like:
 
 ![Play F4 Top](images/Play-F4-Top.jpg)
 ![Play F4 Bottom](images/Play-F4-Bot.jpg)
 
 
-By examining the Betaflight source code and `target.h` files for any
-Betaflight target (as well as using the `resource` and `resource list` commands) we can learn
+By examining the Betaflight source code and `target.h` files for this Betaflight target (as well as using the `resource` and `resource list` commands) we can learn
 how the STM32 processor interfaces with the MPU, OSD and other peripherals.
 
 For example, the following pads of the Play F4 board map to the STM32 pins:
@@ -64,27 +75,22 @@ On back (bottom) side of board are:
 
 This information is important if you want to change which pads to use to interface
 to your transceiver board (NRF24L01, XN297, XN297L or LT8900). More information can be found
-in the [Configuration](Configuration.md) section.
+in the [Transceiver Modules](Transceiver.md) section.
 
+## Adding support for new targets
 
-# Adding support for new targets
+This section will contain my notes on what is required to add support for new targets. The notes are largely based on what I performed for adding the `MATEKF411RX` target.
 
-This section will contain my notes on what is required to add support for new targets.
+The project folder structure contains a `Targets` folder that in turn contains subfolders for each of the targets (such as `NOX`, `OMNIBUSF4`). In turn these folders contain the following:
 
-The project folder structure contains a `Targets` folder that in turn contains subfolders for each of the
-targets (such as `NOX`, `OMNIBUSF4`). In turn these folders contain two subfolders containing source code
-for the processors and peripherals associated with the target boards, and also a `.ioc` file
-
+* `TARGET_NAME.ioc` - This is an STM32CubeMX project file used to configure the STM32 and its peripherals.. The `TARGET_NAME` will be something like `NOX` or `OMNIBUS`, etc.
 * Core - STM32CubeMX generated source files
-* Drivers - Various STM32 source files
-* `????.ioc` - This is an STM32CubeMX project file used to configure the generated source code
 
 I want to add support for the Mobula6 flight controller which is the "HappyModel Crazybee F4 Lite 1S" board.
 In Betaflight it is known as the `MATEKF411RX` target. So I would create a new folder with that name within
 our `Targets` folder. 
 
 Using STM32CubeMX you'll want to configure the various pins and perhipherals of the STM32 chip.
-
 
 Required by Silverware:
 
@@ -105,8 +111,8 @@ Required by Silverware:
 * VOLTAGE_DIVIDER - PB0 (ADC input)
 * LED - PC13 (GPIO output)
 
-
 Additional/Available on this FC board
+
 * CURRENT_METER_ADC_PIN - PB1 (ADC)
 
 
@@ -118,8 +124,7 @@ RX SPI (FlySky A7105)
 * RX_SPI_EXTI_PIN - PA14 (GPIO External interrupt mode)
     * Examining `A7105Init()` in Betaflight source code reveals it is configured for `EXTI_TRIGGER_RISING`
 * RX_SPI_LED_PIN - PB9 (GPIO output)
-* RX_SPI_BIND_PIN - PB2 (GPIO input), Should we enable pull up or pull down?
-
+* RX_SPI_BIND_PIN - PB2 (GPIO input), Should we enable pull up or pull down? After completing support for this target I discovered it did not need any pull up or pull down.
 
 Note: For ESC pinouts look inside Betaflight for the corresponding `target.c` and you'll see a table like this:
 ```
@@ -143,26 +148,27 @@ This describes the timer peripherals used on the STM32 and you'll notice that
 4 entries are tagged with `TIM_USE_MOTOR`; these are the ESC pins in order
 from ESC1 thru ESC4.
 
+To debug/diagnose proper motor order here's a helpful post on Markus' SilF4ware blog:
+https://www.rcgroups.com/forums/showpost.php?p=41995581&postcount=341
+
 
 ## STM32 resources
-SystemClock
-ADC1                - Battery voltage
-TIM1
-    NOX
-        TIM1_UP:    DMA2, Stream 5, NVIC global interrupt enabled
-        TIM1_CH:    DMA2, Stream 1, NVIC global interrupt enabled
-        TIM1_CH2:   DMA2, Stream 2, NVIC global interrupt enabled
-    OMNIBUSF4
-        TIM1_UP:    DMA2, Stream 5, NVIC global interrupt enabled
-        TIM1_CH:    DMA2, Stream 1, NVIC global interrupt enabled
-        TIM1_CH2:   DMA2, Stream 2, NVIC global interrupt enabled
 
-TIM2 for gettime()
+These are just some notes on various STM32 resources used by the firmware.
 
-Blackbox
-    NOX:        USART2, 2MB, 8N1  
-        USART2_TX: DMA1, Stream 6
-    OMNIBUSF4:  UART4, 2MB, 8N1
-        UART4_TX: DMA1, Stream 4
+* SystemClock
+* ADC1 - Battery voltage
+* TIM1 and DMA2 are used for implementing DSHOT.
+    * TIM1_UP:    DMA2, Stream 5, NVIC global interrupt enabled
+    * TIM1_CH:    DMA2, Stream 1, NVIC global interrupt enabled
+    * TIM1_CH2:   DMA2, Stream 2, NVIC global interrupt enabled
+* TIM2 for gettime()
 
-DSHOT (drv_dshot_bdir and drv_dshot_dma) uses TIM1, DMA2
+If blackbox is enabled (default is disabled) the following are used:
+
+* NOX:
+    * USART2_TX, 2MB, 8N1
+        * DMA1, Stream 6
+* OMNIBUSF4
+    * UART4_TX, 2MB, 8N1
+        * DMA1, Stream 4

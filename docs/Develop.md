@@ -3,6 +3,71 @@
 Before you can run this firmware onto your flight controller you will need to build it
 and then flash it onto your board.
 
+## The easy way to build and flash
+
+Use Visual Studio Code as a lightweight development environment. Make sure you've setup the necesary development tools (see the [Development Tools Section](DevToolsSetup.md)).
+
+
+Use the VSCode "Open Folder" option with the project folder you cloned from github. 
+
+I've configured some files (within the `.vs` folder) to define some "tasks" that make it much easier to build and flash.
+
+You can click on the "Run build task" icon in the status bar...
+![VSCode-RunBuildTasks](images/VSCode-RunBuildTasks.png)
+
+..or use the `Ctrl-Alt-T` keyboard combination to bring up the following menu which will let you clean, build and flash for any of the supported targets:
+
+![VSCode Tasks](images/VSCode-Tasks.png)
+
+### Enter DFU mode
+
+Before you can flash the firmware the flight controller board must enter DFU mode. Typically you would press a "BOOT" button on
+the FC board (or jump some BOOT pads together) and then power up the flight controller board by plugging in the USB cable. You could
+also power it up with a battery, but you'll still need to connect the board to your compute via USB.
+
+If your board is currently running Betaflight and you can connect to it with the Betaflight configurator, you could instead use the "CLI"
+option in Betaflight and enter `bl` in the command line to enter "bootloader" mode (DFU mode).
+
+Once you've entered DFU mode you should be able to flash SilverLite onto your FC board.
+
+### The `monitor.py` script
+This is a handly little Python script I knocked out that listens over the virtual com port (the USB connection). SilverLite periodically
+sends out a data packet every second that this script can decode and log onto the terminal window. 
+
+However it can also be used to enter commands by pressing a key on your keyboard:
+
+* `r` - This will reset the flight controller board and make it enter DFU mode
+* `b` - This will instruct the onboard SPI receiver to enter BIND mode
+
+This is a tool you probably won't need to use but I find it helpful when I'm developing (or debugging) a feature of SilverLite, it lets
+me perform simple `printf()` style logging from the flight controller that I can see on my terminal window within VSCode.
+
+To run the tool (be sure to have Python2 installed) and then run open a terminal window within VSCode and execute it.
+
+Enter something like:
+```
+./monitor.py
+```
+
+Or maybe
+```
+python monitor.py
+```
+
+To quit the monitor script, you just need to enter `Ctrl-C` (maybe several times) and it will eventually terminate.
+
+You can also leave it running and plug/unplug your FC board. The `monitor` script will poll the available serial ports on your computer
+until it senses you've plugged the flight controller back in.
+
+
+![Monitor-Output](images/Monitor-Output.png)
+
+
+
+
+
+## A more in-depth description on how to build and flash manually
+
 This project uses `make` to build and optionally flash the firmware. On Mac OS you may
 (or may not) already have `make` installed. I had it on my Macs because I have
 Xcode installed on them (along with the command line tools).
@@ -26,6 +91,8 @@ Or on Mac or Linux you would type:
 ```
 make -j12
 ```
+
+![VSCode Terminal and Make](images/VSCode-Terminal-Make.png)
 
 > Note: The `-j12` instructs the `make` tool (`mingw32-make.exe`) to use twelve jobs (threads) when compiling; this speeds up the build process
 substantially.
