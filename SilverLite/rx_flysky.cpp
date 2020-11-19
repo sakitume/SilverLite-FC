@@ -109,10 +109,10 @@ enum e_IBUSChannels
 #ifdef FLYSKY_i6_MAPPING
 static uint8_t aux_map[][4] =
 {
-    { THROTTLE_KILL_SWITCH,     kIBUS_Aux5,     0,  50  },
-    { LEVELMODE,                kIBUS_Aux3,     0,  50  },
-    { MOTOR_BEEPS_CHANNEL,      kIBUS_Aux4,     25, 100 },
-    { RATES,                    kIBUS_Aux6,     0,  50 }
+    { THROTTLE_KILL_SWITCH,     kIBUS_Aux1,     0,  50  },
+    { LEVELMODE,                kIBUS_Aux2,     0,  50  },
+    { MOTOR_BEEPS_CHANNEL,      kIBUS_Aux3,     25, 100 },
+    { RATES,                    kIBUS_Aux4,     0,  50 }
 };
 #endif
 
