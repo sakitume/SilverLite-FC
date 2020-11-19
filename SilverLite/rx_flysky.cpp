@@ -179,6 +179,7 @@ void rx_init( void )
 {
     rxSpiConfig_t rxConfig;
     rxConfig.rx_spi_protocol = RX_SPI_A7105_FLYSKY_2A;  // TODO, this should be configurable
+//    rxConfig.rx_spi_protocol = RX_SPI_A7105_FLYSKY;  // TODO, this should be configurable
     rxConfig.extiIoTag = 0;
 
     rxRuntimeConfig_t rxRuntimeConfig;  // this isn't read, only written to
