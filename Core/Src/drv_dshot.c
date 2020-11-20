@@ -215,4 +215,33 @@ void motorbeep( bool motors_failsafe, int channel )
 	}
 }
 
+#if defined(TURTLE_MODE)
+// DSHOT_CMD constants and basic algorithm (repeat 10 times, ensure telemetry bit set, etc)
+// were determined from examining Betaflight source code
+#define    DSHOT_CMD_SPIN_DIRECTION_NORMAL 		20
+#define    DSHOT_CMD_SPIN_DIRECTION_REVERSED 	21
+
+#define DSHOT_INITIAL_DELAY_US 10000
+#define DSHOT_COMMAND_DELAY_US 1000
+
+void pwm_set_direction(bool bNormalDirection)
+{
+	uint8_t command = bNormalDirection ? DSHOT_CMD_SPIN_DIRECTION_NORMAL : DSHOT_CMD_SPIN_DIRECTION_REVERSED;
+
+	delay(DSHOT_INITIAL_DELAY_US - DSHOT_COMMAND_DELAY_US);
+	int repeats = 10;
+	while (repeats--)
+	{
+		delay(DSHOT_COMMAND_DELAY_US);
+
+		make_packet( 0, command, true );
+		make_packet( 1, command, true );
+		make_packet( 2, command, true );
+		make_packet( 3, command, true );
+		bitbang_data();
+	}
+	delay(DSHOT_COMMAND_DELAY_US);
+}
+#endif
+
 #endif // DSHOT_DRIVER
