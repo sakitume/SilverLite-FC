@@ -86,24 +86,6 @@ static void exitTurtleMode()
 	}
 }
 
-//------------------------------------------------------------------------------
-static float applyTurtleMode(int motor)
-{
-	ledcommand = 1;
-	idle_offset = 0;
-
-	switch (motor)
-	{	
-		case MOTOR_FR - 1:
-			return rxcopy[PITCH] + rxcopy[ROLL];
-		case MOTOR_FL - 1:
-			return rxcopy[PITCH] - rxcopy[ROLL];
-		case MOTOR_BR - 1:
-			return -rxcopy[PITCH] + rxcopy[ROLL];
-		case MOTOR_BL - 1:
-			return -rxcopy[PITCH] - rxcopy[ROLL];
-	}
-}
 #endif
 
 #if defined(MAX_THROTTLE_TO_ARM) || defined(TURTLE_MODE)
@@ -309,9 +291,6 @@ void control( void )
 		}
 		if ( gettime() - motors_failsafe_time > MOTORS_FAILSAFETIME ) {
 			motors_failsafe = true; // MOTORS_FAILSAFETIME after failsafe we turn off the motors.
-#if defined(TURTLE_MODE)
-			exitTurtleMode();
-#endif			
 		}
 	} else {
 		motors_failsafe_time = 0;
@@ -521,6 +500,53 @@ void control( void )
 		thrsum = 0.0f;
 		mixmax = 0.0f;
 
+#if defined(TURTLE_MODE)
+		// If turtle mode is active, precompute some things we'll need to apply
+		// to each motor channel in the for() loop following this snippet
+		// This code is based on Betaflight source code. Specifically the
+		// function applyFlipOverAfterCrashModeToMotors() in mixer.c
+		float flipPower;
+		float signPitch;
+		float signRoll;
+		if (gTurtleModeActive)
+		{
+			float vPitch = rxcopy[PITCH];
+			float vRoll = rxcopy[ROLL];
+			float vPitchAbs = fabsf(vPitch);
+			float vRollAbs = fabsf(vRoll);
+
+			signPitch = vPitch < 0 ? +1 : -1;
+		 	signRoll = vRoll < 0 ? +1 : -1;
+
+			float length = sqrtf(vPitchAbs*vPitchAbs + vRollAbs*vRollAbs);
+			float cosPhi = (vPitchAbs + vRollAbs) / (sqrtf(2.0f) * length);
+			const float cosThreshold = sqrtf(3.0f)/2.0f; // cos(PI/6.0f)
+			if (cosPhi < cosThreshold) 
+			{
+				// Enforce either roll or pitch exclusively, if not on diagonal
+				if (vRollAbs > vPitchAbs) 
+				{
+					signPitch = 0;
+				}
+				else 
+				{
+					signRoll = 0;
+				}
+			}
+
+			// Apply a reasonable amount of stick deadband
+			#define CRASH_FLIP_STICK_MINF	0.15f
+			const float flipStickRange = 1.0f - CRASH_FLIP_STICK_MINF;
+			flipPower = length - CRASH_FLIP_STICK_MINF;
+			if (flipPower < 0)
+			{
+				flipPower = 0.0f;
+			}
+			flipPower /= flipStickRange;
+		}
+#endif
+
+
 		for ( int i = 0; i < 4; ++i ) {
 #if defined(MOTORS_TO_THROTTLE) || defined(MOTORS_TO_THROTTLE_MODE)
 
@@ -556,7 +582,36 @@ void control( void )
 #if defined(TURTLE_MODE)
 			if (gTurtleModeActive)
 			{
-				mix[i] = applyTurtleMode(i);
+				ledcommand = 1;
+				idle_offset = 0;
+
+				float power;
+				switch (i)
+				{
+					case MOTOR_FR - 1:
+						power = -1.0f*signPitch + -1.0f*signRoll;
+						break;
+					case MOTOR_FL - 1:
+						power = -1.0f*signPitch + +1.0f*signRoll;
+						break;
+					case MOTOR_BR - 1:
+						power = +1.0f*signPitch + -1.0f*signRoll;
+						break;
+					case MOTOR_BL - 1:
+						power = +1.0f*signPitch + +1.0f*signRoll;
+						break;
+				}
+				if (power < 0.0f)
+				{
+					power = 0.0f;
+				}
+
+				power = power * flipPower;
+				if (power > 1.0f)
+				{
+					power = 1.0f;
+				}
+				mix[i] = power;
 			}
 #endif
 			if ( mix[ i ] < 0.0f ) {
