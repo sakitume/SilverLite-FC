@@ -14,10 +14,11 @@ RPM filtering, blackbox logging, enhanced DSHOT implementations, etc. Please che
 
 SilverLite features include:
 
-* A minimal OSD
-* IBUS support
+* A minimal OSD.
+* Turtle mode (flip after crash).
+* IBUS support.
 * Bayang protocol using an external transceiver (NRF24L01, XN297, XN297L). Low latency, theoretical 2ms (or 3ms depending on transmitter), or 5ms if using telemetry.
-* SPI AFHDS and AFHDS2A support (only when building for `MATEKF411RX` target).
+* SPI AFHDS and AFHDS2A support (only when building for `MATEKF411RX` target). Low latency, 1.5ms for AFHDS, 3.850ms for AFHDS2A.
 * Enhanced telemetry and configuration if using my [SilverLite Firmware for the FlySky FS-i6](https://github.com/sakitume/SilverLite-FS-i6) or
 my SilverLite TX firmware for STM32, ESP32, ESP8266 (unreleased).
 

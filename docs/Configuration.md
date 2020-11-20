@@ -9,7 +9,7 @@ Here is a short checklist of things to consider:
     * On-board SPI AFHDS/AFHDS2A is available when using the "HappyModel Crazybee F4 Lite 1S" flight controller (found on the Mobula6). This is a `MATEKF411RX` target board.
     * External SPI Bayang is available using various [transceiver modules.](Transceiver.md).
         * I've had great success with the [Play F4 board and an NRF24L01](PlayF4_NRF24L01.md).
-* Configure your aux channels: throttle kill switch (similar to an arm switch), level mode enable/disable, motor beeps, etc
+* Configure your aux channels: throttle kill switch (similar to an arm switch), level mode enable/disable, turtle mode, motor beeps, etc
 * Will you be using RPM filtering?
     * If so, you'll want to make sure your ESCs are flashed with either [JESC](https://jflight.net/) or [JazzMaverick](https://github.com/JazzMaverick/BLHeli/tree/JazzMaverick-patch-1/BLHeli_S%20SiLabs).
 
