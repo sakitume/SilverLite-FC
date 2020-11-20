@@ -111,7 +111,10 @@ static uint8_t aux_map[][4] =
 {
     { THROTTLE_KILL_SWITCH,     kIBUS_Aux1,     0,  50  },
     { LEVELMODE,                kIBUS_Aux2,     0,  50  },
-    { MOTOR_BEEPS_CHANNEL,      kIBUS_Aux3,     25, 100 },
+    { MOTOR_BEEPS_CHANNEL,      kIBUS_Aux3,     25, 65 },
+#if defined(TURTLE_MODE)    
+    { TURTLE_MODE,              kIBUS_Aux3,     75, 100 },
+#endif    
     { RATES,                    kIBUS_Aux4,     0,  50 }
 };
 #endif
@@ -265,6 +268,23 @@ void checkrx( void )
             packetrx++;
             lastRXTime = now;
             failsafe = false;
+
+#if 0
+            static uint32_t last;
+            uint32_t now = gettime();
+            if ((now - last) > (100000 * 4))
+            {
+            #if 1
+                // log IBUS AUX1 thru AUX6
+                console_sendPacket(3, (uint8_t*)(rcData+4), 6*2);
+            #else
+                // Log AETR, AUX1, AUX2
+                console_sendPacket(3, (uint8_t*)(rcData+0), 6*2);
+            #endif        
+                last = now;
+            }
+#endif
+
         }
         break;
     }
