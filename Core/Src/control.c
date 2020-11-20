@@ -45,6 +45,130 @@ float rxcopy[ 4 ];
 float bb_throttle;
 float bb_mix[ 4 ];
 
+
+#if defined(TURTLE_MODE)
+
+bool gTurtleModeActive;	// global so update_osd() in silverlite.cpp can detect if it is active
+extern int idle_offset;
+static int orig_idle_offset = -1;
+
+//------------------------------------------------------------------------------
+static void enterTurtleMode()
+{
+	if (!gTurtleModeActive)
+	{
+		gTurtleModeActive = true;
+
+		// Set pwm direction to be reverse
+		pwm_set_direction(false);
+
+		if (orig_idle_offset < 0)
+		{
+			orig_idle_offset = idle_offset;
+		}
+	}
+}
+
+//------------------------------------------------------------------------------
+static void exitTurtleMode()
+{
+	if (gTurtleModeActive)
+	{
+		gTurtleModeActive = false;
+
+		// Set pwm direction to be normal
+		pwm_set_direction(true);
+
+		if (orig_idle_offset > 0)
+		{
+			orig_idle_offset = idle_offset;
+		}
+	}
+}
+
+//------------------------------------------------------------------------------
+static float applyTurtleMode(int motor)
+{
+	ledcommand = 1;
+	idle_offset = 0;
+
+	switch (motor)
+	{	
+		case MOTOR_FR - 1:
+			return rxcopy[PITCH] + rxcopy[ROLL];
+		case MOTOR_FL - 1:
+			return rxcopy[PITCH] - rxcopy[ROLL];
+		case MOTOR_BR - 1:
+			return -rxcopy[PITCH] + rxcopy[ROLL];
+		case MOTOR_BL - 1:
+			return -rxcopy[PITCH] - rxcopy[ROLL];
+	}
+}
+#endif
+
+#if defined(MAX_THROTTLE_TO_ARM) || defined(TURTLE_MODE)
+static bool armed;
+
+//------------------------------------------------------------------------------
+// Checks to see if global "armed" state should be changed by examining 
+// aux[THROTTLE_KILL_SWITCH]. If so it will also check if turtle mode should be
+// enabled/disabled as necessary.
+// Returns true if global "armed" state is true
+static bool checkArmingState()
+{
+	char currArmedState = !aux[THROTTLE_KILL_SWITCH];
+
+	// Values within aux[] should always be 0 or 1, 
+	// so comparing such a value against 0x88 lets us know if it was valid or not
+	static char lastArmedState = 0x88;	
+	if (lastArmedState == 0x88)
+	{
+		lastArmedState = currArmedState;
+	}
+
+	if (currArmedState != lastArmedState)
+	{
+		lastArmedState = currArmedState;
+		if (currArmedState)
+		{
+#if defined(MAX_THROTTLE_TO_ARM)			
+			// Toggled to armed state. Check throttle value, if not close enough
+			// to zero then ignore the switch
+			if (rx[ 3 ] < MAX_THROTTLE_TO_ARM)
+#endif			
+			{
+				// It is safe to arm
+				armed = true;
+
+#if defined(TURTLE_MODE)
+				if (aux[TURTLE_MODE])
+				{
+					enterTurtleMode();
+				}
+#endif				
+			}
+		}
+		else
+		{
+			// Toggled to disarmed state (kill switch was activated)
+			if (armed)
+			{
+				armed = false;
+
+#if defined(TURTLE_MODE)
+				if (gTurtleModeActive)
+				{
+					exitTurtleMode();
+				}
+#endif				
+			}
+		}
+	}
+	return armed;
+}
+#endif
+
+
 void control( void )
 {
 	// rates / expert mode
@@ -185,6 +309,9 @@ void control( void )
 		}
 		if ( gettime() - motors_failsafe_time > MOTORS_FAILSAFETIME ) {
 			motors_failsafe = true; // MOTORS_FAILSAFETIME after failsafe we turn off the motors.
+#if defined(TURTLE_MODE)
+			exitTurtleMode();
+#endif			
 		}
 	} else {
 		motors_failsafe_time = 0;
@@ -204,6 +331,13 @@ void control( void )
 		// 	tx_just_turned_on = true;
 		// }
 	}
+
+#if defined(MAX_THROTTLE_TO_ARM) || defined(TURTLE_MODE)
+	if (!checkArmingState())
+	{
+		prevent_start = true;
+	}
+#endif
 
 	if ( motors_failsafe || aux[ THROTTLE_KILL_SWITCH ] || prevent_start ) {
 		onground = 1; // This stops the motors.
@@ -388,7 +522,6 @@ void control( void )
 		mixmax = 0.0f;
 
 		for ( int i = 0; i < 4; ++i ) {
-
 #if defined(MOTORS_TO_THROTTLE) || defined(MOTORS_TO_THROTTLE_MODE)
 
 			extern int idle_offset;
@@ -420,6 +553,12 @@ void control( void )
 
 #endif // defined(MOTORS_TO_THROTTLE) || defined(MOTORS_TO_THROTTLE_MODE)
 
+#if defined(TURTLE_MODE)
+			if (gTurtleModeActive)
+			{
+				mix[i] = applyTurtleMode(i);
+			}
+#endif
 			if ( mix[ i ] < 0.0f ) {
 				mix[ i ] = 0.0f;
 			} else if ( mix[ i ] > 1.0f )	{

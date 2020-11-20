@@ -212,17 +212,32 @@
 #define LEVELMODE               CH_FLIP     // SwB/1   ==  MULTI_CHAN_5/DEVO_CHAN_6
 
 #undef MOTOR_BEEPS_CHANNEL
-#define MOTOR_BEEPS_CHANNEL     CH_VID      // SwC/3   ==  MULTI_CHAN_8/DEVO_CHAN_8
+#define MOTOR_BEEPS_CHANNEL     CH_VID      // SwC/2   ==  MULTI_CHAN_8/DEVO_CHAN_8
 
 #define INVERT_CH_HEADFREE                  // Invert CH_HEADFREE logic
 #undef RATES
 #define RATES                   CH_HEADFREE // SwD/1   ==  MULTI_CHAN_9/DEVO_CHAN_9
+
+#define TURTLE_MODE             CH_RTH      // SwC/3   ==  MULTI_CHAN_10/DEVO_CHAN_10
 
 #undef LEDS_ON
 #define LEDS_ON                 CH_ON
 
 #undef FN_INVERTED
 #define FN_INVERTED             CH_OFF      // Default value (DEVO_CHAN_6) conflicts with my channel choice for LEVELMODE
+
+//------------------------------------------------------------------------------
+// When you toggle the THROTTLE_KILL_SWITCH to arm the quad, we check to make
+// sure the throttle is *BELOW* the value defined by MAX_THROTTLE_TO_ARM. If it
+// is above that value then we'll disregard the arm request.
+//
+// If you'd rather not have this behavior then you can comment out the definition
+//
+// The throttle value is normalized between 0.0 and 1.0, so you'll want to use
+// a very small number
+//------------------------------------------------------------------------------
+#define MAX_THROTTLE_TO_ARM	0.05f
+
 
 //------------------------------------------------------------------------------
 // Gyro orientation
