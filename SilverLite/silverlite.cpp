@@ -21,6 +21,10 @@ extern "C" {
     extern float apidkp[];
     extern float apidkd[];
 
+#ifdef TURTLE_MODE
+    extern bool gTurtleModeActive;
+#endif    
+
 #ifdef PID_STICK_TUNING
     extern int current_pid_axis;
     extern int current_pid_term;
@@ -111,16 +115,27 @@ static void update_osd()
     s = tprintf("\x9C%d:%02d", minutes, flyTimeSec%60);
     osd_print(row, 30 - strlen(s) - 1, s);
 
-    static const int kBatteryRow = maxRows/4*3;
-    static bool hadLowBattery;
+    const int kBatteryRow = maxRows/4*3;
+    static bool bErasePreviousMsg;
+
+    // Draw or erase "LOW BATTERY" or "CRASH FLIP" as appropriate
+#ifdef TURTLE_MODE
+    if (lowbatt || gTurtleModeActive)
+#else        
     if (lowbatt)
+#endif
     {
-        hadLowBattery = true;
-        osd_print(kBatteryRow, (30 - 11) / 2, "LOW BATTERY");
+        bErasePreviousMsg = true;
+#ifdef TURTLE_MODE
+        const char *msg = gTurtleModeActive ? "CRASH FLIP " : "LOW BATTERY";
+#else
+        const char *msg = "LOW BATTERY";
+#endif
+        osd_print(kBatteryRow, (30 - 11) / 2, msg);
     }
-    else if (hadLowBattery)
+    else if (bErasePreviousMsg)
     {
-        hadLowBattery = false;
+        bErasePreviousMsg = false;
         osd_erase(kBatteryRow, (30 - 11) / 2, 11);
     }
 
