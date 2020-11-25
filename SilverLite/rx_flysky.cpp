@@ -135,8 +135,11 @@ static uint8_t aux_map[][4] =
 {
     { THROTTLE_KILL_SWITCH,     kIBUS_Aux1,     0,  30  },
     { LEVELMODE,                kIBUS_Aux1,     35, 75  },
-    { MOTOR_BEEPS_CHANNEL,      kIBUS_Aux2,     50, 100 },
-    { RATES,                    kIBUS_Aux4,     0,  35  },
+    { MOTOR_BEEPS_CHANNEL,      kIBUS_Aux2,     35, 75 },
+#if defined(TURTLE_MODE)    
+    { TURTLE_MODE,              kIBUS_Aux2,     75, 100 },
+#endif    
+    { RATES,                    kIBUS_Aux3,     0,  35  },
 };
 #endif
 
