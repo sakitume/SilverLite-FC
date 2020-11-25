@@ -93,6 +93,12 @@
 #define     ACRO_I      {   .250,   .250,   .50     };
 #define     ACRO_D      {   .035,   .035,   .0      };
 
+// 65mm whoop, 0802 19000kv, RPM filtering, 48khz PWM
+//#define     ACRO_P      {   .038,   .038,   .01     };
+//#define     ACRO_I      {   .140,   .140,   .50     };
+//#define     ACRO_D      {   .030,   .030,   .0      };
+
+
 // Angle mode P and D terms
 #define     ANGLE_P1    10.
 #define     ANGLE_D1    3.0
