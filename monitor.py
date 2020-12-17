@@ -96,6 +96,12 @@ def handlePacket(cmdID, packet):
             for b in packet:
                 print hex(b),
             print "\n"
+    elif cmdID == 0x04: # Debug logging of RPM_TELEMETRY_DEBUG data
+        if len(packet) == 8:
+            debugData = struct.unpack("<" + ('h'*4), packet)
+            for data  in debugData:
+                print data,
+            print "\n"
     else:
         print "Unknown packet type: ", hex(cmdID), len(packet)
 

@@ -21,6 +21,16 @@ extern "C" {
     extern float apidkp[];
     extern float apidkd[];
 
+//    #define RPM_TELEMETRY_DEBUG
+    #ifdef RPM_TELEMETRY_DEBUG
+    extern uint32_t rpm_telemetry_no_telemetry_count;
+    extern uint32_t rpm_telemetry_bitsize_errors;   // if GCR_FREQUENCY is set to a too high value
+    extern uint32_t rpm_telemetry_gcr_decode_errors;
+    extern uint32_t rpm_telemetry_csum_errors;
+    extern uint32_t rpm_telemetry_sample_stats[];   // 12 entries
+    #endif
+
+
 #ifdef TURTLE_MODE
     extern bool gTurtleModeActive;
 #endif    
@@ -316,6 +326,21 @@ bool silverlite_postupdate(uint32_t max_used_loop_time)
         console_appendPacket16(b_crc_errors);
         console_closePacket(0x02);
 #endif
+
+#ifdef RPM_TELEMETRY_DEBUG
+        // Sending this packet takes approx 500us
+        console_openPacket();
+        console_appendPacket16(rpm_telemetry_no_telemetry_count);
+        console_appendPacket16(rpm_telemetry_bitsize_errors);
+        console_appendPacket16(rpm_telemetry_gcr_decode_errors);
+        console_appendPacket16(rpm_telemetry_csum_errors);
+        console_closePacket(0x04);
+        rpm_telemetry_no_telemetry_count = 0;
+        rpm_telemetry_bitsize_errors = 0;
+        rpm_telemetry_gcr_decode_errors = 0;
+        rpm_telemetry_csum_errors = 0;
+#endif
+
 
 
         max_used_loop_time = 0;
