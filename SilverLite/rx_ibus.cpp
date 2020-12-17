@@ -248,6 +248,8 @@ static float T_to_0_to_1(int v)
 //------------------------------------------------------------------------------
 static void handlePacket(const uint16_t *channels)
 {
+    rxmode = RXMODE_NORMAL;
+
 #if 0
     static uint32_t last;
     uint32_t now = gettime();
