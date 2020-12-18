@@ -7,3 +7,5 @@
 # STM32CubeIDE files
 /*Debug.launch
 
+/Test/gcc_debug
+/Test/gcc_release
