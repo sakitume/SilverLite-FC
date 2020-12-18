@@ -106,6 +106,8 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+extern void usermain();
+usermain();
   while (1)
   {
     /* USER CODE END WHILE */
