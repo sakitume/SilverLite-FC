@@ -28,7 +28,7 @@
 #endif
 
 #if !defined(RX_SILVERLITE_BAYANG_PROTOCOL) && !defined(RX_IBUS) && !defined(RX_FLYSKY)
-#error
+    #warning "No RX implementation was chosen"
 #endif
 
 //------------------------------------------------------------------------------
@@ -157,6 +157,9 @@
 #elif defined(OMNIBUSF4)
     #define RPM_FILTER
     #define LOOPTIME    250
+#elif defined(OMNIBUS)
+    //#define RPM_FILTER
+    #define LOOPTIME    500
 #else
     #error "Unknown or unsupported flight controller target. Please edit this file"
     #undef RPM_FILTER
@@ -293,6 +296,12 @@
     #define MOTOR_BR 4
     #define MOTOR_FR 3
 #elif defined(MATEKF411RX)
+    #define MOTOR_BL 3
+    #define MOTOR_FL 4
+    #define MOTOR_BR 1
+    #define MOTOR_FR 2
+#elif defined(OMNIBUS)  // TODO
+    #warning "Motor order has not been verified"
     #define MOTOR_BL 3
     #define MOTOR_FL 4
     #define MOTOR_BR 1
