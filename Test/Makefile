@@ -221,8 +221,13 @@ flash: $(TARGET_ELF)
 endif
 
 # Flash using ST-Link adapter
-stlinkflash:
+stlinkflash: $(TARGET_ELF)
 	openocd -d2 -f interface/stlink.cfg -c "transport select hla_swd" -f target/stm32f4x.cfg -c "reset_config none" -c "program $(TARGET_ELF)  verify reset; shutdown;"
+
+# Flash F3 device using ST-Link adapter
+stlinkflashf3: $(TARGET_ELF)
+	openocd -d2 -f interface/stlink.cfg -c "transport select hla_swd" -f target/stm32f3x.cfg -c "reset_config none" -c "program $(TARGET_ELF)  verify reset; shutdown;"
+
 
 # Flash using STM32CubeProgrammer via USB
 download: $(TARGET_ELF)
