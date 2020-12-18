@@ -17,7 +17,7 @@ SOURCES =  \
 	$(BASE_DIR)/Core/Src/drv_time.c \
 	$(BASE_DIR)/Core/Src/drv_led.c \
 	$(BASE_DIR)/Core/Src/drv_reset.c \
-	$(BASE_DIR)/Test/test_usb.cpp \
+	$(BASE_DIR)/Test/test_basic_1_led.cpp \
 	$(BASE_DIR)/SilverLite/delay.cpp \
 
 #	$(BASE_DIR)/SilverLite/console.cpp \
