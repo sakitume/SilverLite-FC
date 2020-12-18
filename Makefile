@@ -39,6 +39,8 @@ endif
 #-------------------------------------------------------------------------------
 # Source files (SOURCES), Include folders (INCLUDE_DIRS), Defines (DEFINES)
 #-------------------------------------------------------------------------------
+BASE_DIR 	= .
+#BASE_DIR 	= ..
 include source.mk
 include stm32cubemx.mk
 

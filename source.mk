@@ -7,18 +7,18 @@ DEBUG_OPTIMISED_SRC  := ""
 # Source Files
 #-------------------------------------------------------------------------------
 SOURCES =  \
-	$(wildcard Core/Src/*.c) \
-	$(wildcard SilverLite/*.c) \
-	$(wildcard SilverLite/*.cpp) \
-	$(wildcard SilverLite/rx_afhds2a/*.c) \
-	$(wildcard SilverLite/rx_afhds2a/*.cpp) \
+	$(wildcard $(BASE_DIR)/Core/Src/*.c) \
+	$(wildcard $(BASE_DIR)/SilverLite/*.c) \
+	$(wildcard $(BASE_DIR)/SilverLite/*.cpp) \
+	$(wildcard $(BASE_DIR)/SilverLite/rx_afhds2a/*.c) \
+	$(wildcard $(BASE_DIR)/SilverLite/rx_afhds2a/*.cpp) \
 
 #-------------------------------------------------------------------------------
 # Include directories
 #-------------------------------------------------------------------------------
 INCLUDE_DIRS=\
-	Core/Src \
-	SilverLite \
+	$(BASE_DIR)/Core/Src \
+	$(BASE_DIR)/SilverLite \
 
 #-------------------------------------------------------------------------------
 # Defines
