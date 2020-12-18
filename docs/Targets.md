@@ -90,7 +90,52 @@ I want to add support for the Mobula6 flight controller which is the "HappyModel
 In Betaflight it is known as the `MATEKF411RX` target. So I would create a new folder with that name within
 our `Targets` folder. 
 
-Using STM32CubeMX you'll want to configure the various pins and perhipherals of the STM32 chip.
+Using STM32CubeMX you'll want to configure the various pins and perhipherals of the STM32 chip:
+
+* Set clock config as appropriate (making sure you choose options that allow VCP to work correctly)
+    * Set "HCLK" to desired clock frequency (72, 96, 100, 120, etc)
+        * This will adjust sources (Use HSE instead of HSI, etc)
+* Configure TIM2. It is used for `gettime()`
+    * "Clock Source" - "Internal Clock"
+    * "Counter Settings"
+        * "Prescaler" - Set to match clock Mhz
+        * "Counter Period" - 0xFFFFFFFF
+* Configure ADC1. It is used for monitoring battery voltage
+    * To configure ADC, look within Betaflight `target.h` for VBAT_ADC_PIN and then in "Pinout view"
+    select that pin and configure it for ADC. 
+        * For F3 this results in enabling ADC1_IN1
+            * Then in "ADC1 Mode and Configuration" for "IN1" choose "IN1 Single-ended".
+                Also tick the "Vrefint Channel" checkbox.
+            * Under "DMA Settings" click "Add" and then for: DMA Request, Channel, Direction, Priority
+                * ADC1, DMA1 Channel 1, Peripheral To Memory Low
+                * Under "DMA Request Settings" for this new entry:
+                    * "Mode" - "Circular"
+                    * "Increment Address" - Tick only the "Memory" checkbox
+                    * "Data Width" - "Peripheral"/"Half Word", "Memory"/"Half Word"
+* TIM1 and DMA are used for implementing DSHOT.
+    * Configure TIM1
+        * "Clock Source" - "Internal Clock"
+        * "Channel1" - "Output Compare No Output"
+        * "Channel2" - "Output Compare No Output"
+        * Under "DMA Settings" click on "Add" and create the following
+            * For F4 devices (DMA Reqeuest, Stream, Direction, Priority):
+                * TIM1_UP,  DMA2 Stream 5,  Memory To Peripheral,   High
+                * TIM1_CH1, DMA2 Stream 1,  Memory To Peripheral,   High
+                * TIM1_CH2, DMA2 Stream 2,  Memory To Peripheral,   High
+            * For F3 devices (DMA Request, Channel, Direction, Priority)
+                * TIM1_UP,  DMA1 Channel 5,  Memory To Peripheral,   High
+                * TIM1_CH1, DMA1 Channel 2,  Memory To Peripheral,   High
+                * TIM1_CH2, DMA1 Channel 3,  Memory To Peripheral,   High
+            * Ensure each addition (under "DMA Request Settings") configures:
+                * "Mode" is "Normal"
+                * "Data Width" to be "Word"/"Word"
+                * "Increment Address" is ticked for "Memory" *EXCEPT* for "TIM1_UP"
+            * The "NVIC Settings" for all of the DMA interrupts should show they are enabled
+
+
+
+
+
 
 Required by Silverware:
 
@@ -100,7 +145,7 @@ Required by Silverware:
     * SPI2_MISO - PA6 (GPIO input)
     * SPI2_MOSI - PA7 (GPIO output)
 * SPI interface for the OSD
-    * This is actually configured by editing `drv_sd_spi.config.h` rather than via Stm32CubeMX
+    * This is actually configured by editing `drv_osd_spi.config.h` rather than via Stm32CubeMX
 * SWD pins (SWDIO, SWCLK) - If available
     * SWD is not available on `MATEKF411RX`, in fact PA14 and/or PA13 are used for other purposes
 * ESC1 - PB10 (GPIO output)
