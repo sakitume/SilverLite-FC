@@ -106,11 +106,11 @@ INCLUDE_DIRS += \
 # STM32 link script
 #-------------------------------------------------------------------------------
 ifeq ($(TARGET),OMNIBUSF4)
-LDSCRIPT = STM32F405RGTx_FLASH.ld
+LDSCRIPT = $(BASE_DIR)/STM32F405RGTx_FLASH.ld
 else ifneq ($(filter $(TARGET),NOX MATEKF411RX),)
-LDSCRIPT = STM32F411CEUx_FLASH.ld
+LDSCRIPT = $(BASE_DIR)/STM32F411CEUx_FLASH.ld
 else ifneq ($(filter $(TARGET),OMNIBUS CRAZYBEEF3FS),)
-LDSCRIPT = STM32F303CCTX_FLASH.ld
+LDSCRIPT = $(BASE_DIR)/STM32F303CCTX_FLASH.ld
 else
 $(error TARGET must be in: $(F4_TARGETS) $(F3_TARGETS))
 endif
