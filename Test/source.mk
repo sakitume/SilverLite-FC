@@ -39,6 +39,24 @@ DEFINES=\
 
 
 #-------------------------------------------------------------------------------
+# F3 USB support
+#-------------------------------------------------------------------------------
+SOURCES += \
+	$(wildcard $(BASE_DIR)/Targets/OMNIBUS/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/*.c) \
+	$(wildcard $(BASE_DIR)/Targets/OMNIBUS/Middlewares/ST/STM32_USB_Device_Library/Core/Src/*.c) \
+	$(wildcard $(BASE_DIR)/Targets/OMNIBUS/USB_DEVICE/App/*.c) \
+	$(wildcard $(BASE_DIR)/Targets/OMNIBUS/USB_DEVICE/Target/*.c)
+
+INCLUDE_DIRS+=\
+	$(BASE_DIR)/Targets/OMNIBUS/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc \
+	$(BASE_DIR)/Targets/OMNIBUS/Middlewares/ST/STM32_USB_Device_Library/Core/Inc \
+	$(BASE_DIR)/Targets/OMNIBUS/USB_DEVICE/App \
+	$(BASE_DIR)/Targets/OMNIBUS/USB_DEVICE/Target
+
+
+
+
+#-------------------------------------------------------------------------------
 # Source file groups
 #-------------------------------------------------------------------------------
 SPEED_OPTIMISED_SRC := $(SPEED_OPTIMISED_SRC) \
