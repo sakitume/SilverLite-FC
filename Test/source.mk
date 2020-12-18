@@ -41,6 +41,7 @@ DEFINES=\
 #-------------------------------------------------------------------------------
 # F3 USB support
 #-------------------------------------------------------------------------------
+ifeq ($(IS_F3_TARGET), 1)
 SOURCES += \
 	$(wildcard $(BASE_DIR)/Targets/OMNIBUS/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/*.c) \
 	$(wildcard $(BASE_DIR)/Targets/OMNIBUS/Middlewares/ST/STM32_USB_Device_Library/Core/Src/*.c) \
@@ -52,7 +53,7 @@ INCLUDE_DIRS+=\
 	$(BASE_DIR)/Targets/OMNIBUS/Middlewares/ST/STM32_USB_Device_Library/Core/Inc \
 	$(BASE_DIR)/Targets/OMNIBUS/USB_DEVICE/App \
 	$(BASE_DIR)/Targets/OMNIBUS/USB_DEVICE/Target
-
+endif
 
 
 
