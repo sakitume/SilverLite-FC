@@ -1,12 +1,17 @@
-// See: https://jeelabs.org/2018/getting-started-f407/
-#include "jee.h"
-#include "arch/stm32f4-usb.h"
-
 #include "config.h"
 #include "console.h"
 
 //------------------------------------------------------------------------------
+#if !defined(STM32F303xC)
+// See: https://jeelabs.org/2018/getting-started-f407/
+#include "jee.h"
+#include "arch/stm32f4-usb.h"
 UsbDev console;
+#else
+#include "jee.h"
+#include "f3_console.h"
+static f3Console console;
+#endif
 
 //------------------------------------------------------------------------------
 extern "C" {
@@ -22,9 +27,6 @@ extern "C" {
 //------------------------------------------------------------------------------
 void console_poll(void)
 {
-#if 0
-    console.poll();
-#else
     // Echo console input.
     // 
     while (console.readable())
@@ -46,7 +48,6 @@ void console_poll(void)
         }
         console.putc(ch);
     }
-#endif    
 }
 
 //------------------------------------------------------------------------------

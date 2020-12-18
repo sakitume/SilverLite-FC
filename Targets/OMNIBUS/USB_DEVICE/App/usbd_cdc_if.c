@@ -32,7 +32,49 @@
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
+//MDMFIX start
+static uint8_t gCDCInitialized;
 
+#define RECV_BUFFER_SIZE  32
+struct RingBuffer
+{
+    uint16_t volatile in, out;
+    uint8_t volatile buf [RECV_BUFFER_SIZE];
+};
+static struct RingBuffer gRecvBuffer;
+int f3Console_avail()
+{
+  int r = gRecvBuffer.in - gRecvBuffer.out;
+  return r >= 0 ? r : r + RECV_BUFFER_SIZE;
+}
+uint8_t f3Console_get() 
+{
+    uint16_t pos = gRecvBuffer.out;
+    uint8_t v = gRecvBuffer.buf[pos++];
+    gRecvBuffer.out = pos < RECV_BUFFER_SIZE ? pos : 0;
+    return v;
+}
+static void f3Console_onRecv(const uint8_t* Buf, uint32_t Len)
+{
+    for (uint32_t i = 0; i<Len; i++)
+    {
+      uint8_t v = Buf[i];
+
+      uint16_t pos = gRecvBuffer.in;
+      gRecvBuffer.buf[pos++] = v;
+      gRecvBuffer.in = pos < RECV_BUFFER_SIZE ? pos : 0;
+    }
+}
+void f3Console_putc(uint8_t ch)
+{
+    if (gCDCInitialized)
+    {
+        uint8_t c[1] = { (uint8_t)ch };
+        while(CDC_Transmit_FS(c, 1) == USBD_BUSY)
+            ;
+    }
+}
+//MDMFIX stop
 /* USER CODE END PV */
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
@@ -158,6 +200,9 @@ static int8_t CDC_Init_FS(void)
   /* Set Application Buffers */
   USBD_CDC_SetTxBuffer(&hUsbDeviceFS, UserTxBufferFS, 0);
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, UserRxBufferFS);
+  // MDMFIX Start
+  gCDCInitialized = 1;
+  // MDMFIX Stop
   return (USBD_OK);
   /* USER CODE END 3 */
 }
@@ -169,6 +214,9 @@ static int8_t CDC_Init_FS(void)
 static int8_t CDC_DeInit_FS(void)
 {
   /* USER CODE BEGIN 4 */
+  // MDMFIX start
+  gCDCInitialized = 0;
+  // MDMFIX stop
   return (USBD_OK);
   /* USER CODE END 4 */
 }
@@ -183,6 +231,13 @@ static int8_t CDC_DeInit_FS(void)
 static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 {
   /* USER CODE BEGIN 5 */
+  // MDMFIX Start
+  // See: https://community.st.com/s/question/0D50X00009XkgIYSAZ/unable-to-configure-serial-port-error-for-usb-cdc
+	static uint8_t lineCoding[7] // 115200bps, 1stop, no parity, 8bit
+	    = { 0x00, 0xC2, 0x01, 0x00, 0x00, 0x00, 0x08 };
+  // MDMFIX Stop
+
+
   switch(cmd)
   {
     case CDC_SEND_ENCAPSULATED_COMMAND:
@@ -223,11 +278,17 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
   /* 6      | bDataBits  |   1   | Number Data bits (5, 6, 7, 8 or 16).          */
   /*******************************************************************************/
     case CDC_SET_LINE_CODING:
-
+  // MDMFIX Start
+      // See: https://community.st.com/s/question/0D50X00009XkgIYSAZ/unable-to-configure-serial-port-error-for-usb-cdc
+    	memcpy(lineCoding, pbuf, sizeof(lineCoding));
+  // MDMFIX STOP
     break;
 
     case CDC_GET_LINE_CODING:
-
+  // MDMFIX Start
+      // See: https://community.st.com/s/question/0D50X00009XkgIYSAZ/unable-to-configure-serial-port-error-for-usb-cdc
+    	memcpy(pbuf, lineCoding, sizeof(lineCoding));
+  // MDMFIX STOP
     break;
 
     case CDC_SET_CONTROL_LINE_STATE:
@@ -263,6 +324,9 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
+  //MDMFIX start
+  f3Console_onRecv(Buf, *Len);
+  //MDMFIX stop
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
   return (USBD_OK);
