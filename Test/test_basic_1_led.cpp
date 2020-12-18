@@ -19,14 +19,16 @@ uint32_t max_used_loop_time;
 static void loop()
 {
     static uint8_t onOffState;
-#if 0    
     static uint32_t lastTime;
     uint32_t now = gettime();
+#if 1
     if ((now - lastTime) >= (1000 * 500))
+    {
+        lastTime = now;
 #else
     delay(1000 * 500);
-#endif
     {
+#endif
         if (onOffState)
         {
             ledoff();
@@ -52,7 +54,7 @@ extern "C" void usermain(void)
 	lastlooptime = gettime() - LOOPTIME;
     while (true)
     {
-//        ledflash( 500000 , 8 );
-		loop();
+        ledflash( 100000, 12 );
+//		loop();
     }
 }
