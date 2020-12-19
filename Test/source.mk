@@ -9,8 +9,8 @@ DEBUG_OPTIMISED_SRC  := ""
 #TEST_CONFIG = test_basic_1_led
 #TEST_CONFIG = test_basic_2_usb
 #TEST_CONFIG = test_basic_3_adc
-TEST_CONFIG = test_basic_4_gpio
-#TEST_CONFIG = test_4_osd
+#TEST_CONFIG = test_basic_4_gpio
+TEST_CONFIG = test_4_osd
 
 
 
