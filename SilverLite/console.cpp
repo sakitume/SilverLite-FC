@@ -2,7 +2,7 @@
 #include "console.h"
 
 //------------------------------------------------------------------------------
-#if !defined(STM32F303xC)
+#if defined(STM32F4)
 // See: https://jeelabs.org/2018/getting-started-f407/
 #include "jee.h"
 #include "arch/stm32f4-usb.h"

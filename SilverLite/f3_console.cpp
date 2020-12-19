@@ -1,5 +1,7 @@
 #include "f3_console.h"
 
+#if defined(STM32F3)
+
 extern "C" {
 extern void f3Console_putc(uint8_t ch);
 extern int f3Console_avail();
@@ -29,3 +31,7 @@ bool  f3Console::readable()
 {
     return f3Console_avail();
 }
+
+
+#endif
+

@@ -72,13 +72,16 @@ DEFINES += \
 
 ifeq ($(TARGET),OMNIBUSF4)
 DEFINES += \
-	STM32F405xx
+	STM32F405xx \
+	STM32F4
 else ifneq ($(filter $(TARGET),NOX MATEKF411RX),)
 DEFINES += \
-	STM32F411xE	
+	STM32F411xE	\
+	STM32F4
 else ifneq ($(filter $(TARGET),OMNIBUS CRAZYBEEF3FS),)
 DEFINES += \
-	STM32F303xC
+	STM32F303xC \
+	STM32F3
 else
 $(error TARGET must be in: $(F4_TARGETS) $(F3_TARGETS))
 endif
