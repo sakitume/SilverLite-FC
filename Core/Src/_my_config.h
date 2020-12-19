@@ -280,6 +280,11 @@
 #elif defined(MATEKF411RX)
     // MPU on HappyModel Crazybee F4 Lite 1S is already correctly oriented
     // so no adjustments necessary
+#elif defined(OMNIBUS)
+    // MPU on OMNIBUS (F3) is already correctly oriented
+    // so no adjustments necessary
+#else
+    #error "Unsupported flight controller target. Define mpu orientation here"
 #endif
 
 //------------------------------------------------------------------------------
