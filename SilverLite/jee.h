@@ -48,8 +48,13 @@ extern VTable& VTableRam ();
 extern void delay_us(uint32_t us);
 
 // architecture-specific definitions
-
-#include "arch/stm32f4.h"
+#if defined(STM32F4)
+    #include "arch/stm32f4.h"
+#elif defined(STM32F3)
+    #include "arch/stm32f3.h"
+#else
+    #error "Neither STM32F4 or STM32F3 were defined"
+#endif
 
 // shorthand: PinA<1> expands to Pin<'A',1>, etc
 
