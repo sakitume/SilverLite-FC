@@ -106,6 +106,19 @@ Using STM32CubeMX you'll want to configure the various pins and perhipherals of 
         * For F3 this results in enabling ADC1_IN1
             * Then in "ADC1 Mode and Configuration" for "IN1" choose "IN1 Single-ended".
                 Also tick the "Vrefint Channel" checkbox.
+            * Under "Parameter Settings"
+                * Under "ADC_Settings"
+                    * "Clock Prescaler"
+                        * For F4 - "PCLK2 divided by 8"
+                        * For F3 - "Synchronous clock mode divided by 4"
+                    * "Resolution" - "ADC 12-bit resolution"
+                    * "Scan Conversion Mode" - "Enabled"
+                    * "Continuous Conversion mode" - "Enabled"
+                * Under "ADC_Regular_ConversionMode"
+                    * F3 - "Enable Regular Convresions" - "Enable"
+                    * "Number of Conversion" - "2"
+                    
+
             * Under "DMA Settings" click "Add" and then for: DMA Request, Channel, Direction, Priority
                 * ADC1, DMA1 Channel 1, Peripheral To Memory Low
                 * Under "DMA Request Settings" for this new entry:

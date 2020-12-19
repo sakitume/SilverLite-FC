@@ -102,6 +102,13 @@ def handlePacket(cmdID, packet):
             for data  in debugData:
                 print data,
             print "\n"
+    elif cmdID == 0x05: # Debug logging for Test apps
+        if len(packet) >= 2:
+            numShorts = len(packet) / 2
+            debugData = struct.unpack("<" + ('h'*numShorts), packet)
+            for data in debugData:
+                print data,
+            print "\n"
     else:
         print "Unknown packet type: ", hex(cmdID), len(packet)
 

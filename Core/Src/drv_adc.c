@@ -12,8 +12,13 @@ void adc_init( void )
 	// With the current configuration HAL_DMA_IRQHandler() is called at 84e6/8/(480+12.5) = 21319.8 Hz
 
 	// Since we do not need the interrupt handler, we turn it off.
+	#if defined(STM32F303xC)
+	HAL_NVIC_DisableIRQ( DMA1_Channel1_IRQn );
+	HAL_NVIC_ClearPendingIRQ( DMA1_Channel1_IRQn );
+	#else
 	HAL_NVIC_DisableIRQ( DMA2_Stream0_IRQn );
 	HAL_NVIC_ClearPendingIRQ( DMA2_Stream0_IRQn );
+	#endif
 
 	extern ADC_HandleTypeDef hadc1;
 	HAL_ADC_Start_DMA( &hadc1, adc_array, 2 );
