@@ -125,6 +125,9 @@ Using STM32CubeMX you'll want to configure the various pins and perhipherals of 
                     * "Mode" - "Circular"
                     * "Increment Address" - Tick only the "Memory" checkbox
                     * "Data Width" - "Peripheral"/"Half Word", "Memory"/"Half Word"
+
+            * FIx RANK make sure VBat channel is rank 1, and Vrefint is rank 2
+
 * TIM1 and DMA are used for implementing DSHOT.
     * Configure TIM1
         * "Clock Source" - "Internal Clock"
