@@ -8,7 +8,7 @@ namespace Periph {
     constexpr uint32_t pwr   = 0x40007000;
 #endif    
     constexpr uint32_t gpio  = 0x48000000;      // pg 54, GPIOA
-    constexpr uint32_t rcc   = 0x40021000;      // pg 55, RCC
+    constexpr uint32_t rcc   = 0x40021000;      // pg 55, 137, RCC
 #if 0    
     constexpr uint32_t flash = 0x40023C00;
     constexpr uint32_t fsmc  = 0xA0000000;
@@ -230,3 +230,147 @@ struct Pin {
         MMIO32(gpio::bsrr) = mask & MMIO32(gpio::odr) ? mask << 16 : mask;
     }
 };
+
+
+// u(s)art
+
+template< typename TX, typename RX >
+struct UartDev {
+    // TODO does not recognise alternate TX pins
+    // Does not recognize UART4, UART5 (that some F3 devices provide)
+    // Construct uidx (0 based usart index), 0==USART1, 1==USART2, 2==USART3
+    //                                      Port-+         +-Pin
+    //                                           |         |
+    constexpr static int uidx = TX::id == 16 * ('A'-'A') + 2 ? 1 :  // PA2, USART2
+                                TX::id == 16 * ('A'-'A') + 9 ? 0 :  // PA9, USART1
+                                TX::id == 16 * ('B'-'A') + 6 ? 0 :  // PB6, USART1
+                                TX::id == 16 * ('B'-'A') + 10 ? 2 : // PB10, USART3
+                                // TODO more possible, using alt mode 8 instead of 7
+                                               0;   // else USART1
+
+
+    constexpr static uint32_t base = uidx == 0 ? 0x40013800 :   // USART1, pg 52 peripheral register boundary addresses
+                                     uidx == 1 ? 0x40004400 :   // USART2, pg 56 peripheral register boundary addresses
+                                                 0x40004800;    // USART3, pg 56 peripheral register boundary addresses
+
+    // pg 950 Table 165 USART register map   
+    constexpr static uint32_t USART_ISR = base + 0x1C;
+    constexpr static uint32_t USART_RDR = base + 0x24;
+    constexpr static uint32_t USART_TDR = base + 0x28;
+    constexpr static uint32_t USART_BRR = base + 0x0C;    // pg 950 and 940
+    constexpr static uint32_t USART_CR1 = base + 0x00;    // pg 950 and 929
+
+    static void init () {
+        tx.mode(Pinmode::alt_out, 7);
+        rx.mode(Pinmode::alt_out, 7);
+
+        if (uidx == 0)
+            Periph::bit(Periph::rcc+0x18, 14) = 1;      // enable USART1 clock (0x18 == RCC_APB2ENR, 14 == USART1EN)
+        else
+            Periph::bit(Periph::rcc+0x1C, 16+uidx) = 1; // enable U(S)ART 2..5 clock (0x40 = RCC_APB1ENR see pg 166, 152, bit 17 = USART2, bit 18 == USART3, etc)
+
+        baud(115200);
+        MMIO32(USART_CR1) = (1<<0) | (1<<3) | (1<<2);  // UE, TE, RE
+    }
+
+    static void baud (uint32_t baud, uint32_t hz = 72000000) {  // 72Mhz is default for F3
+        MMIO32(USART_BRR) = (hz + baud/2) / baud;
+    }
+
+    static bool writable () {
+        return (MMIO32(USART_ISR) & (1<<7)) != 0;  // TXE
+    }
+
+    static void putc (int c) {
+        while (!writable()) {}
+        MMIO32(USART_TDR) = (uint8_t) c;
+    }
+
+    static bool readable () {
+        return (MMIO32(USART_ISR) & ((1<<5) | (1<<3))) != 0;  // RXNE or ORE
+    }
+
+    static int getc () {
+        while (!readable()) {}
+        return MMIO32(USART_RDR);
+    }
+
+    static TX tx;
+    static RX rx;
+};
+
+template< typename TX, typename RX >
+TX UartDev<TX,RX>::tx;
+
+template< typename TX, typename RX >
+RX UartDev<TX,RX>::rx;
+
+// interrupt-enabled uart, sits on top of polled uart
+
+template< typename TX, typename RX, int N =50 >
+struct UartBufDev : UartDev<TX,RX> {
+    typedef UartDev<TX,RX> base;
+
+    static void init () {
+        UartDev<TX,RX>::init();
+
+        auto handler = []() {
+            if (base::readable()) {
+                int c = base::getc();
+                if (recv.free())
+                    recv.put(c);
+                // else discard the input
+            }
+            if (base::writable()) {
+                if (xmit.avail() > 0)
+                    base::putc(xmit.get());
+                else
+                    Periph::bit(base::USART_CR1, 7) = 0;  // disable TXEIE
+            }
+        };
+
+        switch (base::uidx) {
+            case 0: VTableRam().usart1 = handler; break;
+            case 1: VTableRam().usart2 = handler; break;
+            case 2: VTableRam().usart3 = handler; break;
+            case 3: VTableRam().uart4  = handler; break;
+            case 4: VTableRam().uart5  = handler; break;
+        }
+
+        // nvic interrupt numbers are 37, 38, 39, 52, and 53, respectively
+        constexpr uint32_t nvic_en1r = 0xE000E104;
+        constexpr int irq = (base::uidx < 3 ? 37 : 49) + base::uidx;
+        MMIO32(nvic_en1r) = 1 << (irq-32);  // enable USART interrupt
+
+        Periph::bit(base::USART_CR1, 5) = 1;  // enable RXNEIE
+    }
+
+    static bool writable () {
+        return xmit.free();
+    }
+
+    static void putc (int c) {
+        while (!writable()) {}
+        xmit.put(c);
+        Periph::bit(base::USART_CR1, 7) = 1;  // enable TXEIE
+    }
+
+    static bool readable () {
+        return recv.avail() > 0;
+    }
+
+    static int getc () {
+        while (!readable()) {}
+        return recv.get();
+    }
+
+    static RingBuffer<N> recv;
+    static RingBuffer<N> xmit;
+};
+
+template< typename TX, typename RX, int N >
+RingBuffer<N> UartBufDev<TX,RX,N>::recv;
+
+template< typename TX, typename RX, int N >
+RingBuffer<N> UartBufDev<TX,RX,N>::xmit;
+

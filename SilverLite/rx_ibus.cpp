@@ -156,6 +156,8 @@ static UartBufDev< PinA<9>, PinA<10>, 16 > uart;    // USART1
     #endif
 #elif defined(MATEKF411RX)
 static UartBufDev< PinA<9>, PinA<10>, 16 > uart;        // USART1
+#elif defined(OMNIBUS)
+static UartBufDev< PinB<10>, PinB<11>, 16 > uart;       // USART3
 #else
     #error "Pin assignements must be defined for this target"
 #endif
@@ -210,6 +212,9 @@ void rx_init()
     INVERTER_PIN.mode(Pinmode::out);
     INVERTER_PIN.write(1);
     #endif    
+#elif defined(OMNIBUS)
+    int hz = 72000000;       //F3 processor runs at 72Mhz
+    uart.baud(115200, hz);
 #else
     #error "Unable to determine what F4 variant to target"
 #endif    
