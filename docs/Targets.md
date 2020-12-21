@@ -146,9 +146,39 @@ Using STM32CubeMX you'll want to configure the various pins and perhipherals of 
 * For targets that implement internal SPI AFHDS/AFHDS2A receivers configure the following GPIO pins
     * `RX_SPI_LED_PIN`, "GPIO output level" == "Low", "Maximim output speed" == "High"
     * `RX_SPI_BIND_PIN`, "GPIO mode" == "Input mode"
-    * `RX_NSS_PIN`, "GPIO output level" == "Low", "Maximim output speed" == "High"
     * `RX_SPI_EXTI_PIN`, "GPIO mode" == "External Interrupt Mode with Rising edge trigger detection"
         * NOTE: Examine NVIC for this pin, it should be enabled. Also "NVIC Interupt Table" should be "EXTI line[15:10] interrupts", if it isn't then you must edit rx_a7105.c`
+* Configure GPIO pins for soft SPI support of the MPU. Examine Betaflight `target.h` (look for `GYRO_1_CS_PIN` and `GYRO_1_SPI_INSTANCE`). **NOTE:** The SilF4ware code that was forked from referred to the MPU SPI pins with "SPI2_" prefix. Don't let that confuse you into thinking we're using SPI2 of the STM32 device (it often isn't).
+    * "GPIO output Level" - "Low"
+    * "GPIO mode" - "Output Push Pull"
+    * "GPIO Pull-up/Pull-down" - "No pull-up and no pull-down"
+    * "Maximum output speed" - "High"
+    * Use the following labels:
+        * `SPI_MPU_SS`
+        * `SPI2_CLK`
+        * `SPI2_MOSI`
+    * For SPI MISO:
+        * "GPIO mode" - "Input Mode"
+        * `SPI2_MISO`
+* Configure GPIO pins for ESCs
+    * "GPIO output Level" - "Low"
+    * "GPIO mode" - "Output Push Pull"
+    * "Maximum output speed" - "High"
+    * Use the following labels:
+        * `ESC1`
+        * `ESC2`
+        * `ESC3`
+        * `ESC4`
+* Under "System Core" select "NVIC" and under "Code genearation" untick the "Generate IRQ handler" checkboxes for these:
+    * "Hard fault interrupt"
+    * "Memory management fault"
+    * "Pre-fetch fault, memory access fault"
+    * "Undefined instruction or illegal state"
+
+
+
+
+
 
 After this you'll want to "GENERATE CODE" and then edit the `main.c` that is generated.
 Look for `int main(void)` and at the bottom of the function you'll see this:
@@ -299,7 +329,7 @@ Additional/Available on this FC board
 * CURRENT_METER_ADC_PIN - PB1 (ADC)
 
 
-RX SPI (FlySky A7105)
+RX SPI on MATEKF411RX (FlySky A7105) 
 * SPI3_SCK_PIN  - PB3 (GPIO output)
 * SPI3_MISO_PIN - PB4 (GPIO input)
 * SPI3_MOSI_PIN - PB5 (GPIO output)
