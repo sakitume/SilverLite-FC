@@ -111,22 +111,29 @@ Using STM32CubeMX you'll want to configure the various pins and perhipherals of 
                     * "Clock Prescaler"
                         * For F4 - "PCLK2 divided by 8"
                         * For F3 - "Synchronous clock mode divided by 4"
-                    * "Resolution" - "ADC 12-bit resolution"
-                    * "Scan Conversion Mode" - "Enabled"
+                    * "Resolution" - "ADC 12-bit resolution" (this should already be set)
+                    * "Scan Conversion Mode" - "Enabled". NOTE: This won't be selectable yet, we'll do it later
                     * "Continuous Conversion mode" - "Enabled"
+                    * "DMA Continuous Requests" - "Enabled"
                 * Under "ADC_Regular_ConversionMode"
-                    * F3 - "Enable Regular Convresions" - "Enable"
-                    * "Number of Conversion" - "2"
-                    
-
+                    * F3 - "Enable Regular Convresions" - "Enable". NOTE: This should already be setup
+                    * "Number of Conversion" - "2". NOTE: *THIS* will change "Scan Conversion Mode" from "Disabled" to "Enabled"
+                    * Expand Rank 1 and..
+                        * Ensure "Channel" is set to "Channel 1"
+                        * "Sampling Time" - "181.5 Cycles"
+                    * Expand Rank 2 and..
+                        * Ensure "Channel" is set to "Channel Vrefint"
+                        * "Sampling Time" - "181.5 Cycles"
             * Under "DMA Settings" click "Add" and then for: DMA Request, Channel, Direction, Priority
                 * ADC1, DMA1 Channel 1, Peripheral To Memory Low
                 * Under "DMA Request Settings" for this new entry:
                     * "Mode" - "Circular"
                     * "Increment Address" - Tick only the "Memory" checkbox
-                    * "Data Width" - "Peripheral"/"Half Word", "Memory"/"Half Word"
+                    * "Data Width" - "Peripheral"->"Word", "Memory"->"Word"
+* Configure LED pin (check Betaflight/target.h file)
+    * Configure for GPIO_Output: "GPIO mode" to "Output Push Pull", "Maximum Output Speed" to "High"
+    * Label it "LED" so that "LED_Pin" is generated since it is used by code
 
-            * FIx RANK make sure VBat channel is rank 1, and Vrefint is rank 2
 
 * TIM1 and DMA are used for implementing DSHOT.
     * Configure TIM1
@@ -134,7 +141,7 @@ Using STM32CubeMX you'll want to configure the various pins and perhipherals of 
         * "Channel1" - "Output Compare No Output"
         * "Channel2" - "Output Compare No Output"
         * Under "DMA Settings" click on "Add" and create the following
-            * For F4 devices (DMA Reqeuest, Stream, Direction, Priority):
+            * For F4 devices (DMA Request, Stream, Direction, Priority):
                 * TIM1_UP,  DMA2 Stream 5,  Memory To Peripheral,   High
                 * TIM1_CH1, DMA2 Stream 1,  Memory To Peripheral,   High
                 * TIM1_CH2, DMA2 Stream 2,  Memory To Peripheral,   High
@@ -149,7 +156,76 @@ Using STM32CubeMX you'll want to configure the various pins and perhipherals of 
             * The "NVIC Settings" for all of the DMA interrupts should show they are enabled
 
 
+CRAZYBEEF3FS 
+```
+# resource show
+IO
+A00: ADC_BATT
+A01: ADC_CURR
+A02: MOTOR 4
+A03: MOTOR 3
+A04: GYRO_CS 1
+A05: SPI_SCK 1
+A06: SPI_MISO 1
+A07: SPI_MOSI 1
+A08: RX_SPI_EXTI
+A09: RX_SPI_BIND
+A10: LED
+A11: USB
+A12: USB
+A13: FREE
+A14: FREE
+A15: FREE
+B00: FREE
+B01: OSD_CS
+B02: FREE
+B03: LED 1
+B04: FREE
+B05: FREE
+B06: FREE
+B07: FREE
+B08: MOTOR 1
+B09: MOTOR 2
+B10: FREE
+B11: FREE
+B12: RX_SPI_CS
+B13: SPI_SCK 2
+B14: SPI_MISO 2
+B15: SPI_MOSI 2
+C13: GYRO_EXTI
+C14: FREE
+C15: BEEPER
+F00: FREE
+F01: FREE
+F04: FREE
 
+# resource
+resource BEEPER 1 C15
+resource MOTOR 1 B08
+resource MOTOR 2 B09
+resource MOTOR 3 A03
+resource MOTOR 4 A02
+resource MOTOR 5 B06
+resource LED_STRIP 1 B04
+resource SERIAL_TX 3 B10
+resource SERIAL_RX 3 B11
+resource LED 1 B03
+resource SPI_SCK 1 A05
+resource SPI_SCK 2 B13
+resource SPI_MISO 1 A06
+resource SPI_MISO 2 B14
+resource SPI_MOSI 1 A07
+resource SPI_MOSI 2 B15
+resource ADC_BATT 1 A00
+resource ADC_CURR 1 A01
+resource OSD_CS 1 B01
+resource RX_SPI_CS 1 B12
+resource RX_SPI_EXTI 1 A08
+resource RX_SPI_BIND 1 A09
+resource RX_SPI_LED 1 A10
+resource GYRO_EXTI 1 C13
+resource GYRO_CS 1 A04
+```
 
 
 

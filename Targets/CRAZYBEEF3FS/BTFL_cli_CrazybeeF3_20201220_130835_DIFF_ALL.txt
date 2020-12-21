@@ -1,0 +1,42 @@
+diff all
+# Betaflight / CRAZYBEEF3FS (CBFS) 4.0.6 Sep  1 2019 / 00:26:03 (2a64051a2) MSP API: 1.41 / FEATURE CUT LEVEL 2
+batch start
+defaults nosave
+mcu_id 002d001c5833571620333536
+servo 0 1000 2000 1500 100 1
+
+aux 0 0 0 1300 2100 0 0
+aux 1 1 1 1300 2100 0 0
+aux 2 35 2 1550 2100 0 0
+set motor_pwm_protocol = DSHOT600
+set ibata_scale = 1175
+set osd_vbat_pos = 2114
+set osd_rssi_pos = 2083
+set osd_tim_1_pos = 2102
+set osd_tim_2_pos = 2134
+set osd_current_pos = 2434
+set osd_mah_drawn_pos = 2466
+set flysky_spi_tx_id = 1000012190
+set flysky_spi_rf_channels = 29,12,127,49,68,99,54,93,59,88,118,104,18,79,38,43
+profile 0
+
+profile 1
+
+profile 2
+
+profile 0
+rateprofile 0
+
+rateprofile 1
+
+rateprofile 2
+
+rateprofile 3
+
+rateprofile 4
+
+rateprofile 5
+
+rateprofile 0
+save
+# 
