@@ -92,6 +92,11 @@ our `Targets` folder.
 
 Using STM32CubeMX you'll want to configure the various pins and perhipherals of the STM32 chip:
 
+* Under "Project Manager":
+    * "Project" -> "Application Structure" - "Advanced"
+    * "Code Generator" 
+        * "Toolchain / IDE" - "MDK-ARM"
+        * "Min Version" - "V5"
 * Set clock config as appropriate (making sure you choose options that allow VCP to work correctly)
     * Set "HCLK" to desired clock frequency (72, 96, 100, 120, etc)
         * This will adjust sources (Use HSE instead of HSI, etc)
@@ -133,6 +138,9 @@ Using STM32CubeMX you'll want to configure the various pins and perhipherals of 
 * Configure LED pin (check Betaflight/target.h file)
     * Configure for GPIO_Output: "GPIO mode" to "Output Push Pull", "Maximum Output Speed" to "High"
     * Label it "LED" so that "LED_Pin" is generated since it is used by code
+* For F3 targets (only), configure USB
+    * Under "Pinout & COnfiguration, chooose "Connectivity" then select "USB"
+        * Under "USB Mode and Configuration"->"Mode" tick the "Device (FS)" checkbox
 
 
 * TIM1 and DMA are used for implementing DSHOT.
