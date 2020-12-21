@@ -43,7 +43,7 @@ static void update_osd()
     osd_print(row, 1, s);
 
     row = 1;
-    osd_print(row++, 1, tprintf("LOOPTIME: %d", max_used_loop_time));
+    osd_print(row++, 1, tprintf("LOOPTIME: %3d", max_used_loop_time));
     osd_print(row++, 1, tprintf("OSD: %2d", osd_time));
     osd_print(row++, 1, tprintf("PPS: %2d", packetpersecond));
     osd_refresh();

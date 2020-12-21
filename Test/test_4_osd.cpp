@@ -41,7 +41,7 @@ static void update_osd()
     osd_print(row, 1, s);
 
     row = 1;
-    osd_print(row++, 1, tprintf("LOOPTIME: %d", max_used_loop_time));
+    osd_print(row++, 1, tprintf("LOOPTIME: %3d", max_used_loop_time));
     osd_print(row++, 1, tprintf("OSD: %2d", osd_time));
     osd_refresh();
 }
@@ -89,7 +89,6 @@ static bool silverlite_postupdate(uint32_t max_used_loop_time)
         console_appendPacket16(max_used_loop_time);
         console_appendPacket16((uint16_t)(vbattfilt * 100));
         console_closePacket(0x05);
-
         secondTimer=  gettime();
         return true;    // true causes caller to reset max_used_loop_time
     }
