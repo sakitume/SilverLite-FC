@@ -44,7 +44,17 @@ static Pin<'B', 4>	    SPI_MISO;
 static Pin<'B', 5>	    SPI_MOSI;
 #elif defined(CRAZYBEEF3FS)
 //------------------------------------------------------------------------------
-// Instantiate the Pin<> objects needed for our software SPI implemenation
+// Instantiate the Pin<> objects needed for our software SPI implementation
+// Examining Betaflight target.h you'll find this:
+//#define RX_SPI_INSTANCE         SPI2
+//#define RX_NSS_PIN              SPI2_NSS_PIN
+// And this:
+//#define USE_SPI_DEVICE_2 
+//#define SPI2_NSS_PIN            PB12
+//#define SPI2_SCK_PIN            PB13
+//#define SPI2_MISO_PIN           PB14
+//#define SPI2_MOSI_PIN           PB15
+
 static Pin<'B', 12>		TRX_CS_PIN;
 static Pin<'B', 13>		SPI_SCK;
 static Pin<'B', 14>		SPI_MISO;
