@@ -45,9 +45,15 @@ extern uint32_t gettime(void);  // drv_time.h
 // platform.h
 #if defined(STM32F40_41xxx) || defined (STM32F411xE) || defined (STM32F446xx)
 // Chip Unique ID on F405 and F411
+// pg 1712 RM0090
 #define U_ID_0 (*(uint32_t*)0x1fff7a10)
 #define U_ID_1 (*(uint32_t*)0x1fff7a14)
 #define U_ID_2 (*(uint32_t*)0x1fff7a18)
+#elif defined(STM32F3)
+// pg 1121 RM0316
+#define U_ID_0 (*(uint32_t*)0x1ffff7ac)
+#define U_ID_1 (*(uint32_t*)0x1ffff7b0)
+#define U_ID_2 (*(uint32_t*)0x1ffff7b4)
 #endif
 
 // Stubs to keep this .cpp file happy

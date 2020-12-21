@@ -58,6 +58,15 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define RX_NSS_PIN_Pin GPIO_PIN_4
+#define RX_NSS_PIN_GPIO_Port GPIOA
+#define RX_SPI_EXTI_PIN_Pin GPIO_PIN_8
+#define RX_SPI_EXTI_PIN_GPIO_Port GPIOA
+#define RX_SPI_EXTI_PIN_EXTI_IRQn EXTI9_5_IRQn
+#define RX_SPI_BIND_PIN_Pin GPIO_PIN_9
+#define RX_SPI_BIND_PIN_GPIO_Port GPIOA
+#define RX_SPI_LED_PIN_Pin GPIO_PIN_10
+#define RX_SPI_LED_PIN_GPIO_Port GPIOA
 #define LED_Pin GPIO_PIN_3
 #define LED_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */

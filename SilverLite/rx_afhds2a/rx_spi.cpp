@@ -35,12 +35,23 @@ extern "C" {
 #include "jee.h"
 #include "drv_time.h"
 
+#if defined(MATEKF411RX)
 //------------------------------------------------------------------------------
 // Instantiate the Pin<> objects needed for our software SPI implemenation
 static Pin<'A', 15>		TRX_CS_PIN;
 static Pin<'B', 3>		SPI_SCK;
 static Pin<'B', 4>	    SPI_MISO;
 static Pin<'B', 5>	    SPI_MOSI;
+#elif defined(CRAZYBEEF3FS)
+//------------------------------------------------------------------------------
+// Instantiate the Pin<> objects needed for our software SPI implemenation
+static Pin<'B', 12>		TRX_CS_PIN;
+static Pin<'B', 13>		SPI_SCK;
+static Pin<'B', 14>		SPI_MISO;
+static Pin<'B', 15>		SPI_MOSI;
+#else
+	#error "Unsupported target"
+#endif
 
 //------------------------------------------------------------------------------
 #define MOSIHIGH 	SPI_MOSI.write(1);
@@ -54,23 +65,9 @@ static Pin<'B', 5>	    SPI_MOSI;
 
 
 //------------------------------------------------------------------------------
-// SCK pulse will sometimes need to be lengthened by injecting a small delay
 //
-#define  __NOP()	__asm__ __volatile__("nop");
-#if defined(__NOP)
-//	#define DELAY_SLOW __NOP(); __NOP(); __NOP(); __NOP();
-	#define DELAY_SLOW
-#else
-#define DELAY_SLOW count = 1; while ( count-- );
-#endif
-
-volatile static uint32_t count;
-
-#define _NOP_	__asm__ __volatile__("nop");
-
+#define DELAY_SLOW
 #define	DELAY_O3	
-//#define DELAY_O3 _NOP_ _NOP_ _NOP_ _NOP_ _NOP_ _NOP_ _NOP_ _NOP_ _NOP_// necessary when the loop is unrolled i.e. with -O3
-//#define DELAY_O3 count = 2; while ( count-- );
 
 //------------------------------------------------------------------------------
 extern "C" void rxSpiInit()

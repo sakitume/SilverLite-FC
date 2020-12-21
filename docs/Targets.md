@@ -143,6 +143,12 @@ Using STM32CubeMX you'll want to configure the various pins and perhipherals of 
         * Under "USB Mode and Configuration"->"Mode" tick the "Device (FS)" checkbox
     * Under "Middleware" select "USB_DEVICE"
         * Set "Class for FS IP" to "Communication Device Class (Virtual Port Com)"
+* For targets that implement internal SPI AFHDS/AFHDS2A receivers configure the following GPIO pins
+    * `RX_SPI_LED_PIN`, "GPIO output level" == "Low", "Maximim output speed" == "High"
+    * `RX_SPI_BIND_PIN`, "GPIO mode" == "Input mode"
+    * `RX_NSS_PIN`, "GPIO output level" == "Low", "Maximim output speed" == "High"
+    * `RX_SPI_EXTI_PIN`, "GPIO mode" == "External Interrupt Mode with Rising edge trigger detection"
+        * NOTE: Examine NVIC for this pin, it should be enabled. Also "NVIC Interupt Table" should be "EXTI line[15:10] interrupts", if it isn't then you must edit rx_a7105.c`
 
 After this you'll want to "GENERATE CODE" and then edit the `main.c` that is generated.
 Look for `int main(void)` and at the bottom of the function you'll see this:

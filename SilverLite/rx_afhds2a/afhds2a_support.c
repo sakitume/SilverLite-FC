@@ -19,7 +19,12 @@ extern float vbattfilt;
 static flySkyConfig_t gflySkyConfig;
 static bool bindRequested;
 static bool lastBindPinStatus;
+
+#if defined(MATEKF411RX)
 static const bool ledInversion = true;  // MATEKF411RX defines RX_SPI_LED_INVERTED
+#elif defined(CRAZYBEEF3FS)
+static const bool ledInversion = false;
+#endif
 
 //------------------------------------------------------------------------------
 const flySkyConfig_t* flySkyConfig(void)

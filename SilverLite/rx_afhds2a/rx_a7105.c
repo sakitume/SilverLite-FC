@@ -42,12 +42,18 @@
 #include "rx_a7105.h"
 #include "rx_spi.h"
 
+#if defined(MATEKF411RX)
+    #define RX_SPI_EXTI_IRQn    EXTI15_10_IRQn
+#elif defined(CRAZYBEEF3FS)    
+    #define RX_SPI_EXTI_IRQn    EXTI9_5_IRQn
+#endif    
+
 //------------------------------------------------------------------------------
 // Called by console.cpp before it calls jump_to_bootloader()
 void A7105Shutdown()
 {
-    HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
-    HAL_NVIC_ClearPendingIRQ(EXTI15_10_IRQn);
+    HAL_NVIC_DisableIRQ(RX_SPI_EXTI_IRQn);
+    HAL_NVIC_ClearPendingIRQ(RX_SPI_EXTI_IRQn);
 }
 
 //------------------------------------------------------------------------------
@@ -56,11 +62,11 @@ void EXTIEnable(IO_t ioPin, bool bEnabled)
     (void)ioPin;
     if (bEnabled)
     {
-        HAL_NVIC_EnableIRQ(EXTI15_10_IRQn); // EXTI15_10_IRQn defined by main.h
+        HAL_NVIC_EnableIRQ(RX_SPI_EXTI_IRQn);
     }
     else
     {
-        HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
+        HAL_NVIC_DisableIRQ(RX_SPI_EXTI_IRQn);
     }
 }
 
