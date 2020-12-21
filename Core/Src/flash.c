@@ -20,10 +20,10 @@ extern int rx_bind_enable; // gestures.c
 
 #if defined(STM32F4)
 	// On F4 we use a single sector that is 16k bytes in size. Addresses refer to words (4 bytes)
-	#define FMC_LAST_ADDRESS	= 4095
+	#define FMC_LAST_ADDRESS	4095
 #elif defined(STM32F3)
 	// On F4 we use a single page that is 2k bytes in size. Addresses refer to words (4 bytes)
-	#define FMC_LAST_ADDRESS	= 511
+	#define FMC_LAST_ADDRESS	511
 #endif
 
 static float pid_c_identifier = -5.0f;
