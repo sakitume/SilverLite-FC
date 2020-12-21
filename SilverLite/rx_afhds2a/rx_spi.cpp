@@ -66,8 +66,31 @@ static Pin<'B', 15>		SPI_MOSI;
 
 //------------------------------------------------------------------------------
 //
-#define DELAY_SLOW
-#define	DELAY_O3	
+#define  __NOP()	__asm__ __volatile__("nop");
+
+//------------------------------------------------------------------------------
+//
+// For CRAZYBEEF3FS, when this file IS added to SPEED_OPTIMISED_SRC:
+#if defined(SPEED_OPTIMISED_SRC)
+	// DELAY_SLOW, 2 nops, test_6_flyskyp reports 129us
+	// DELAY_SLOW, 1 nops, test_6_flyskyp reports 114us
+	// DELAY_SLOW, 0 nops, fails
+	#define DELAY_SLOW	__NOP();
+
+	// For CRAZYBEEF3FS, when this file is added to SPEED_OPTIMISED_SRC
+	// DELAY_O3, 2 nops, test_6_flyskyp reports 121-125 us
+	// DELAY_O3, 1 nop, test_6_flyskyp reports 110us
+	// DELAY_O3, 0 nop, fails
+	#define DELAY_O3	__NOP();
+
+#else
+	// For CRAZYBEEF3FS, when this file is NOT added to SPEED_OPTIMISED_SRC then
+	// zero nops are needed but test_6_flyskyp reports 140us
+	#define DELAY_SLOW
+	#define	DELAY_O3
+#endif
+
+
 
 //------------------------------------------------------------------------------
 extern "C" void rxSpiInit()
@@ -85,7 +108,7 @@ extern "C" void rxSpiInit()
 //------------------------------------------------------------------------------
 static void trx_spi_write( int data )
 {
-//#define __USE__ORIGINAL__
+//#define __USE__ORIGINAL__	This is slightly slower
 #if defined(__USE__ORIGINAL__)	
 	for ( int i =7; i >= 0; --i ) {
 		SCKLOW

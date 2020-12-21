@@ -141,11 +141,29 @@ INCLUDE_DIRS+=\
 endif
 
 
-
 #-------------------------------------------------------------------------------
 # Source file groups
 #-------------------------------------------------------------------------------
 SPEED_OPTIMISED_SRC := $(SPEED_OPTIMISED_SRC) \
+	$(BASE_DIR)/Core/Src/drv_time.c \
+	$(BASE_DIR)/Core/Src/drv_led.c \
+	$(BASE_DIR)/Core/Src/drv_reset.c \
+	$(BASE_DIR)/Core/Src/drv_adc.c \
+	$(BASE_DIR)/Core/Src/battery.c \
+	$(BASE_DIR)/Core/Src/filter.c \
+	$(BASE_DIR)/Core/Src/util.c \
+	$(BASE_DIR)/SilverLite/delay.cpp \
+	$(BASE_DIR)/SilverLite/f3_console.cpp \
+	$(BASE_DIR)/SilverLite/console.cpp \
+	$(BASE_DIR)/SilverLite/tprintf.cpp \
+	$(BASE_DIR)/SilverLite/drv_osd.cpp \
+	$(BASE_DIR)/SilverLite/jee.cpp \
+	$(BASE_DIR)/Test/test_6_flysky.cpp \
+	$(BASE_DIR)/SilverLite/rx_flysky.cpp \
+	$(wildcard $(BASE_DIR)/SilverLite/rx_afhds2a/afhds2a.c) \
+	$(wildcard $(BASE_DIR)/SilverLite/rx_afhds2a/afhds2a_support.c) \
+	$(wildcard $(BASE_DIR)/SilverLite/rx_afhds2a/rx_a7105.c) \
+	$(wildcard $(BASE_DIR)/SilverLite/rx_afhds2a/rx_spi.cpp) \
 
 SIZE_OPTIMISED_SRC := $(SIZE_OPTIMISED_SRC) \
 
