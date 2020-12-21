@@ -11,7 +11,8 @@ DEBUG_OPTIMISED_SRC  := ""
 #TEST_CONFIG = test_basic_3_adc
 #TEST_CONFIG = test_basic_4_gpio
 #TEST_CONFIG = test_4_osd
-TEST_CONFIG = test_5_ibus
+#TEST_CONFIG = test_5_ibus
+TEST_CONFIG = test_6_flysky
 
 
 
@@ -86,6 +87,25 @@ SOURCES =  \
 	$(BASE_DIR)/SilverLite/rx_ibus.cpp \
 	$(BASE_DIR)/SilverLite/jee.cpp \
 	$(BASE_DIR)/Test/test_5_ibus.cpp
+else ifeq ($(TEST_CONFIG), test_6_flysky)
+SOURCES =  \
+	$(BASE_DIR)/Core/Src/drv_time.c \
+	$(BASE_DIR)/Core/Src/drv_led.c \
+	$(BASE_DIR)/Core/Src/drv_reset.c \
+	$(BASE_DIR)/Core/Src/drv_adc.c \
+	$(BASE_DIR)/Core/Src/battery.c \
+	$(BASE_DIR)/Core/Src/filter.c \
+	$(BASE_DIR)/Core/Src/util.c \
+	$(BASE_DIR)/SilverLite/delay.cpp \
+	$(BASE_DIR)/SilverLite/f3_console.cpp \
+	$(BASE_DIR)/SilverLite/console.cpp \
+	$(BASE_DIR)/SilverLite/tprintf.cpp \
+	$(BASE_DIR)/SilverLite/drv_osd.cpp \
+	$(BASE_DIR)/SilverLite/rx_flysky.cpp \
+	$(wildcard $(BASE_DIR)/SilverLite/rx_afhds2a/*.c) \
+	$(wildcard $(BASE_DIR)/SilverLite/rx_afhds2a/*.cpp) \
+	$(BASE_DIR)/SilverLite/jee.cpp \
+	$(BASE_DIR)/Test/test_6_flysky.cpp
 endif
 
 #-------------------------------------------------------------------------------
