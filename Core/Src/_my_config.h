@@ -158,6 +158,11 @@
     #define RPM_FILTER
     #define LOOPTIME    250
 #elif defined(OMNIBUS)
+    #warning "Don't forget to enable RPM_FILTER when you've verified 2K loop will work"
+    //#define RPM_FILTER
+    #define LOOPTIME    500
+#elif defined(CRAZYBEEF3FS)
+    #warning "Don't forget to enable RPM_FILTER when you've verified 2K loop will work"
     //#define RPM_FILTER
     #define LOOPTIME    500
 #else
@@ -283,6 +288,9 @@
 #elif defined(OMNIBUS)
     // MPU on OMNIBUS (F3) is already correctly oriented
     // so no adjustments necessary
+#elif defined(CRAZYBEEF3FS)
+    // MPU on OMNIBUS (F3) is already correctly oriented
+    // so no adjustments necessary
 #else
     #error "Unsupported flight controller target. Define mpu orientation here"
 #endif
@@ -306,6 +314,12 @@
     #define MOTOR_BR 1
     #define MOTOR_FR 2
 #elif defined(OMNIBUS)  // TODO
+    #warning "Motor order has not been verified"
+    #define MOTOR_BL 3
+    #define MOTOR_FL 4
+    #define MOTOR_BR 1
+    #define MOTOR_FR 2
+#elif defined(CRAZYBEEF3FS)  // TODO
     #warning "Motor order has not been verified"
     #define MOTOR_BL 3
     #define MOTOR_FL 4

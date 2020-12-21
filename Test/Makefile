@@ -2,7 +2,7 @@
 # Provide default TARGET if none was specified
 # Determine if target is F3 or F4 class processor (also verifies TARGET is valid)
 #-------------------------------------------------------------------------------
-TARGET ?= OMNIBUS
+TARGET ?= CRAZYBEEF3FS
 
 F4_TARGETS := OMNIBUSF4 NOX MATEKF411RX
 F3_TARGETS := OMNIBUS CRAZYBEEF3FS

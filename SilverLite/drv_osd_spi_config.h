@@ -39,6 +39,15 @@ static Pin<'A', 5>		SPI_SCK;	// PA5
 static Pin<'A', 6>		SPI_MISO;	// PA6
 static Pin<'A', 7>		SPI_MOSI;	// PA7
 
+#elif defined(CRAZYBEEF3FS)
+//------------------------------------------------------------------------------
+// CRAZYBEEF3FS connects to the MAX7456 via SPI using the following pins
+//
+static Pin<'B', 1>		OSD_CS_Pin;	// PB1
+static Pin<'A', 5>		SPI_SCK;	// PA5
+static Pin<'A', 6>		SPI_MISO;	// PA6
+static Pin<'A', 7>		SPI_MOSI;	// PA7
+
 #else
     #error "Unknown hardware, cannot support OSD"
 #endif
