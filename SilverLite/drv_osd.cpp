@@ -544,7 +544,7 @@ void osd_clear()
 }
 
 //------------------------------------------------------------------------------
-uint8_t osd_get_max_rows()
+int osd_get_max_rows()
 {
-	return maxScreenRows;
+	return (int)maxScreenRows;
 }
