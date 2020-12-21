@@ -16,11 +16,19 @@ void jump_to_bootloader( void )
 	SysTick->CTRL = SysTick->LOAD = SysTick->VAL = 0;
 	__HAL_SYSCFG_REMAPMEMORY_SYSTEMFLASH();
 
-	const uint32_t p = (*((uint32_t *) 0x1FFF0000));
+#if defined(STM32F3)
+	// AN2606 pg 94
+	uint32_t systemMemoryAddr = 0x1FFFD800;
+#elif defined(STM32F4)
+	// AN2606 pg 108
+	uint32_t systemMemoryAddr = 0x1FFF0000;
+#endif
+
+	const uint32_t p = (*((uint32_t *) systemMemoryAddr));
 	__set_MSP( p );
 
 	void (*SysMemBootJump)(void);
-	SysMemBootJump = (void (*)(void)) (*((uint32_t *) 0x1FFF0004));
+	SysMemBootJump = (void (*)(void)) (*((uint32_t *) (systemMemoryAddr+4)));
 	SysMemBootJump();
 
 	while( 1 ) {}
