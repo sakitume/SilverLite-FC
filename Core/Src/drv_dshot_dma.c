@@ -131,7 +131,7 @@ static void dshot_dma_port1st()
 	HAL_DMA_Start( &hdma_tim1_ch1, (uint32_t)motor_data_port1st, (uint32_t)&GPIO1st->BSRR, 16 );
 	HAL_DMA_Start( &hdma_tim1_ch2, (uint32_t)dshot_port1st_off, (uint32_t)&GPIO1st->BSRR, 16 );
 
-	__HAL_TIM_SetCounter( &htim1, DSHOT_BIT_TIME );
+	__HAL_TIM_SET_COUNTER( &htim1, DSHOT_BIT_TIME );
 	HAL_TIM_Base_Start( &htim1 );
 }
 
@@ -163,7 +163,7 @@ static void dshot_dma_port2nd()
 	HAL_DMA_Start( &hdma_tim1_ch1, (uint32_t)motor_data_port2nd, (uint32_t)&GPIO2nd->BSRR, 16 );
 	HAL_DMA_Start( &hdma_tim1_ch2, (uint32_t)dshot_port2nd_off, (uint32_t)&GPIO2nd->BSRR, 16 );
 
-	__HAL_TIM_SetCounter( &htim1, DSHOT_BIT_TIME );
+	__HAL_TIM_SET_COUNTER( &htim1, DSHOT_BIT_TIME );
 	HAL_TIM_Base_Start( &htim1 );
 }
 
@@ -237,7 +237,13 @@ static void dshot_dma_start()
 	dshot_dma_port1st();
 }
 
+#if defined(STM32F4)
 void DMA2_Stream2_IRQHandler(void)
+#elif defined(STM32F3)
+void DMA1_Channel3_IRQHandler(void)
+#else
+#error
+#endif
 {
 	extern DMA_HandleTypeDef hdma_tim1_ch2;
 	HAL_DMA_IRQHandler( &hdma_tim1_ch2 );

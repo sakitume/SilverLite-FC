@@ -249,11 +249,17 @@ static void dma_write_dshot()
 	HAL_DMA_Start( &hdma_tim1_ch2, (uint32_t)dshot_data_port2nd, (uint32_t)&GPIO2nd->BSRR, 16 * 3 );
 
 	TIM1->ARR = DSHOT_BIT_TIME_THIRD;
-	__HAL_TIM_SetCounter( &htim1, DSHOT_BIT_TIME_THIRD );
+	__HAL_TIM_SET_COUNTER( &htim1, DSHOT_BIT_TIME_THIRD );
 	HAL_TIM_Base_Start( &htim1 );
 }
 
-void DMA2_Stream2_IRQHandler()
+#if defined(STM32F4)
+void DMA2_Stream2_IRQHandler(void)
+#elif defined(STM32F3)
+void DMA1_Channel3_IRQHandler(void)
+#else
+#error
+#endif
 {
 	extern DMA_HandleTypeDef hdma_tim1_ch2;
 	HAL_DMA_IRQHandler( &hdma_tim1_ch2 );
@@ -308,7 +314,7 @@ static void dma_read_telemetry()
 	HAL_DMA_Start( &hdma_tim1_ch2, (uint32_t)&GPIO2nd->IDR, (uint32_t)gcr_data_port2nd, GCR_BUFFER_SIZE );
 
 	TIM1->ARR = GCR_BIT_TIME_THIRD;
-	__HAL_TIM_SetCounter( &htim1, GCR_BIT_TIME_THIRD );
+	__HAL_TIM_SET_COUNTER( &htim1, GCR_BIT_TIME_THIRD );
 	HAL_TIM_Base_Start( &htim1 );
 }
 

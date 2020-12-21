@@ -194,7 +194,9 @@ Using STM32CubeMX you'll want to configure the various pins and perhipherals of 
                 * TIM1_CH2, DMA1 Channel 3,  Memory To Peripheral,   High
                     * Note: This DMA1 Channel 3 will require we provide our an irq handler.
                     * Go back to "System Core"->"NVIC"->"Code Generation" and untick the
-                    checkbox for "DMA1 Channel 3 global interrupt"
+                    checkbox for "DMA1 Channel 3 global interrupt". If a target requires that
+                    `TIM1_CH2` requires a different dma and channel combination be sure to edit
+                    `drv_dshot_dma.c` and `drv_dshot_bidir.c` and
             * Ensure each addition (under "DMA Request Settings") configures:
                 * "Mode" is "Normal"
                 * "Data Width" to be "Word"/"Word"
