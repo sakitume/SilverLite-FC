@@ -18,6 +18,14 @@ extern int rx_bind_enable; // gestures.c
 
 #define FMC_HEADER 0x12AA0001
 
+#if defined(STM32F4)
+	// On F4 we use a single sector that is 16k bytes in size. Addresses refer to words (4 bytes)
+	#define FMC_LAST_ADDRESS	= 4095
+#elif defined(STM32F3)
+	// On F4 we use a single page that is 2k bytes in size. Addresses refer to words (4 bytes)
+	#define FMC_LAST_ADDRESS	= 511
+#endif
+
 static float pid_c_identifier = -5.0f;
 
 void flash_calculate_pid_c_identifier( void )
@@ -85,7 +93,7 @@ void flash_save( void )
 	}
 #endif
 
-	fmc_write( 4095, FMC_HEADER );
+	fmc_write( FMC_LAST_ADDRESS, FMC_HEADER );
 
 	fmc_lock();
 }
@@ -94,7 +102,7 @@ void flash_load( void )
 {
 	uint32_t addresscount = 0;
 	// check if saved data is present
-	if ( fmc_read( addresscount++ ) == FMC_HEADER && fmc_read( 4095 ) == FMC_HEADER ) {
+	if ( fmc_read( addresscount++ ) == FMC_HEADER && fmc_read( FMC_LAST_ADDRESS ) == FMC_HEADER ) {
 
 		const float saved_pid_identifier = fmc_read_float( addresscount++ );
 		// load pids from flash if pid.c values are still the same

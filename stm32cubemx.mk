@@ -1,21 +1,4 @@
 #-------------------------------------------------------------------------------
-# Determine if target is F3 or F4 class processor
-#-------------------------------------------------------------------------------
-IS_F4_TARGET = 0
-IS_F3_TARGET = 0
-F4_TARGETS := OMNIBUSF4 NOX MATEKF411RX
-F3_TARGETS := OMNIBUS CRAZYBEEF3FS
-
-# if the result of searching for $(TARGET) in $(F4_TARGETS) is not empty
-ifneq ($(filter $(TARGET),$(F4_TARGETS)),)
-IS_F4_TARGET = 1
-else ifneq ($(filter $(TARGET),$(F3_TARGETS)),)
-IS_F3_TARGET = 1
-else
-#$(error TARGET must be in: $(F4_TARGETS) $(F3_TARGETS))
-endif
-
-#-------------------------------------------------------------------------------
 # STM32CubeMX generated/provided startup file
 #-------------------------------------------------------------------------------
 ifneq ($(filter $(TARGET),NOX MATEKF411RX),)

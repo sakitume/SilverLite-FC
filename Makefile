@@ -1,4 +1,23 @@
-TARGET ?= NOX
+#-------------------------------------------------------------------------------
+# Provide default TARGET if none was specified
+# Determine if target is F3 or F4 class processor (also verifies TARGET is valid)
+#-------------------------------------------------------------------------------
+TARGET ?= CRAZYBEEF3FS
+
+F4_TARGETS := OMNIBUSF4 NOX MATEKF411RX
+F3_TARGETS := OMNIBUS CRAZYBEEF3FS
+
+IS_F4_TARGET = 0
+IS_F3_TARGET = 0
+
+# if the result of searching for $(TARGET) in $(F4_TARGETS) is not empty
+ifneq ($(filter $(TARGET),$(F4_TARGETS)),)
+IS_F4_TARGET = 1
+else ifneq ($(filter $(TARGET),$(F3_TARGETS)),)
+IS_F3_TARGET = 1
+else
+$(error TARGET must be in: $(F4_TARGETS) $(F3_TARGETS))
+endif
 
 #-------------------------------------------------------------------------------
 # STM32CubeMXProgrammer
@@ -83,7 +102,7 @@ MCU = $(CPU) -mthumb $(FPU) $(FLOAT-ABI)
 #
 CC_DEBUG_OPTIMISATION   := -ggdb3 -Og -DDEBUG 
 CC_DEFAULT_OPTIMISATION := -O2
-CC_SPEED_OPTIMISATION   := -Ofast
+CC_SPEED_OPTIMISATION   := -Ofast -DSPEED_OPTIMISED_SRC
 CC_SIZE_OPTIMISATION    := -Os
 CC_NONE_OPTIMISATION    := -O0
 
@@ -221,8 +240,12 @@ flash: $(TARGET_ELF)
 endif
 
 # Flash using ST-Link adapter
-stlinkflash:
+stlinkflash: $(TARGET_ELF)
 	openocd -d2 -f interface/stlink.cfg -c "transport select hla_swd" -f target/stm32f4x.cfg -c "reset_config none" -c "program $(TARGET_ELF)  verify reset; shutdown;"
+
+# Flash F3 device using ST-Link adapter
+stlinkflashf3: $(TARGET_ELF)
+	openocd -d2 -f interface/stlink.cfg -c "transport select hla_swd" -f target/stm32f3x.cfg -c "reset_config none" -c "program $(TARGET_ELF)  verify reset; shutdown;"
 
 # Flash using STM32CubeProgrammer via USB
 download: $(TARGET_ELF)

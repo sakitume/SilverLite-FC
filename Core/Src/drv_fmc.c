@@ -22,15 +22,21 @@
 #include "drv_fmc.h"
 #include "main.h"
 
-#if 0
-	// FLASH_Sector_2: 0x08008000 - 0x0800BFFF 16 Kbytes
-	#define FLASH_ADDR 0x08008000 // Sector 2
-	#define FLASH_ERASE_SECOTR_ID FLASH_SECTOR_2
-#else
-	// FLASH_Sector_3: 0x0800C000 - 0x0800FFFF 16 Kbytes
-	#define FLASH_ADDR 0x0800C000 // Sector 3
-	#define FLASH_ERASE_SECOTR_ID FLASH_SECTOR_3
-#endif
+#if defined(STM32F4)
+	#if 0
+		// FLASH_Sector_2: 0x08008000 - 0x0800BFFF 16 Kbytes
+		#define FLASH_ADDR 0x08008000 // Sector 2
+		#define FLASH_ERASE_SECOTR_ID FLASH_SECTOR_2
+	#else
+		// FLASH_Sector_3: 0x0800C000 - 0x0800FFFF 16 Kbytes
+		#define FLASH_ADDR 0x0800C000 // Sector 3
+		#define FLASH_ERASE_SECOTR_ID FLASH_SECTOR_3
+	#endif
+#elif defined(STM32F3)
+	// pg 64 RM0316. The memory organization is based on a main memory block containing 128 pages of
+	// 2 Kbytes in STM32F303xB/C and STM32F358xC devices starting at address 0x8000000
+	#define FLASH_ADDR	(0x8000000 + (2048 * 127))	// point to last page
+#endif	
 
 extern void failloop( int );
 
@@ -44,10 +50,29 @@ void fmc_lock() {
 
 void fmc_erase( void )
 {
+#if defined(STM32F4)	
 	FLASH_Erase_Sector( FLASH_ERASE_SECOTR_ID, FLASH_VOLTAGE_RANGE_3 );
+#elif defined(STM32F3)
+	// pg 64 RM0316. The memory organization is based on a main memory block containing 128 pages of
+	// 2 Kbytes in STM32F303xB/C and STM32F358xC devices.
+	FLASH_EraseInitTypeDef eraseInit;
+  	eraseInit.TypeErase	= FLASH_TYPEERASE_PAGES;
+  	eraseInit.PageAddress = FLASH_ADDR;
+  	eraseInit.NbPages = 1;
+
+	uint32_t pageError;
+	const HAL_StatusTypeDef status = HAL_FLASHEx_Erase(&eraseInit, &pageError);
+	if ( status != HAL_OK ) 
+	{
+		HAL_FLASH_Lock();
+		failloop( 6 );
+	}
+#else
+	#error
+#endif	
 }
 
-// address: 0 .. 4095 (for sector 2)
+// address: For F4 processor, 0 .. 4095 (for sector 2). For F3 processor 0..2047
 // value: 32 bit to write
 void fmc_write( uint32_t address, uint32_t value )
 {
