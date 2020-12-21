@@ -61,7 +61,7 @@ static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_TIM2_Init(void);
-static void MX_TIM1_Init(void);
+void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -245,7 +245,7 @@ static void MX_ADC1_Init(void)
   * @param None
   * @retval None
   */
-static void MX_TIM1_Init(void)
+void MX_TIM1_Init(void)
 {
 
   /* USER CODE BEGIN TIM1_Init 0 */

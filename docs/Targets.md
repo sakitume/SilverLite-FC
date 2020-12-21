@@ -237,6 +237,8 @@ usermain();
   }
 ```
 
+Also you'll want to search for `MX_TIM1_Init` in `main.c` and make it globally
+accessible (remove the `static` modifier, this will occur in two places).
 
 
 
