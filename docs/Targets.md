@@ -144,6 +144,36 @@ Using STM32CubeMX you'll want to configure the various pins and perhipherals of 
     * Under "Middleware" select "USB_DEVICE"
         * Set "Class for FS IP" to "Communication Device Class (Virtual Port Com)"
 
+After this you'll want to "GENERATE CODE" and then edit the `main.c` that is generated.
+Look for `int main(void)` and at the bottom of the function you'll see this:
+
+```
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+  while (1)
+  {
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+  }
+```
+
+Add a call to `usermain()` right before the `while (1)` so it looks like this:
+
+```
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+extern void usermain();
+usermain();
+  while (1)
+  {
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+  }
+```
+
+
 
 * TIM1 and DMA are used for implementing DSHOT.
     * Configure TIM1
