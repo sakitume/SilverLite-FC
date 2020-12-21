@@ -174,6 +174,32 @@ Using STM32CubeMX you'll want to configure the various pins and perhipherals of 
     * "Memory management fault"
     * "Pre-fetch fault, memory access fault"
     * "Undefined instruction or illegal state"
+* TIM1 (with DMA) is used for implementing DSHOT.
+    * Configure TIM1
+        * "Clock Source" - "Internal Clock"
+        * "Channel1" - "Output Compare No Output"
+        * "Channel2" - "Output Compare No Output"
+        * No changes/configuration are needed under "Parameter Settings"
+        * Under "DMA Settings" click on "Add" and create the following
+            * For F4 devices (DMA Request, Stream, Direction, Priority):
+                * TIM1_UP,  DMA2 Stream 5,  Memory To Peripheral,   High
+                * TIM1_CH1, DMA2 Stream 1,  Memory To Peripheral,   High
+                * TIM1_CH2, DMA2 Stream 2,  Memory To Peripheral,   High
+                    * Note: This DMA2 Stream 2 will require we provide our an irq handler.
+                    * Go back to "System Core"->"NVIC"->"Code Generation" and untick the
+                    checkbox for "DMA1 Channel 3 global interrupt"
+            * For F3 devices (DMA Request, Channel, Direction, Priority)
+                * TIM1_UP,  DMA1 Channel 5,  Memory To Peripheral,   High
+                * TIM1_CH1, DMA1 Channel 2,  Memory To Peripheral,   High
+                * TIM1_CH2, DMA1 Channel 3,  Memory To Peripheral,   High
+                    * Note: This DMA1 Channel 3 will require we provide our an irq handler.
+                    * Go back to "System Core"->"NVIC"->"Code Generation" and untick the
+                    checkbox for "DMA1 Channel 3 global interrupt"
+            * Ensure each addition (under "DMA Request Settings") configures:
+                * "Mode" is "Normal"
+                * "Data Width" to be "Word"/"Word"
+                * "Increment Address" is ticked for "Memory" *EXCEPT* for "TIM1_UP"
+            * The "NVIC Settings" for all of the DMA interrupts should show they are enabled
 
 
 
@@ -211,25 +237,6 @@ usermain();
 
 
 
-* TIM1 and DMA are used for implementing DSHOT.
-    * Configure TIM1
-        * "Clock Source" - "Internal Clock"
-        * "Channel1" - "Output Compare No Output"
-        * "Channel2" - "Output Compare No Output"
-        * Under "DMA Settings" click on "Add" and create the following
-            * For F4 devices (DMA Request, Stream, Direction, Priority):
-                * TIM1_UP,  DMA2 Stream 5,  Memory To Peripheral,   High
-                * TIM1_CH1, DMA2 Stream 1,  Memory To Peripheral,   High
-                * TIM1_CH2, DMA2 Stream 2,  Memory To Peripheral,   High
-            * For F3 devices (DMA Request, Channel, Direction, Priority)
-                * TIM1_UP,  DMA1 Channel 5,  Memory To Peripheral,   High
-                * TIM1_CH1, DMA1 Channel 2,  Memory To Peripheral,   High
-                * TIM1_CH2, DMA1 Channel 3,  Memory To Peripheral,   High
-            * Ensure each addition (under "DMA Request Settings") configures:
-                * "Mode" is "Normal"
-                * "Data Width" to be "Word"/"Word"
-                * "Increment Address" is ticked for "Memory" *EXCEPT* for "TIM1_UP"
-            * The "NVIC Settings" for all of the DMA interrupts should show they are enabled
 
 
 CRAZYBEEF3FS 
