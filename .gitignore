@@ -12,6 +12,11 @@
 /Targets/OMNIBUS/Drivers/
 /Targets/OMNIBUS/MDK-ARM/
 /Targets/OMNIBUS/.mxproject
+/Targets/OMNIBUS/Middlewares
+/Targets/OMNIBUS/USB_DEVICE
 /Targets/CRAZYBEEF3FS/Drivers/
 /Targets/CRAZYBEEF3FS/MDK-ARM/
 /Targets/CRAZYBEEF3FS/.mxproject
+/Targets/CRAZYBEEF3FS/Middlewares
+/Targets/CRAZYBEEF3FS/USB_DEVICE
+

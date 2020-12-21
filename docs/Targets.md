@@ -141,6 +141,8 @@ Using STM32CubeMX you'll want to configure the various pins and perhipherals of 
 * For F3 targets (only), configure USB
     * Under "Pinout & COnfiguration, chooose "Connectivity" then select "USB"
         * Under "USB Mode and Configuration"->"Mode" tick the "Device (FS)" checkbox
+    * Under "Middleware" select "USB_DEVICE"
+        * Set "Class for FS IP" to "Communication Device Class (Virtual Port Com)"
 
 
 * TIM1 and DMA are used for implementing DSHOT.
