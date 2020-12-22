@@ -138,6 +138,32 @@
 #define LVC_LOWER_THROTTLE_VOLTAGE_RAW 2.70
 #define LVC_LOWER_THROTTLE_KP 3.0
 
+// Battery scale factor
+#if defined(CRAZYBEEF3FS)
+// 
+#undef ADC_SCALEFACTOR
+//#define ADC_SCALEFACTOR 12.899f   // Determined at 3.82v
+//#define ADC_SCALEFACTOR 12.7f       // Determined at 4.32v
+
+// True 3.65v, detected 3.65v
+// True 4.31v, detected 4.45v
+// True 3.80v, detected 3.83
+// 3.37v, 3.31v
+// 3.14v, 3.04v
+// 2.90, 2.76
+#define ADC_SCALEFACTOR 13.02f
+
+// While above scale factor gets us into the ballpark, we can map the
+// detected voltage from the measured range to the actual voltage range
+#define USE_TWO_POINT_VOLTAGE_CORRECTION
+#define ACTUAL_BATTERY_VOLTAGE_LO       2.90f
+#define REPORTED_TELEMETRY_VOLTAGE_LO   2.76f
+
+#define ACTUAL_BATTERY_VOLTAGE_HI       4.40f
+#define REPORTED_TELEMETRY_VOLTAGE_HI   4.56f
+
+#endif
+
 //------------------------------------------------------------------------------
 // LOOPTIME, and filters
 //------------------------------------------------------------------------------
@@ -160,11 +186,11 @@
     #define RPM_FILTER
     #define LOOPTIME    250
 #elif defined(OMNIBUS)
-    #warning "Don't forget to enable RPM_FILTER when you've verified 2K loop will work"
     //#define RPM_FILTER
     #define LOOPTIME    500
 #elif defined(CRAZYBEEF3FS)
-    #warning "Don't forget to enable RPM_FILTER when you've verified 2K loop will work"
+    // Without RPM filter, and using AFHDS2A the looptime is around 250-287
+    // With RPM filter, and using AFHDS2A the looptime is around 441
     //#define RPM_FILTER
     #define LOOPTIME    500
 #else
@@ -291,7 +317,7 @@
     // MPU on OMNIBUS (F3) is already correctly oriented
     // so no adjustments necessary
 #elif defined(CRAZYBEEF3FS)
-    // MPU on OMNIBUS (F3) is already correctly oriented
+    // MPU on CRAZYBEEF3FS is already correctly oriented
     // so no adjustments necessary
 #else
     #error "Unsupported flight controller target. Define mpu orientation here"
@@ -321,8 +347,8 @@
     #define MOTOR_FL 4
     #define MOTOR_BR 1
     #define MOTOR_FR 2
-#elif defined(CRAZYBEEF3FS)  // TODO
-    #warning "Motor order has not been verified"
+#elif defined(CRAZYBEEF3FS)
+    // This is verified to be correct
     #define MOTOR_BL 3
     #define MOTOR_FL 4
     #define MOTOR_BR 1

@@ -17,11 +17,23 @@ float battery_scale_factor = 1.0;
 
 static float vbatt_read( void )
 {
+	float voltage =
 #ifdef BATTERY_CELL_COUNT_DETECTION
-	return adc_read() * (float)ADC_SCALEFACTOR / (float)CELL_COUNT_UNSCALED * battery_scale_factor;
+	adc_read() * (float)ADC_SCALEFACTOR / (float)CELL_COUNT_UNSCALED * battery_scale_factor;
 #else
-	return adc_read() * (float)ADC_SCALEFACTOR * battery_scale_factor;
+	adc_read() * (float)ADC_SCALEFACTOR * battery_scale_factor;
 #endif
+
+#ifdef USE_TWO_POINT_VOLTAGE_CORRECTION
+	if (voltage < REPORTED_TELEMETRY_VOLTAGE_LO)
+	{
+		return voltage;
+	}
+	#define ACTUAL_BATTERY_VOLTAGE_RANGE 		(ACTUAL_BATTERY_VOLTAGE_HI - ACTUAL_BATTERY_VOLTAGE_LO)
+	#define REPORTED_TELEMETRY_VOLTAGE_RANGE 	(REPORTED_TELEMETRY_VOLTAGE_HI - REPORTED_TELEMETRY_VOLTAGE_LO)
+	voltage = (voltage - REPORTED_TELEMETRY_VOLTAGE_LO) * (ACTUAL_BATTERY_VOLTAGE_RANGE / REPORTED_TELEMETRY_VOLTAGE_RANGE)	+ ACTUAL_BATTERY_VOLTAGE_LO;
+#endif
+	return voltage;
 }
 
 void battery_init( void )
