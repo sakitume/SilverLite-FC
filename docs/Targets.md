@@ -145,7 +145,7 @@ Using STM32CubeMX you'll want to configure the various pins and perhipherals of 
         * Set "Class for FS IP" to "Communication Device Class (Virtual Port Com)"
 * For targets that implement internal SPI AFHDS/AFHDS2A receivers configure the following GPIO pins
     * `RX_SPI_LED_PIN`, "GPIO output level" == "Low", "Maximim output speed" == "High"
-    * `RX_SPI_BIND_PIN`, "GPIO mode" == "Input mode"
+    * `RX_SPI_BIND_PIN`, "GPIO mode" == "Input mode", "GPIO Pull-up/Pull-down" == "Pull Up"
     * `RX_SPI_EXTI_PIN`, "GPIO mode" == "External Interrupt Mode with Rising edge trigger detection"
         * NOTE: Examine NVIC for this pin, it should be enabled. Also "NVIC Interupt Table" should be "EXTI line[15:10] interrupts", if it isn't then you must edit rx_a7105.c`
 * Configure GPIO pins for soft SPI support of the MPU. Examine Betaflight `target.h` (look for `GYRO_1_CS_PIN` and `GYRO_1_SPI_INSTANCE`). **NOTE:** The SilF4ware code that was forked from referred to the MPU SPI pins with "SPI2_" prefix. Don't let that confuse you into thinking we're using SPI2 of the STM32 device (it often isn't).
@@ -348,7 +348,7 @@ RX SPI on MATEKF411RX (FlySky A7105)
 * RX_SPI_EXTI_PIN - PA14 (GPIO External interrupt mode)
     * Examining `A7105Init()` in Betaflight source code reveals it is configured for `EXTI_TRIGGER_RISING`
 * RX_SPI_LED_PIN - PB9 (GPIO output)
-* RX_SPI_BIND_PIN - PB2 (GPIO input), Should we enable pull up or pull down? After completing support for this target I discovered it did not need any pull up or pull down.
+* RX_SPI_BIND_PIN - PB2 (GPIO input), Should we enable pull up or pull down? After completing support for this target I discovered it did not need any pull up or pull down. NOTE: When testing with CrazyBeeF3FS it would often go into bind mode mid-flight. So I think a pullup is necessary.
 
 Note: For ESC pinouts look inside Betaflight for the corresponding `target.c` and you'll see a table like this:
 ```

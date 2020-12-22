@@ -61,7 +61,7 @@ static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_TIM2_Init(void);
-void MX_TIM1_Init(void);
+static void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -245,7 +245,7 @@ static void MX_ADC1_Init(void)
   * @param None
   * @retval None
   */
-void MX_TIM1_Init(void)
+static void MX_TIM1_Init(void)
 {
 
   /* USER CODE BEGIN TIM1_Init 0 */
@@ -423,17 +423,23 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : SPI2_MISO_Pin RX_SPI_BIND_PIN_Pin */
-  GPIO_InitStruct.Pin = SPI2_MISO_Pin|RX_SPI_BIND_PIN_Pin;
+  /*Configure GPIO pin : SPI2_MISO_Pin */
+  GPIO_InitStruct.Pin = SPI2_MISO_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(SPI2_MISO_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : RX_SPI_EXTI_PIN_Pin */
   GPIO_InitStruct.Pin = RX_SPI_EXTI_PIN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(RX_SPI_EXTI_PIN_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : RX_SPI_BIND_PIN_Pin */
+  GPIO_InitStruct.Pin = RX_SPI_BIND_PIN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(RX_SPI_BIND_PIN_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LED_Pin ESC1_Pin ESC2_Pin */
   GPIO_InitStruct.Pin = LED_Pin|ESC1_Pin|ESC2_Pin;
