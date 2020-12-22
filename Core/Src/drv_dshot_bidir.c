@@ -68,8 +68,10 @@ static GPIO_InitTypeDef ESC_InitStruct = {
 
 void pwm_init()
 {
+#if !defined(STM32F3)	// Already called by main() on F3 platform
 	extern void MX_TIM1_Init( void );
 	MX_TIM1_Init();
+#endif	
 
 	TIM1->ARR = DSHOT_BIT_TIME_THIRD;
 	TIM1->CCR1 = 0; // DMA transfer for both

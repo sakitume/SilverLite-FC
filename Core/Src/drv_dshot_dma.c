@@ -47,8 +47,10 @@ GPIO_TypeDef * GPIO2nd = 0;
 
 void pwm_init()
 {
+#if !defined(STM32F3)	// Already called by main() on F3 platform
 	extern void MX_TIM1_Init( void );
 	MX_TIM1_Init();
+#endif	
 
 	TIM1->ARR = DSHOT_BIT_TIME;
 	TIM1->CCR1 = DSHOT_T0H_TIME;
