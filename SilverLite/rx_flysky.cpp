@@ -110,7 +110,9 @@ enum e_IBUSChannels
 static uint8_t aux_map[][4] =
 {
     { THROTTLE_KILL_SWITCH,     kIBUS_Aux1,     0,  50  },
+#if defined(LEVELMODE)    
     { LEVELMODE,                kIBUS_Aux2,     0,  50  },
+#endif    
     { MOTOR_BEEPS_CHANNEL,      kIBUS_Aux3,     25, 65 },
 #if defined(TURTLE_MODE)    
     { TURTLE_MODE,              kIBUS_Aux3,     75, 100 },
@@ -134,7 +136,9 @@ static uint8_t aux_map[][4] =
 static uint8_t aux_map[][4] =
 {
     { THROTTLE_KILL_SWITCH,     kIBUS_Aux1,     0,  30  },
+#if defined(LEVELMODE)    
     { LEVELMODE,                kIBUS_Aux1,     35, 75  },
+#endif    
     { MOTOR_BEEPS_CHANNEL,      kIBUS_Aux2,     35, 75 },
 #if defined(TURTLE_MODE)    
     { TURTLE_MODE,              kIBUS_Aux2,     75, 100 },
