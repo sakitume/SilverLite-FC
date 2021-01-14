@@ -23,7 +23,7 @@ static bool lastBindPinStatus;
 #if defined(MATEKF411RX)
 static const bool ledInversion = true;  // MATEKF411RX defines RX_SPI_LED_INVERTED
 #elif defined(CRAZYBEEF3FS)
-static const bool ledInversion = false;
+static const bool ledInversion = true;  // CRAZYBEEF3FR does *not* define RX_SPI_LED_INVERTED, but they end up staying on during flight so turn it off by setting ledInversion to true
 #endif
 
 //------------------------------------------------------------------------------
