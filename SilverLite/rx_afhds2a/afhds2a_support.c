@@ -56,7 +56,8 @@ IO_t IOGetByTag(ioTag_t tag)
 
 //------------------------------------------------------------------------------
 // Called by flySkyInit(), we use this opportunity to initialize our lower level
-// SPI code 
+// SPI code. AND we also use this to check if we were able to retrieve a
+// usable flySkyConfig_t from flash and if not, enter bind mode
 void rxSpiCommonIOInit(const rxSpiConfig_t *rxSpiConfig)
 {
     (void)rxSpiConfig;
@@ -64,6 +65,11 @@ void rxSpiCommonIOInit(const rxSpiConfig_t *rxSpiConfig)
     lastBindPinStatus = (RX_SPI_BIND_PIN_GPIO_Port->IDR & RX_SPI_BIND_PIN_Pin);
 
     rxSpiInit();
+
+    if (gflySkyConfig.txId == 0)
+    {
+        bindRequested = true;
+    }
 }
 
 //------------------------------------------------------------------------------

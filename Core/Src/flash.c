@@ -155,10 +155,10 @@ void flash_load( void )
 #endif
 
 #if defined(RX_FLYSKY)
+		flySkyConfig_t* config = flySkyConfigMutable();
 		uint32_t txId = fmc_read(addresscount++);
 		if ((txId != 0) && (txId != (uint32_t)-1))
 		{
-			flySkyConfig_t* config = flySkyConfigMutable();
 			config->txId = txId;
 
 			uint32_t* data = (uint32_t*)(config->rfChannelMap);
@@ -167,6 +167,10 @@ void flash_load( void )
 			{
 				*data++ = fmc_read(addresscount++);
 			}
+		}
+		else
+		{
+			config->txId = 0;
 		}
 #endif
 
