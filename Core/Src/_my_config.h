@@ -103,14 +103,34 @@
 // PID term overrides
 //------------------------------------------------------------------------------
                         //  Roll    Pitch   Yaw
-#define     ACRO_P      {   .040,   .040,   .01     };
-#define     ACRO_I      {   .250,   .250,   .50     };
+#define     ACRO_P      {   .030,   .030,   .01     };
+#define     ACRO_I      {   .150,   .150,   .50     };
 #define     ACRO_D      {   .035,   .035,   .0      };
 
-// 65mm whoop, 0802 19000kv, RPM filtering, 48khz PWM
+// 2.5" micro, 08028 12000KV, looptime of 333, No RPM filtering, 48khz PWM, CrazyBeeF3FS flight controller
+//#define     ACRO_P      {   .016,   .016,   .01     };
+//#define     ACRO_I      {   .135,   .135,   .50     };
+//#define     ACRO_D      {   .036,   .036,   .0      };
+
+// 65mm whoop, 0802 19000kv, looptime of 333, No RPM filtering, 48khz PWM, CrazyBeeF3FS flight controller
+//#define     ACRO_P      {   .015,   .015,   .01     };
+//#define     ACRO_I      {   .140,   .140,   .50     };
+//#define     ACRO_D      {   .030,   .030,   .0      };
+
+// 65mm whoop, 0802 19000kv, looptime of 250, RPM filtering, 48khz PWM, Play F4 flight controller
 //#define     ACRO_P      {   .038,   .038,   .01     };
 //#define     ACRO_I      {   .140,   .140,   .50     };
 //#define     ACRO_D      {   .030,   .030,   .0      };
+
+// 75mm whoop, 0802 19000kv, looptime of 250, No RPM filtering, 48khz PWM, CrazyBeeF3FS fligh controller
+//#define     ACRO_P      {   .018,   .018,   .01     };
+//#define     ACRO_I      {   .140,   .140,   .50     };
+//#define     ACRO_D      {   .030,   .030,   .0      };
+
+// 2.5" micro, 1102 13500kv, looptime of 250, RPM filtering, 48khz PWM, Play F4 or MATEKF411RX flight controller 
+//#define     ACRO_P      {   .035,   .035,   .01     };
+//#define     ACRO_I      {   .175,   .175,   .50     };
+//#define     ACRO_D      {   .035,   .035,   .0      };
 
 
 // Angle mode P and D terms
@@ -189,10 +209,14 @@
     //#define RPM_FILTER
     #define LOOPTIME    500
 #elif defined(CRAZYBEEF3FS)
-    // Without RPM filter, and using AFHDS2A the looptime is around 250-287
     // With RPM filter, and using AFHDS2A the looptime is around 441
+    // With RPM filter, and using AFHDS2A the looptime is around 384
+    // But it isn't stable on the 75mm whoop I'm using to test with
     //#define RPM_FILTER
-    #define LOOPTIME    500
+    //#define LOOPTIME    400
+
+    // So no RPM_FILTER, and LOOPTIME of 333 seems to best. Real looptime is around 273
+    #define LOOPTIME    333
 #else
     #error "Unknown or unsupported flight controller target. Please edit this file"
     #undef RPM_FILTER
