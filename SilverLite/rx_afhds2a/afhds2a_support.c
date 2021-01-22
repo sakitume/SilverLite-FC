@@ -1,5 +1,5 @@
 #include "_my_config.h"
-#ifdef RX_FLYSKY
+#if defined(RX_FLYSKY) || defined(RX_FLYSKY2A)
 
 #include "flash.h"
 #include "main.h"
@@ -184,5 +184,5 @@ uint16_t getBatteryVoltage(void)
 }
 
 
-#endif  // #ifdef RX_FLYSKY
+#endif  // #if defined(RX_FLYSKY) || defined(RX_FLYSKY2A)
 

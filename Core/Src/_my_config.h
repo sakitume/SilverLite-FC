@@ -17,9 +17,14 @@
 //------------------------------------------------------------------------------
 //#define RX_SILVERLITE_BAYANG_PROTOCOL   // Enable SilverLite SPI Transceiver RX implementation
 //#define RX_IBUS // Enable IBUS protocol support on a USART RX pin, double-check rx_ibus.cpp and define one of: FLYSKY_i6_MAPPING, TURNIGY_EVOLUTION_MAPPING
-//#define RX_FLYSKY   // Enable FlySky SPI transceiver implementation
+//#define RX_FLYSKY     // Enable FlySky (AFHDS) SPI transceiver implementation
+//#define RX_FLYSKY2A   // Enable FlySky (AFHDS-2A) SPI transceiver implementation
 
-#if !defined(RX_SILVERLITE_BAYANG_PROTOCOL) && !defined(RX_IBUS) && !defined(RX_FLYSKY)
+// Alternatively, if an RX protocol/config wasn't explicitly provided, I will
+// default some targets to use a specific protocol/config. For targets that have
+// on-board SPI FlySky receivers I've decided to use the AFHDS2A protocol as
+// it has very low latency and my TX doesn't require new models for each quad
+#if !defined(RX_SILVERLITE_BAYANG_PROTOCOL) && !defined(RX_IBUS) && !defined(RX_FLYSKY) && !defined(RX_FLYSKY2A)
     #if defined(MATEKF411RX)
         #define RX_FLYSKY
     #elif defined(CRAZYBEEF3FS)
@@ -29,7 +34,7 @@
     #endif
 #endif
 
-#if !defined(RX_SILVERLITE_BAYANG_PROTOCOL) && !defined(RX_IBUS) && !defined(RX_FLYSKY)
+#if !defined(RX_SILVERLITE_BAYANG_PROTOCOL) && !defined(RX_IBUS) && !defined(RX_FLYSKY) && !defined(RX_FLYSKY2A)
     #warning "No RX implementation was chosen"
 #endif
 
@@ -212,11 +217,16 @@
     // With RPM filter, and using AFHDS2A the looptime is around 441
     // With RPM filter, and using AFHDS2A the looptime is around 384
     // But it isn't stable on the 75mm whoop I'm using to test with
-    //#define RPM_FILTER
-    //#define LOOPTIME    400
-
-    // So no RPM_FILTER, and LOOPTIME of 333 seems to best. Real looptime is around 273
-    #define LOOPTIME    333
+    // So no RPM_FILTER for this target unless I get the overlock working properly
+    #if defined(RX_FLYSKY2A)
+        // If AFHDS2A, no RPM filter, then real looptime is around 273
+        #define LOOPTIME    333
+    #elif defined(RX_FLYSKY)
+        // If AFHDS, no RPM filter, then real looptime is around 231
+        #define LOOPTIME    250
+    #else
+        #error "LOOPTIME for CRAZYBEEF3FS needs to be defined"
+    #endif
 #else
     #error "Unknown or unsupported flight controller target. Please edit this file"
     #undef RPM_FILTER

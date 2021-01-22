@@ -1,5 +1,5 @@
 #include "_my_config.h"
-#ifdef RX_FLYSKY
+#if defined(RX_FLYSKY) || defined(RX_FLYSKY2A)
 
 #include "afhds2a.h"
 
@@ -21,4 +21,4 @@ extern void writeEEPROM(void);
 }
 #endif
 
-#endif  // #ifdef RX_FLYSKY
+#endif  // #if defined(RX_FLYSKY) || defined(RX_FLYSKY2A)

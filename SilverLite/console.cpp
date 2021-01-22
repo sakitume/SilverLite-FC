@@ -18,7 +18,7 @@ extern "C" {
     extern const char *tprintf(const char* fmt, ...);
     extern void jump_to_bootloader( void );
 
-#if defined(RX_FLYSKY)
+#if defined(RX_FLYSKY) || defined(RX_FLYSKY2A)
     extern void rxSpiBind(void);
     extern void A7105Shutdown();
 #endif    
@@ -34,7 +34,7 @@ void console_poll(void)
         int ch = console.getc();
         if (ch == 'r')
         {
-#if defined(RX_FLYSKY)
+#if defined(RX_FLYSKY) || defined(RX_FLYSKY2A)
             // Disable interrupts used by A7105 code
             A7105Shutdown();
 #endif
@@ -42,7 +42,7 @@ void console_poll(void)
         }
         else if (ch == 'b')
         {
-#if defined(RX_FLYSKY)
+#if defined(RX_FLYSKY) || defined(RX_FLYSKY2A)
             rxSpiBind();
 #endif    
         }

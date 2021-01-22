@@ -1,7 +1,7 @@
 #include "config.h"
 #include "_my_config.h"
 
-#if defined(RX_FLYSKY)
+#if defined(RX_FLYSKY) || defined(RX_FLYSKY2A)
 
 #include "rx.h"
 #include "rx_afhds2a/afhds2a.h"
@@ -188,8 +188,11 @@ static float T_to_0_to_1(int v)
 void rx_init( void )
 {
     rxSpiConfig_t rxConfig;
-    rxConfig.rx_spi_protocol = RX_SPI_A7105_FLYSKY_2A;  // TODO, this should be configurable
-//    rxConfig.rx_spi_protocol = RX_SPI_A7105_FLYSKY;  // TODO, this should be configurable
+#if defined(RX_FLYSKY2A)
+    rxConfig.rx_spi_protocol = RX_SPI_A7105_FLYSKY_2A;
+#else    
+    rxConfig.rx_spi_protocol = RX_SPI_A7105_FLYSKY;
+#endif    
     rxConfig.extiIoTag = 0;
 
     rxRuntimeConfig_t rxRuntimeConfig;  // this isn't read, only written to
@@ -318,4 +321,4 @@ void checkrx( void )
 	}
 }
 
-#endif // #if defined(RX_FLYSKY)
+#endif // #if defined(RX_FLYSKY) || defined(RX_FLYSKY2A)

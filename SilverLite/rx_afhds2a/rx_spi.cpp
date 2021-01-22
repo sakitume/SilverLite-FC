@@ -26,7 +26,7 @@
  * Modified for use in SilverLite FC
  */
 #include "_my_config.h"
-#if defined(RX_FLYSKY)
+#if defined(RX_FLYSKY) || defined(RX_FLYSKY2A)
 
 extern "C" {
 	#include "rx_spi.h"
@@ -232,4 +232,4 @@ void rxSpiReadCommandMulti(uint8_t command, uint8_t commandData, uint8_t *retDat
 	CS_DISABLE
 }
 
-#endif  // #if defined(RX_FLYSKY)
+#endif  // #if defined(RX_FLYSKY) || defined(RX_FLYSKY2A)

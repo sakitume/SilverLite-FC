@@ -26,7 +26,7 @@
 
 
 #include "_my_config.h"
-#ifdef RX_FLYSKY
+#if defined(RX_FLYSKY) || defined(RX_FLYSKY2A)
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -219,4 +219,4 @@ void A7105WriteFIFO(uint8_t *data, uint8_t num)
     }
 }
 
-#endif /* RX_FLYSKY */
+#endif /* #if defined(RX_FLYSKY) || defined(RX_FLYSKY2A) */

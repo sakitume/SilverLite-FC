@@ -3,7 +3,7 @@
 #include "config.h"
 #include "drv_fmc.h"
 
-#if defined(RX_FLYSKY)
+#if defined(RX_FLYSKY) || defined(RX_FLYSKY2A)
 	#include "rx_afhds2a/afhds2a.h"	// For flySkyConfig_t
 #endif
 
@@ -78,7 +78,7 @@ void flash_save( void )
 
 #endif
 
-#if defined(RX_FLYSKY)
+#if defined(RX_FLYSKY) || defined(RX_FLYSKY2A)
 	const flySkyConfig_t* config = flySkyConfig();
 	if (config->txId)
 	{
@@ -154,7 +154,7 @@ void flash_load( void )
 
 #endif
 
-#if defined(RX_FLYSKY)
+#if defined(RX_FLYSKY) || defined(RX_FLYSKY2A)
 		flySkyConfig_t* config = flySkyConfigMutable();
 		uint32_t txId = fmc_read(addresscount++);
 		if ((txId != 0) && (txId != (uint32_t)-1))

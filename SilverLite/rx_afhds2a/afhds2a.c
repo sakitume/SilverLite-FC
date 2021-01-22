@@ -26,7 +26,7 @@
 
 #include "_my_config.h"
 
-#if defined(RX_FLYSKY)
+#if defined(RX_FLYSKY) || defined(RX_FLYSKY2A)
 #include <string.h>
 #include <stdint.h>
 
@@ -473,4 +473,4 @@ rx_spi_received_e flySkyDataReceived(uint8_t *payload)
     return result;
 }
 
-#endif /* RX_FLYSKY */
+#endif /* #if defined(RX_FLYSKY) || defined(RX_FLYSKY2A) */

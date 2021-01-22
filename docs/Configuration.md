@@ -6,7 +6,7 @@ Here is a short checklist of things to consider:
 
 * What flight controller board will you be using? [Several boards are supported.](Targets.md)
 * What type of receiver will you be using?
-    * On-board SPI AFHDS/AFHDS2A is available when using the "HappyModel Crazybee F4 Lite 1S" flight controller (found on the Mobula6). This is a `MATEKF411RX` target board.
+    * On-board SPI AFHDS/AFHDS2A is available when using the "HappyModel Crazybee F4 Lite 1S" flight controller as found on the Mobula6 (this is a `MATEKF411RX` target board) and also with the CrazybeeF3FS 
     * External SPI Bayang is available using various [transceiver modules.](Transceiver.md).
         * I've had great success with the [Play F4 board and an NRF24L01](PlayF4_NRF24L01.md).
 * Configure your aux channels: throttle kill switch (similar to an arm switch), level mode enable/disable, turtle mode, motor beeps, etc
@@ -15,14 +15,14 @@ Here is a short checklist of things to consider:
 
 ## Specifying the flight controller
 
-Only three [flight controller targets](Targets.md) are currently supported (`MATEKF411RX`, `NOX`, `OMNIBUSF4`). The `MATEKF411RX` target can support an on-board SPI transceiver (only FlySky AFHDS/AFHDS2A is supported at this time). My fleet of whoops and micros are currently using the "Play F4" board (`NOX`) or the "HappyModel Crazybee F4 Lite 1S" flight controller (found on the Mobula6). This is a `MATEKF411RX` target.
+Only four [flight controller targets](Targets.md) are currently supported (`MATEKF411RX`, `CRAZYBEEF3FS`, `NOX`, `OMNIBUSF4`). The `MATEKF411RX` target can support an on-board SPI transceiver (only FlySky AFHDS/AFHDS2A is supported at this time). The `CRAZYBEEF3FS` target also supports on-board SPI FlySky AFHDS/AFHDS2A. I'm actively using all of these target boads for my whoops and micros with the exception of the `OMNIBUSF4`, this target was only used for development as it provides SWD solder pads.
 
-You will not need to edit any source files to specify your target board. Instead you just need to make note of the target name
+ You will not need to edit any source files to specify your target board. Instead you just need to make note of the target name
 (such as `NOX` or `MATEKF411RX`). You'll need to know this when you build the firmware as described in the [Develop](Develop.md) section of this document.
 
 ## Specifying the receiver
 
-If you wish to use an external SPI RX transceiver [4 different modules](Transceiver.md) are supported. IBUS support is also available; I've successfully used the FlySky FS-RX2A receiver with IBUS on the `NOX` and `OMNIBUSF4` targets. And if you're using that Mobula6 board, then you can use the on-board SPI AFHDS/AFHDS2A receiver.
+If you wish to use an external SPI RX transceiver [4 different modules](Transceiver.md) are supported. IBUS support is also available; I've successfully used the FlySky FS-RX2A receiver with IBUS on the `NOX` and `OMNIBUSF4` targets. And if you're using that Mobula6 board or the CrazyBeeF3FS board then you can use the on-board SPI AFHDS/AFHDS2A receiver.
 
 You will edit the `_my_config.h` source file to specify your receiver option. Using a text editor (I suggest Visual Studio Code) open the file and look near the top of the file for something that looks like this:
 
@@ -33,7 +33,8 @@ You will edit the `_my_config.h` source file to specify your receiver option. Us
 //------------------------------------------------------------------------------
 //#define RX_SILVERLITE_BAYANG_PROTOCOL   // Enable SilverLite SPI Transceiver RX implementation
 //#define RX_IBUS // Enable IBUS protocol support on a USART RX pin, double-check rx_ibus.cpp and define one of: FLYSKY_i6_MAPPING, TURNIGY_EVOLUTION_MAPPING
-#define RX_FLYSKY   // Enable FlySky SPI transceiver implementation
+//#define RX_FLYSKY     // Enable FlySky (AFHDS) SPI transceiver implementation
+#define RX_FLYSKY2A   // Enable FlySky (AFHDS-2A) SPI transceiver implementation
 ```
 
 The lines that start with `//` are "commented out", meaning they don't do anything.
@@ -48,7 +49,8 @@ with IBUS protocol then you'd edit that text to look like this intead:
 //------------------------------------------------------------------------------
 //#define RX_SILVERLITE_BAYANG_PROTOCOL   // Enable SilverLite SPI Transceiver RX implementation
 #define RX_IBUS // Enable IBUS protocol support on a USART RX pin, double-check rx_ibus.cpp and define one of: FLYSKY_i6_MAPPING, TURNIGY_EVOLUTION_MAPPING
-//#define RX_FLYSKY   // Enable FlySky SPI transceiver implementation
+//#define RX_FLYSKY     // Enable FlySky (AFHDS) SPI transceiver implementation
+//#define RX_FLYSKY2A   // Enable FlySky (AFHDS-2A) SPI transceiver implementation
 ```
 
 If you choose the `RX_SILVERLITE_BAYANG_PROTOCOL` option (an external SPI transceiver module
@@ -62,7 +64,8 @@ also want to review and possibly edit the text immediately below that.
 //------------------------------------------------------------------------------
 #define RX_SILVERLITE_BAYANG_PROTOCOL   // Enable SilverLite SPI Transceiver RX implementation
 //#define RX_IBUS // Enable IBUS protocol support on a USART RX pin, double-check rx_ibus.cpp and define one of: FLYSKY_i6_MAPPING, TURNIGY_EVOLUTION_MAPPING
-//#define RX_FLYSKY   // Enable FlySky SPI transceiver implementation
+//#define RX_FLYSKY     // Enable FlySky (AFHDS) SPI transceiver implementation
+//#define RX_FLYSKY2A   // Enable FlySky (AFHDS-2A) SPI transceiver implementation
 
 //------------------------------------------------------------------------------
 // When using RX_SILVERLITE_BAYANG_PROTOCOL you must specify which transceiver
