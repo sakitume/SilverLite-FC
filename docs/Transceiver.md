@@ -5,12 +5,16 @@ as well as how what adjustments you may need to perform to various configuration
 
 ## Using onboard SPI
 
-Currently only the FlySky version of the "HappyModel Crazybee F4 Lite 1S" flight controller (found on the Mobula6) us supported.
-Since this is built into the flight controller board the only thing you need to configure is whether you want
-to use the older AFHDS protocol (which has a minimal latency of 1.5ms) or the newer AFHDS2A protocol (minimal latency of 3.850ms).
+The FlySky version of the `MATEKF411RX` target ("HappyModel Crazybee F4 Lite 1S" flight controller found on the Mobula6) and
+the `CRAZYBEEF3FS` target both have on-board SPI transceiver modules. This makes it super easy to use with SilverLite-FC.
+The only thing you need to configure is whether you want to use the older AFHDS protocol (which has a minimal latency of 1.5ms) 
+or the newer AFHDS2A protocol (minimal latency of 3.850ms).
+
+I prefer using the older AFHDS protocol because it lets me use just one model with my TX rather than having to have models
+for every whoop/micro I have. Plus it has the lowest latency of all the mainstream protocols (1.5ms or 666 packets per second).
 
 
-## For external SPI RX modules
+## For external SPI modules
 
 Things to discuss:
 

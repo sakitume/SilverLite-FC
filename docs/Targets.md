@@ -2,26 +2,23 @@
 
 # Flight Controller Targets
 
-This codebase currently supports several *targets* using the STM32F411 or STM32405 processors. A *target* is simply the name of a hardware configuration (processor and peripherals) that was defined for use with Betaflight. Different flight controller boards can be made that correspond to a given target.
+This codebase currently supports several *targets* using the STM32F411, STM32405 or STM32F303x processors. A *target* is simply the name of a hardware configuration (processor and peripherals) that was defined for use with Betaflight. Different flight controller boards can be made that correspond to a given target.
 
-The target names I'm using come straight from Betaflight. By examining various source files in Betaflight I'm able to reverse engineer what peripherals are used on the flight controller boards and also what pins are used.
-
-The following flight controller targets are currently defined:
+The target names I'm using come straight from Betaflight. The following flight controller targets are currently defined:
 
 * `OMNIBUSF4` 	- This uses the STM32F405 processor which runs at 168Mhz
 * `NOX`         - This uses the STM32F411 processor which runs at 98Mhz or 100Mhz (we must use 98Mhz for proper USB Virtual Com Port support)
 * `MATEKF411RX` - This uses the STM32F411 processor. At this time only the "HappyModel Crazybee F4 Lite 1S FlySky" flight controller is currently supported.
+* `CRAZYBEEF3FS`- This uses the STM32F303x processor. It runs at 72Mhz, not fast enough for RPM filtering. 
+* `OMNIBUS`     - This uses the STM32F303x processor. Support for this has yet to be completed.
 
-I had also planned on supporting the CrazyBee F3 flight controller but have yet to do so.
-
-
-Note: The `Makefile` defaults to building for the `NOX` target but this can be overriden when invoking the makefile by specifying the `TARGET` on the command line like so:
+Note: The `Makefile` defaults to building for the `CRAZYBEEF3FS` target but this can be overriden when invoking the makefile by specifying the `TARGET` on the command line like so:
 
 ```
-mingw32-make.exe -j12 flash TARGET=OMNIBUSF4
+mingw32-make.exe -j12 TARGET=MATEKF411RX flash
 ```
 
-The above command will build the `OMNIBUSF4` target and flash the build onto the flight controller board.
+The above command will build the `MATEKF411RX` target and flash the build onto the flight controller board.
 For more details on how to build and flash (and develop) this software read the [Develop](Develop.md) page
 
 If using Visual Studio Code then you can click on the "Run build task" icon in the status bar...
@@ -41,7 +38,20 @@ This flight controller (and target) also supports an FrSky SPI receiver as well.
 ![CrazebeeF4Lite-Top](images/CrazyBee_F4_Lite_1s_top.jpg)
 ![CrazebeeF4Lite-Bottom](images/CrazyBee_F4_Lite_1s_bottom.jpg)
 
-This is the easiest board to use with SilverLite-FC. 
+This is an easy board to use with SilverLite-FC since the RX is on-board and very little configuration is needed.
+
+## `CRAZYBEEF3FS`
+
+This is an older F3 processor based flight controller. It was one of the first whoop boards that featured
+many on-board features such as: OSD, SPI receiver, current metering, BLHeli escs.
+
+Like the Mobula6 board, there is a version of it available with FrSky support. But I don't have one of these so haven't implemented
+support for that version.
+
+![CrazebeeF3FS](images/CrazybeeF3FS-1.webp)
+
+This is an easy board to use with SilverLite-FC since the RX is on-board and very little configuration is needed.
+
 
 
 ## `NOX`
@@ -79,7 +89,9 @@ in the [Transceiver Modules](Transceiver.md) section.
 
 ## Adding support for new targets
 
-This section will contain my notes on what is required to add support for new targets. The notes are largely based on what I performed for adding the `MATEKF411RX` target.
+This section will contain my notes on what is required to add support for new targets. The notes are largely based on what I performed for adding the `MATEKF411RX` and `CRAZYBEEF3FS` targets.
+
+**NOTE: You really don't need to read all of this. It's just here so I can remember what is needed when setting up a new target.**
 
 The project folder structure contains a `Targets` folder that in turn contains subfolders for each of the targets (such as `NOX`, `OMNIBUSF4`). In turn these folders contain the following:
 
