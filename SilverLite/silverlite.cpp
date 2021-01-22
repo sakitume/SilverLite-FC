@@ -103,12 +103,12 @@ static void update_osd()
     const char *s = tprintf("\x01%3d", packetpersecond);
     osd_print(row, 30 - strlen(s) - 1, s);
 
-#if 0 
+#if 1
     // Max loop time and osd time
     s = tprintf("%3d", _max_loop_time);
     osd_print(row+1, 24, s);
-    s = tprintf("%3d", osd_time);
-    osd_print(row+2, 24, s);
+//    s = tprintf("%3d", osd_time);
+//    osd_print(row+2, 24, s);
 #endif
 
     // Battery voltage on lower left
