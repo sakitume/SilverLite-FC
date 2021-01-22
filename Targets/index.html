@@ -228,6 +228,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#crazybeef3fs" title="CRAZYBEEF3FS" class="md-nav__link">
+    CRAZYBEEF3FS
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#nox" title="NOX" class="md-nav__link">
     NOX
   </a>
@@ -335,6 +342,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#crazybeef3fs" title="CRAZYBEEF3FS" class="md-nav__link">
+    CRAZYBEEF3FS
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#nox" title="NOX" class="md-nav__link">
     NOX
   </a>
@@ -373,20 +387,20 @@
                 
                 
                 <h1 id="flight-controller-targets">Flight Controller Targets</h1>
-<p>This codebase currently supports several <em>targets</em> using the STM32F411 or STM32405 processors. A <em>target</em> is simply the name of a hardware configuration (processor and peripherals) that was defined for use with Betaflight. Different flight controller boards can be made that correspond to a given target.</p>
-<p>The target names I'm using come straight from Betaflight. By examining various source files in Betaflight I'm able to reverse engineer what peripherals are used on the flight controller boards and also what pins are used.</p>
-<p>The following flight controller targets are currently defined:</p>
+<p>This codebase currently supports several <em>targets</em> using the STM32F411, STM32405 or STM32F303x processors. A <em>target</em> is simply the name of a hardware configuration (processor and peripherals) that was defined for use with Betaflight. Different flight controller boards can be made that correspond to a given target.</p>
+<p>The target names I'm using come straight from Betaflight. The following flight controller targets are currently defined:</p>
 <ul>
 <li><code>OMNIBUSF4</code>   - This uses the STM32F405 processor which runs at 168Mhz</li>
 <li><code>NOX</code>         - This uses the STM32F411 processor which runs at 98Mhz or 100Mhz (we must use 98Mhz for proper USB Virtual Com Port support)</li>
 <li><code>MATEKF411RX</code> - This uses the STM32F411 processor. At this time only the "HappyModel Crazybee F4 Lite 1S FlySky" flight controller is currently supported.</li>
+<li><code>CRAZYBEEF3FS</code>- This uses the STM32F303x processor. It runs at 72Mhz, not fast enough for RPM filtering. </li>
+<li><code>OMNIBUS</code>     - This uses the STM32F303x processor. Support for this has yet to be completed.</li>
 </ul>
-<p>I had also planned on supporting the CrazyBee F3 flight controller but have yet to do so.</p>
-<p>Note: The <code>Makefile</code> defaults to building for the <code>NOX</code> target but this can be overriden when invoking the makefile by specifying the <code>TARGET</code> on the command line like so:</p>
-<pre><code>mingw32-make.exe -j12 flash TARGET=OMNIBUSF4
+<p>Note: The <code>Makefile</code> defaults to building for the <code>CRAZYBEEF3FS</code> target but this can be overriden when invoking the makefile by specifying the <code>TARGET</code> on the command line like so:</p>
+<pre><code>mingw32-make.exe -j12 TARGET=MATEKF411RX flash
 </code></pre>
 
-<p>The above command will build the <code>OMNIBUSF4</code> target and flash the build onto the flight controller board.
+<p>The above command will build the <code>MATEKF411RX</code> target and flash the build onto the flight controller board.
 For more details on how to build and flash (and develop) this software read the <a href="../Develop/">Develop</a> page</p>
 <p>If using Visual Studio Code then you can click on the "Run build task" icon in the status bar...
 <img alt="VSCode-RunBuildTasks" src="../images/VSCode-RunBuildTasks.png" /></p>
@@ -397,7 +411,14 @@ For more details on how to build and flash (and develop) this software read the 
 <p>This flight controller (and target) also supports an FrSky SPI receiver as well. However I only possess the FlySky version and therefore only built support for the AFHDS/AFHDS2A receiver.</p>
 <p><img alt="CrazebeeF4Lite-Top" src="../images/CrazyBee_F4_Lite_1s_top.jpg" />
 <img alt="CrazebeeF4Lite-Bottom" src="../images/CrazyBee_F4_Lite_1s_bottom.jpg" /></p>
-<p>This is the easiest board to use with SilverLite-FC. </p>
+<p>This is an easy board to use with SilverLite-FC since the RX is on-board and very little configuration is needed.</p>
+<h2 id="crazybeef3fs"><code>CRAZYBEEF3FS</code></h2>
+<p>This is an older F3 processor based flight controller. It was one of the first whoop boards that featured
+many on-board features such as: OSD, SPI receiver, current metering, BLHeli escs.</p>
+<p>Like the Mobula6 board, there is a version of it available with FrSky support. But I don't have one of these so haven't implemented
+support for that version.</p>
+<p><img alt="CrazebeeF3FS" src="../images/CrazybeeF3FS-1.webp" /></p>
+<p>This is an easy board to use with SilverLite-FC since the RX is on-board and very little configuration is needed.</p>
 <h2 id="nox"><code>NOX</code></h2>
 <p>I've been using the "Play F4" flight controller (sometimes described as "JHEMCU Play F4" or "JMT Play F4"). This board is a NOX target. This is what it looks like:</p>
 <p><img alt="Play F4 Top" src="../images/Play-F4-Top.jpg" />
@@ -425,7 +446,8 @@ how the STM32 processor interfaces with the MPU, OSD and other peripherals.</p>
 to your transceiver board (NRF24L01, XN297, XN297L or LT8900). More information can be found
 in the <a href="../Transceiver/">Transceiver Modules</a> section.</p>
 <h2 id="adding-support-for-new-targets">Adding support for new targets</h2>
-<p>This section will contain my notes on what is required to add support for new targets. The notes are largely based on what I performed for adding the <code>MATEKF411RX</code> target.</p>
+<p>This section will contain my notes on what is required to add support for new targets. The notes are largely based on what I performed for adding the <code>MATEKF411RX</code> and <code>CRAZYBEEF3FS</code> targets.</p>
+<p><strong>NOTE: You really don't need to read all of this. It's just here so I can remember what is needed when setting up a new target.</strong></p>
 <p>The project folder structure contains a <code>Targets</code> folder that in turn contains subfolders for each of the targets (such as <code>NOX</code>, <code>OMNIBUSF4</code>). In turn these folders contain the following:</p>
 <ul>
 <li><code>TARGET_NAME.ioc</code> - This is an STM32CubeMX project file used to configure the STM32 and its peripherals.. The <code>TARGET_NAME</code> will be something like <code>NOX</code> or <code>OMNIBUS</code>, etc.</li>
@@ -434,7 +456,290 @@ in the <a href="../Transceiver/">Transceiver Modules</a> section.</p>
 <p>I want to add support for the Mobula6 flight controller which is the "HappyModel Crazybee F4 Lite 1S" board.
 In Betaflight it is known as the <code>MATEKF411RX</code> target. So I would create a new folder with that name within
 our <code>Targets</code> folder. </p>
-<p>Using STM32CubeMX you'll want to configure the various pins and perhipherals of the STM32 chip.</p>
+<p>Using STM32CubeMX you'll want to configure the various pins and perhipherals of the STM32 chip:</p>
+<ul>
+<li>Under "Project Manager":<ul>
+<li>"Project" -&gt; "Application Structure" - "Advanced"</li>
+<li>"Code Generator" <ul>
+<li>"Toolchain / IDE" - "MDK-ARM"</li>
+<li>"Min Version" - "V5"</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Set clock config as appropriate (making sure you choose options that allow VCP to work correctly)<ul>
+<li>Set "HCLK" to desired clock frequency (72, 96, 100, 120, etc)<ul>
+<li>This will adjust sources (Use HSE instead of HSI, etc)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Configure TIM2. It is used for <code>gettime()</code><ul>
+<li>"Clock Source" - "Internal Clock"</li>
+<li>"Counter Settings"<ul>
+<li>"Prescaler" - Set to match clock Mhz</li>
+<li>"Counter Period" - 0xFFFFFFFF</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Configure ADC1. It is used for monitoring battery voltage<ul>
+<li>To configure ADC, look within Betaflight <code>target.h</code> for VBAT_ADC_PIN and then in "Pinout view"
+select that pin and configure it for ADC. <ul>
+<li>For F3 this results in enabling ADC1_IN1<ul>
+<li>Then in "ADC1 Mode and Configuration" for "IN1" choose "IN1 Single-ended".
+    Also tick the "Vrefint Channel" checkbox.</li>
+<li>Under "Parameter Settings"<ul>
+<li>Under "ADC_Settings"<ul>
+<li>"Clock Prescaler"<ul>
+<li>For F4 - "PCLK2 divided by 8"</li>
+<li>For F3 - "Synchronous clock mode divided by 4"</li>
+</ul>
+</li>
+<li>"Resolution" - "ADC 12-bit resolution" (this should already be set)</li>
+<li>"Scan Conversion Mode" - "Enabled". NOTE: This won't be selectable yet, we'll do it later</li>
+<li>"Continuous Conversion mode" - "Enabled"</li>
+<li>"DMA Continuous Requests" - "Enabled"</li>
+</ul>
+</li>
+<li>Under "ADC_Regular_ConversionMode"<ul>
+<li>F3 - "Enable Regular Convresions" - "Enable". NOTE: This should already be setup</li>
+<li>"Number of Conversion" - "2". NOTE: <em>THIS</em> will change "Scan Conversion Mode" from "Disabled" to "Enabled"</li>
+<li>Expand Rank 1 and..<ul>
+<li>Ensure "Channel" is set to "Channel 1"</li>
+<li>"Sampling Time" - "181.5 Cycles"</li>
+</ul>
+</li>
+<li>Expand Rank 2 and..<ul>
+<li>Ensure "Channel" is set to "Channel Vrefint"</li>
+<li>"Sampling Time" - "181.5 Cycles"</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Under "DMA Settings" click "Add" and then for: DMA Request, Channel, Direction, Priority<ul>
+<li>ADC1, DMA1 Channel 1, Peripheral To Memory Low</li>
+<li>Under "DMA Request Settings" for this new entry:<ul>
+<li>"Mode" - "Circular"</li>
+<li>"Increment Address" - Tick only the "Memory" checkbox</li>
+<li>"Data Width" - "Peripheral"-&gt;"Word", "Memory"-&gt;"Word"</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Configure LED pin (check Betaflight/target.h file)<ul>
+<li>Configure for GPIO_Output: "GPIO mode" to "Output Push Pull", "Maximum Output Speed" to "High"</li>
+<li>Label it "LED" so that "LED_Pin" is generated since it is used by code</li>
+</ul>
+</li>
+<li>For F3 targets (only), configure USB<ul>
+<li>Under "Pinout &amp; COnfiguration, chooose "Connectivity" then select "USB"<ul>
+<li>Under "USB Mode and Configuration"-&gt;"Mode" tick the "Device (FS)" checkbox</li>
+</ul>
+</li>
+<li>Under "Middleware" select "USB_DEVICE"<ul>
+<li>Set "Class for FS IP" to "Communication Device Class (Virtual Port Com)"</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>For targets that implement internal SPI AFHDS/AFHDS2A receivers configure the following GPIO pins<ul>
+<li><code>RX_SPI_LED_PIN</code>, "GPIO output level" == "Low", "Maximim output speed" == "High"</li>
+<li><code>RX_SPI_BIND_PIN</code>, "GPIO mode" == "Input mode", "GPIO Pull-up/Pull-down" == "Pull Up"</li>
+<li><code>RX_SPI_EXTI_PIN</code>, "GPIO mode" == "External Interrupt Mode with Rising edge trigger detection"<ul>
+<li>NOTE: Examine NVIC for this pin, it should be enabled. Also "NVIC Interupt Table" should be "EXTI line[15:10] interrupts", if it isn't then you must edit rx_a7105.c`</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Configure GPIO pins for soft SPI support of the MPU. Examine Betaflight <code>target.h</code> (look for <code>GYRO_1_CS_PIN</code> and <code>GYRO_1_SPI_INSTANCE</code>). <strong>NOTE:</strong> The SilF4ware code that was forked from referred to the MPU SPI pins with "SPI2_" prefix. Don't let that confuse you into thinking we're using SPI2 of the STM32 device (it often isn't).<ul>
+<li>"GPIO output Level" - "Low"</li>
+<li>"GPIO mode" - "Output Push Pull"</li>
+<li>"GPIO Pull-up/Pull-down" - "No pull-up and no pull-down"</li>
+<li>"Maximum output speed" - "High"</li>
+<li>Use the following labels:<ul>
+<li><code>SPI_MPU_SS</code></li>
+<li><code>SPI2_CLK</code></li>
+<li><code>SPI2_MOSI</code></li>
+</ul>
+</li>
+<li>For SPI MISO:<ul>
+<li>"GPIO mode" - "Input Mode"</li>
+<li><code>SPI2_MISO</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Configure GPIO pins for ESCs<ul>
+<li>"GPIO output Level" - "Low"</li>
+<li>"GPIO mode" - "Output Push Pull"</li>
+<li>"Maximum output speed" - "High"</li>
+<li>Use the following labels:<ul>
+<li><code>ESC1</code></li>
+<li><code>ESC2</code></li>
+<li><code>ESC3</code></li>
+<li><code>ESC4</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Under "System Core" select "NVIC" and under "Code genearation" untick the "Generate IRQ handler" checkboxes for these:<ul>
+<li>"Hard fault interrupt"</li>
+<li>"Memory management fault"</li>
+<li>"Pre-fetch fault, memory access fault"</li>
+<li>"Undefined instruction or illegal state"</li>
+</ul>
+</li>
+<li>TIM1 (with DMA) is used for implementing DSHOT.<ul>
+<li>Configure TIM1<ul>
+<li>"Clock Source" - "Internal Clock"</li>
+<li>"Channel1" - "Output Compare No Output"</li>
+<li>"Channel2" - "Output Compare No Output"</li>
+<li>No changes/configuration are needed under "Parameter Settings"</li>
+<li>Under "DMA Settings" click on "Add" and create the following<ul>
+<li>For F4 devices (DMA Request, Stream, Direction, Priority):<ul>
+<li>TIM1_UP,  DMA2 Stream 5,  Memory To Peripheral,   High</li>
+<li>TIM1_CH1, DMA2 Stream 1,  Memory To Peripheral,   High</li>
+<li>TIM1_CH2, DMA2 Stream 2,  Memory To Peripheral,   High<ul>
+<li>Note: This DMA2 Stream 2 will require we provide our an irq handler.</li>
+<li>Go back to "System Core"-&gt;"NVIC"-&gt;"Code Generation" and untick the
+checkbox for "DMA1 Channel 3 global interrupt"</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>For F3 devices (DMA Request, Channel, Direction, Priority)<ul>
+<li>TIM1_UP,  DMA1 Channel 5,  Memory To Peripheral,   High</li>
+<li>TIM1_CH1, DMA1 Channel 2,  Memory To Peripheral,   High</li>
+<li>TIM1_CH2, DMA1 Channel 3,  Memory To Peripheral,   High<ul>
+<li>Note: This DMA1 Channel 3 will require we provide our an irq handler.</li>
+<li>Go back to "System Core"-&gt;"NVIC"-&gt;"Code Generation" and untick the
+checkbox for "DMA1 Channel 3 global interrupt". If a target requires that
+<code>TIM1_CH2</code> requires a different dma and channel combination be sure to edit
+<code>drv_dshot_dma.c</code> and <code>drv_dshot_bidir.c</code> and</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Ensure each addition (under "DMA Request Settings") configures:<ul>
+<li>"Mode" is "Normal"</li>
+<li>"Data Width" to be "Word"/"Word"</li>
+<li>"Increment Address" is ticked for "Memory" <em>EXCEPT</em> for "TIM1_UP"</li>
+</ul>
+</li>
+<li>The "NVIC Settings" for all of the DMA interrupts should show they are enabled</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>After this you'll want to "GENERATE CODE" and then edit the <code>main.c</code> that is generated.
+Look for <code>int main(void)</code> and at the bottom of the function you'll see this:</p>
+<pre><code>  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+  while (1)
+  {
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+  }
+</code></pre>
+
+<p>Add a call to <code>usermain()</code> right before the <code>while (1)</code> so it looks like this:</p>
+<pre><code>  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+extern void usermain();
+usermain();
+  while (1)
+  {
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+  }
+</code></pre>
+
+<p>Also you'll want to search for <code>MX_TIM1_Init</code> in <code>main.c</code> and make it globally
+accessible (remove the <code>static</code> modifier, this will occur in two places).</p>
+<p>CRAZYBEEF3FS </p>
+<pre><code># resource show
+IO
+A00: ADC_BATT
+A01: ADC_CURR
+A02: MOTOR 4
+A03: MOTOR 3
+A04: GYRO_CS 1
+A05: SPI_SCK 1
+A06: SPI_MISO 1
+A07: SPI_MOSI 1
+A08: RX_SPI_EXTI
+A09: RX_SPI_BIND
+A10: LED
+A11: USB
+A12: USB
+A13: FREE
+A14: FREE
+A15: FREE
+B00: FREE
+B01: OSD_CS
+B02: FREE
+B03: LED 1
+B04: FREE
+B05: FREE
+B06: FREE
+B07: FREE
+B08: MOTOR 1
+B09: MOTOR 2
+B10: FREE
+B11: FREE
+B12: RX_SPI_CS
+B13: SPI_SCK 2
+B14: SPI_MISO 2
+B15: SPI_MOSI 2
+C13: GYRO_EXTI
+C14: FREE
+C15: BEEPER
+F00: FREE
+F01: FREE
+F04: FREE
+
+# resource
+resource BEEPER 1 C15
+resource MOTOR 1 B08
+resource MOTOR 2 B09
+resource MOTOR 3 A03
+resource MOTOR 4 A02
+resource MOTOR 5 B06
+resource LED_STRIP 1 B04
+resource SERIAL_TX 3 B10
+resource SERIAL_RX 3 B11
+resource LED 1 B03
+resource SPI_SCK 1 A05
+resource SPI_SCK 2 B13
+resource SPI_MISO 1 A06
+resource SPI_MISO 2 B14
+resource SPI_MOSI 1 A07
+resource SPI_MOSI 2 B15
+resource ADC_BATT 1 A00
+resource ADC_CURR 1 A01
+resource OSD_CS 1 B01
+resource RX_SPI_CS 1 B12
+resource RX_SPI_EXTI 1 A08
+resource RX_SPI_BIND 1 A09
+resource RX_SPI_LED 1 A10
+resource GYRO_EXTI 1 C13
+resource GYRO_CS 1 A04
+</code></pre>
+
 <p>Required by Silverware:</p>
 <ul>
 <li>SPI interface for the MPU (4-wire soft spi implementation)<ul>
@@ -445,7 +750,7 @@ our <code>Targets</code> folder. </p>
 </ul>
 </li>
 <li>SPI interface for the OSD<ul>
-<li>This is actually configured by editing <code>drv_sd_spi.config.h</code> rather than via Stm32CubeMX</li>
+<li>This is actually configured by editing <code>drv_osd_spi.config.h</code> rather than via Stm32CubeMX</li>
 </ul>
 </li>
 <li>SWD pins (SWDIO, SWCLK) - If available<ul>
@@ -467,7 +772,7 @@ our <code>Targets</code> folder. </p>
 <ul>
 <li>CURRENT_METER_ADC_PIN - PB1 (ADC)</li>
 </ul>
-<p>RX SPI (FlySky A7105)
+<p>RX SPI on MATEKF411RX (FlySky A7105) 
 * SPI3_SCK_PIN  - PB3 (GPIO output)
 * SPI3_MISO_PIN - PB4 (GPIO input)
 * SPI3_MOSI_PIN - PB5 (GPIO output)
@@ -475,7 +780,7 @@ our <code>Targets</code> folder. </p>
 * RX_SPI_EXTI_PIN - PA14 (GPIO External interrupt mode)
     * Examining <code>A7105Init()</code> in Betaflight source code reveals it is configured for <code>EXTI_TRIGGER_RISING</code>
 * RX_SPI_LED_PIN - PB9 (GPIO output)
-* RX_SPI_BIND_PIN - PB2 (GPIO input), Should we enable pull up or pull down? After completing support for this target I discovered it did not need any pull up or pull down.</p>
+* RX_SPI_BIND_PIN - PB2 (GPIO input), Should we enable pull up or pull down? After completing support for this target I discovered it did not need any pull up or pull down. NOTE: When testing with CrazyBeeF3FS it would often go into bind mode mid-flight. So I think a pullup is necessary.</p>
 <p>Note: For ESC pinouts look inside Betaflight for the corresponding <code>target.c</code> and you'll see a table like this:</p>
 <pre><code>const timerHardware_t timerHardware[USABLE_TIMER_CHANNEL_COUNT] = {
     DEF_TIM(TIM9, CH2, PA3,  TIM_USE_PPM,   0, 0), // PPM/RX2
