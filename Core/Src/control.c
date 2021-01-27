@@ -112,12 +112,12 @@ static bool armed;
 
 //------------------------------------------------------------------------------
 // Checks to see if global "armed" state should be changed by examining 
-// aux[THROTTLE_KILL_SWITCH]. If so it will also check if turtle mode should be
+// debounced_throttle_kill_switch. If so it will also check if turtle mode should be
 // enabled/disabled as necessary.
 // Returns true if global "armed" state is true
-static bool checkArmingState()
+static bool checkArmingState(bool debounced_throttle_kill_switch)
 {
-	char currArmedState = !aux[THROTTLE_KILL_SWITCH];
+	char currArmedState = !debounced_throttle_kill_switch;
 
 	// Values within aux[] should always be 0 or 1, 
 	// so comparing such a value against 0x88 lets us know if it was valid or not
@@ -315,11 +315,23 @@ void control( bool send_motor_values )
 		motors_failsafe_time = 0;
 	}
 
+	// Debounce THROTTLE_KILL_SWITCH:
+	static bool debounced_throttle_kill_switch = false;
+	static bool previous_throttle_kill_switch = false;
+	static unsigned long throttle_kill_switch_time = 0;
+	if ( previous_throttle_kill_switch != aux[ THROTTLE_KILL_SWITCH ] ) {
+		throttle_kill_switch_time = gettime();
+		previous_throttle_kill_switch = aux[ THROTTLE_KILL_SWITCH ];
+	}
+	if ( gettime() - throttle_kill_switch_time > 10000 ) { // 2 packet intervals
+		debounced_throttle_kill_switch = aux[ THROTTLE_KILL_SWITCH ];
+	}
+
 	// Prevent startup if the TX is turned on with the THROTTLE_KILL_SWITCH not activated:
 	static bool tx_just_turned_on = true;
 	bool prevent_start = false;
 	if ( tx_just_turned_on ) {
-		if ( ! aux[ THROTTLE_KILL_SWITCH ] ) {
+		if ( ! debounced_throttle_kill_switch ) {
 			prevent_start = true;
 		} else {
 			tx_just_turned_on = false;
@@ -331,13 +343,13 @@ void control( bool send_motor_values )
 	}
 
 #if defined(MAX_THROTTLE_TO_ARM) || defined(TURTLE_MODE)
-	if (!checkArmingState())
+	if (!checkArmingState(debounced_throttle_kill_switch))
 	{
 		prevent_start = true;
 	}
 #endif
 
-	if ( motors_failsafe || aux[ THROTTLE_KILL_SWITCH ] || prevent_start ) {
+	if ( motors_failsafe || debounced_throttle_kill_switch || prevent_start ) {
 		onground = 1; // This stops the motors.
 		thrsum = 0.0f;
 		mixmax = 0.0f;
