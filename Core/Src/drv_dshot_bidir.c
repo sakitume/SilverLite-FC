@@ -1,9 +1,6 @@
 // Enable this for 3D. The 'Motor Direction' setting in BLHeliSuite must be set to 'Bidirectional' (or 'Bidirectional Rev.') accordingly:
 #define BIDIRECTIONAL
 
-// IDLE_OFFSET is added to the throttle. Adjust its value so that the motors still spin at minimum throttle.
-#define IDLE_OFFSET 30 // 4S
-
 // Select Dshot1200, Dshot600, Dshot300, or Dshot150
 // #define DSHOT 1200 // BLHeli_32 only
 // #define DSHOT 600 // BLHeli_S BB2 (not supported by BB1)
@@ -20,6 +17,7 @@
 #include "defines.h"
 #include "drv_dshot.h"
 #include "drv_time.h"
+#include "filter.h"
 #include "hardware.h"
 #include "main.h"
 
@@ -31,8 +29,9 @@
 #ifdef DSHOT_DMA_BIDIR
 
 extern int onground;
+extern int pwmdir; // control.c
+extern bool reverse_motor_direction[ 4 ]; // control.c
 
-int pwmdir = FORWARD;
 static uint32_t dshot_data[ 16 * 3 ] = { 0 };
 
 static uint32_t dshot_data_port1st[ 16 * 3 ] = { 0 }; // DMA buffer
@@ -58,6 +57,9 @@ static void dma_write_dshot( void );
 static void dma_read_telemetry( void );
 static void decode_gcr_telemetry( void );
 static float decode_to_hz( uint32_t gcr_data[], uint16_t pin );
+
+static float motor_hz_decoded[ 4 ];
+float motor_hz[ 4 ];
 
 static GPIO_InitTypeDef ESC_InitStruct = {
 	.Pin = ESC1_Pin,
@@ -106,32 +108,31 @@ void pwm_init()
 	HAL_GPIO_Init( ESC4_GPIO_Port, &ESC_InitStruct );
 }
 
-int idle_offset = IDLE_OFFSET; // gets corrected by battery_scale_factor in battery.c
 void pwm_set( uint8_t number, float pwm )
 {
 	if ( pwm < 0.0f ) {
 		pwm = 0.0f;
 	}
-	if ( pwm > 0.999f ) {
-		pwm = 0.999f;
+	if ( pwm > 0.9991f ) {
+		pwm = 0.9991f;
 	}
 
 	uint16_t value = 0;
 
 #ifdef BIDIRECTIONAL
 
-	if ( pwmdir == FORWARD ) {
-		// maps 0.0 .. 0.999 to 48 + IDLE_OFFSET .. 1047
-		value = 48 + idle_offset + (uint16_t)( pwm * ( 1000 - idle_offset ) );
-	} else if ( pwmdir == REVERSE ) {
-		// maps 0.0 .. 0.999 to 1048 + IDLE_OFFSET .. 2047
-		value = 1048 + idle_offset + (uint16_t)( pwm * ( 1000 - idle_offset ) );
+	if ( ( pwmdir == FORWARD && ! reverse_motor_direction[ number ] ) || ( pwmdir == REVERSE && reverse_motor_direction[ number ] ) ) {
+		// maps 0.0 .. 0.999 to 48 .. 1047
+		value = 48 + (uint16_t)( pwm * 1000.0f );
+	} else if ( ( pwmdir == REVERSE && ! reverse_motor_direction[ number ] ) || ( pwmdir == FORWARD && reverse_motor_direction[ number ] ) ) {
+		// maps 0.0 .. 0.999 to 1048 .. 2047
+		value = 1048 + (uint16_t)( pwm * 1000.0f );
 	}
 
 #else
 
-	// maps 0.0 .. 0.999 to 48 + IDLE_OFFSET * 2 .. 2047
-	value = 48 + idle_offset * 2 + (uint16_t)( pwm * ( 2001 - idle_offset * 2 ) );
+	// maps 0.0 .. 0.999 to 48 .. 2047
+	value = 48 + (uint16_t)( pwm * 2001 );
 
 #endif
 
@@ -183,7 +184,26 @@ static void dshot_dma_start()
 {
 	// Decode previous GCR telemetry just before starting the next Dshot DMA transfer.
 	// This way we ensure that receiving telemetry has finnished.
-	decode_gcr_telemetry(); // Takes about 30 us @168 MHz.
+#ifdef USE_SILVERLITE
+	{
+#else		
+	extern bool packet_received; // usermain.c
+	if ( ! packet_received ) { // Sacrifice decoding telemetry once every 20 loops in favor of lowering max loop time.
+#endif	
+		decode_gcr_telemetry(); // Takes about 30 us @168 MHz.
+	}
+
+	for ( uint8_t i = 0; i < 4; ++i ) {
+#if 1 // select between filtered (1) and unfiltered (0) motor_hz
+		static float motor_hz_unfiltered[ 4 ];
+		if ( motor_hz_decoded[ i ] != 0.0f ) {
+			motor_hz_unfiltered[ i ] = motor_hz_decoded[ i ];
+		}
+		lpf_hz( &motor_hz[ i ], motor_hz_unfiltered[ i ], 100 ); // 100 Hz
+#else
+		motor_hz[ i ] = motor_hz_decoded[ i ];
+#endif
+	}
 
 	for ( uint8_t i = 0; i < 16 * 3; ++i ) {
 		dshot_data_port1st[ i ] = 0;
@@ -320,31 +340,30 @@ static void dma_read_telemetry()
 	HAL_TIM_Base_Start( &htim1 );
 }
 
-float motor_hz[ 4 ];
 static void decode_gcr_telemetry()
 {
 	if ( ESC1_GPIO_Port == GPIO1st ) {
-		motor_hz[ 0 ] = decode_to_hz( gcr_data_port1st, ESC1_Pin );
+		motor_hz_decoded[ 0 ] = decode_to_hz( gcr_data_port1st, ESC1_Pin );
 	} else {
-		motor_hz[ 0 ] = decode_to_hz( gcr_data_port2nd, ESC1_Pin );
+		motor_hz_decoded[ 0 ] = decode_to_hz( gcr_data_port2nd, ESC1_Pin );
 	}
 
 	if ( ESC2_GPIO_Port == GPIO1st ) {
-		motor_hz[ 1 ] = decode_to_hz( gcr_data_port1st, ESC2_Pin );
+		motor_hz_decoded[ 1 ] = decode_to_hz( gcr_data_port1st, ESC2_Pin );
 	} else {
-		motor_hz[ 1 ] = decode_to_hz( gcr_data_port2nd, ESC2_Pin );
+		motor_hz_decoded[ 1 ] = decode_to_hz( gcr_data_port2nd, ESC2_Pin );
 	}
 
 	if ( ESC3_GPIO_Port == GPIO1st ) {
-		motor_hz[ 2 ] = decode_to_hz( gcr_data_port1st, ESC3_Pin );
+		motor_hz_decoded[ 2 ] = decode_to_hz( gcr_data_port1st, ESC3_Pin );
 	} else {
-		motor_hz[ 2 ] = decode_to_hz( gcr_data_port2nd, ESC3_Pin );
+		motor_hz_decoded[ 2 ] = decode_to_hz( gcr_data_port2nd, ESC3_Pin );
 	}
 
 	if ( ESC4_GPIO_Port == GPIO1st ) {
-		motor_hz[ 3 ] = decode_to_hz( gcr_data_port1st, ESC4_Pin );
+		motor_hz_decoded[ 3 ] = decode_to_hz( gcr_data_port1st, ESC4_Pin );
 	} else {
-		motor_hz[ 3 ] = decode_to_hz( gcr_data_port2nd, ESC4_Pin );
+		motor_hz_decoded[ 3 ] = decode_to_hz( gcr_data_port2nd, ESC4_Pin );
 	}
 }
 
@@ -391,30 +410,38 @@ uint32_t rpm_telemetry_no_telemetry_count;
 uint32_t rpm_telemetry_bitsize_errors; // if GCR_FREQUENCY is set to a too high value
 uint32_t rpm_telemetry_gcr_decode_errors;
 uint32_t rpm_telemetry_csum_errors;
+uint32_t rpm_telemetry_eperiod_zero_errors;
 uint32_t rpm_telemetry_sample_stats[ 12 ];
 #endif
 
 static float decode_to_hz( uint32_t gcr_data[], uint16_t pin )
 {
-	uint32_t index = 23 * GCR_FREQUENCY * 3 / 1000; // Start looking at 23 us.
+	uint32_t index = 20 * GCR_FREQUENCY * 3 / 1000; // Start looking at 20 us.
 	while ( index < GCR_BUFFER_SIZE && ( ( gcr_data[ index ] & pin ) != 0 ) ) { // Find the start bit.
-		++index;
+		index += 2;
 	}
-	if ( index == GCR_BUFFER_SIZE ) {
+	if ( index >= GCR_BUFFER_SIZE ) {
 #ifdef RPM_TELEMETRY_DEBUG
 		++rpm_telemetry_no_telemetry_count;
 #endif
 		return 0.0f; // No RPM telemetry found, which is allowed in case of overburdened ESC.
 	}
+	if ( ( gcr_data[ index - 1 ] & pin ) == 0 ) { // Backtrack to find the exact start index position.
+		--index;
+	}
 
 	uint32_t gcr_value = 0;
-	uint32_t previous_sample = 0;
-	uint32_t sample_count = 0;
 	uint32_t bits_decoded = 0;
-	++index;
-	while ( index < GCR_BUFFER_SIZE ) {
-		++sample_count;
-		if ( ( gcr_data[ index ] & pin ) != previous_sample ) {
+	uint32_t previous_sample = 0;
+	int end_index = index + 21 * 3; // 21 bits
+	if ( end_index > GCR_BUFFER_SIZE ) {
+		end_index = GCR_BUFFER_SIZE;
+	}
+	index += 2;
+	uint32_t sample_count = 2;
+	while ( index < end_index ) {
+		const uint32_t sample = gcr_data[ index ] & pin;
+		if ( sample != previous_sample ) {
 			if ( sample_count <= 1 * 3 + 1 ) {
 				gcr_value = ( gcr_value << 1 ) | 0x01;
 				bits_decoded += 1;
@@ -431,10 +458,13 @@ static float decode_to_hz( uint32_t gcr_data[], uint16_t pin )
 			}
 			++rpm_telemetry_sample_stats[ sample_count ];
 #endif
-			sample_count = 0;
+			previous_sample = sample;
+			index += 2;
+			sample_count = 2;
+		} else {
+			++index;
+			++sample_count;
 		}
-		previous_sample = gcr_data[ index ] & pin;
-		++index;
 	}
 	if ( bits_decoded < 20 ) {
 		gcr_value <<= 1; // Handle the case when the last quintet ends with a zero.
@@ -468,7 +498,35 @@ static float decode_to_hz( uint32_t gcr_data[], uint16_t pin )
 
 	const uint32_t mantissa = telemetry_data & 0x1FF; // 9 bit
 	const uint32_t exponent = ( telemetry_data & 0xE00 ) >> 9; // 3 bit
-	const uint32_t eperiod_us = mantissa << exponent; // 1/erps
+	uint32_t eperiod_us = mantissa << exponent; // 1/erps
+
+// #define RPM_MEDIAN_FILTER
+#ifdef RPM_MEDIAN_FILTER
+	// Median filtering. Depends on being called for 4 motors.
+	static uint32_t median_array[ 4 ][ 3 ] = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } }; // 4 motors, 3 values
+	static uint32_t motor;
+	static uint32_t idx;
+	median_array[ motor ][ idx ] = eperiod_us;
+	const uint32_t a = median_array[ motor ][ 0 ];
+	const uint32_t b = median_array[ motor ][ 1 ];
+	const uint32_t c = median_array[ motor ][ 2 ];
+	eperiod_us = MAX( MIN( a, b ), MIN( MAX( a, b ), c ) );
+	++motor;
+	if ( motor == 4 ) {
+		motor = 0;
+		++idx;
+		if ( idx == 3 ) {
+			idx = 0;
+		}
+	}
+#endif // RPM_MEDIAN_FILTER
+
+	if ( eperiod_us == 0 ) {
+#ifdef RPM_TELEMETRY_DEBUG
+		++rpm_telemetry_eperiod_zero_errors;
+#endif
+		return 0.0f;
+	}
 
 	return 1e6f / (float)eperiod_us * 2 / (float)MOTOR_POLE_COUNT; // motor frequency in Hz
 }

@@ -14,23 +14,31 @@
 #include "debug.h"
 
 int onground = 1;
+int pwmdir = FORWARD;
+bool reverse_motor_direction[ 4 ] = {
+	[ MOTOR_BL - 1 ] = REVERSE_MOTOR_BL,
+	[ MOTOR_FL - 1 ] = REVERSE_MOTOR_FL,
+	[ MOTOR_BR - 1 ] = REVERSE_MOTOR_BR,
+	[ MOTOR_FR - 1 ] = REVERSE_MOTOR_FR
+};
 
 float thrsum;
-float mixmax;
-float throttle_reversing_kick;
-float throttle_reversing_kick_sawtooth;
-float throttle_reversing_kick_decrement;
+static float mixmax;
+static float throttle_reversing_kick;
+static float throttle_reversing_kick_sawtooth;
+static float throttle_reversing_kick_decrement;
+static int prevent_motor_filtering_state = 0;
 
 float error[ PIDNUMBER ];
 float setpoint[ PIDNUMBER ];
 
 extern float vbattfilt; // battery.c
 extern float vbatt_comp;
+extern float vbattfilt_corr;
 extern float battery_scale_factor;
 
 extern float gyro[ 3 ]; // sixaxis.c
 
-extern int pwmdir; // drv_dshot.c
 extern float pidoutput[ PIDNUMBER ]; // pid.c
 extern float ierror[ PIDNUMBER ]; // pid.c
 
@@ -38,19 +46,30 @@ extern bool failsafe; // rx.c
 extern float rx[ 4 ]; // rx.c
 extern char aux[ AUXNUMBER ]; // rx.c
 extern float aux_analog[ 2 ];
+extern int packet_period; // rx.c
 
 extern bool ledcommand; // led.c
 
+float idle_offset = IDLE_OFFSET; // gets corrected by battery_scale_factor in battery.c
 float rxcopy[ 4 ];
 float bb_throttle;
 float bb_mix[ 4 ];
+
+static void throttle_kick( float kick_strength )
+{
+	throttle_reversing_kick = kick_strength * ( ( battery_scale_factor - 1.0f ) * 1.5f + 1.0f );
+	#define TRKD 100000.0f // 100 ms throttle reversing kick duration
+	throttle_reversing_kick_sawtooth = throttle_reversing_kick * ( TRKD + (float)THROTTLE_REVERSING_DEADTIME ) / TRKD;
+	throttle_reversing_kick_decrement = throttle_reversing_kick_sawtooth * (float)LOOPTIME / ( TRKD + (float)THROTTLE_REVERSING_DEADTIME );
+	prevent_motor_filtering_state = 1;
+}
+
 
 
 #if defined(TURTLE_MODE)
 
 bool gTurtleModeActive;	// global so update_osd() in silverlite.cpp can detect if it is active
-extern int idle_offset;
-static int orig_idle_offset = -1;
+static float orig_idle_offset = -1.0f;
 
 //------------------------------------------------------------------------------
 static void enterTurtleMode()
@@ -81,7 +100,7 @@ static void exitTurtleMode()
 
 		if (orig_idle_offset > 0)
 		{
-			orig_idle_offset = idle_offset;
+			idle_offset = orig_idle_offset;
 		}
 	}
 }
@@ -151,7 +170,7 @@ static bool checkArmingState()
 #endif
 
 
-void control( void )
+void control( bool send_motor_values )
 {
 	// rates / expert mode
 	float rate_multiplier = 1.0f;
@@ -166,12 +185,8 @@ void control( void )
 	if ( motor_direction_changed ) {
 		ierror[ 0 ] = ierror[ 1 ] = ierror[ 2 ] = 0.0f;
 		throttle_hpf_reset( 200 ); // ms
-		dterm_filter_reset( 0 ); // ms
 #ifdef THROTTLE_REVERSING_KICK
-		throttle_reversing_kick = THROTTLE_REVERSING_KICK * ( ( battery_scale_factor - 1.0f ) * 1.5f + 1.0f );
-		#define TRKD 100000.0f // 100 ms throttle reversing kick duration
-		throttle_reversing_kick_sawtooth = throttle_reversing_kick * ( TRKD + (float)THROTTLE_REVERSING_DEADTIME ) / TRKD;
-		throttle_reversing_kick_decrement = throttle_reversing_kick_sawtooth * (float)LOOPTIME / ( TRKD + (float)THROTTLE_REVERSING_DEADTIME );
+		throttle_kick( THROTTLE_REVERSING_KICK );
 #endif
 	}
 
@@ -186,18 +201,16 @@ void control( void )
 		rxcopy[ i ] = rx[ i ];
 
 #ifdef STICKS_DEADBAND
-		if ( fabsf( rxcopy[ i ] ) <= STICKS_DEADBAND ) {
+		if ( fabsf( rxcopy[ i ] ) <= (float)STICKS_DEADBAND ) {
 			rxcopy[ i ] = 0.0f;
 		} else {
-			if ( rxcopy[ i ] >= 0 ) {
-				rxcopy[ i ] = mapf( rxcopy[ i ], STICKS_DEADBAND, 1, 0, 1 );
+			if ( rxcopy[ i ] > 0.0f ) {
+				rxcopy[ i ] = ( rxcopy[ i ] - (float)STICKS_DEADBAND ) * ( 1.0f + (float)STICKS_DEADBAND );
 			} else {
-				rxcopy[ i ] = mapf( rxcopy[ i ], -STICKS_DEADBAND, -1, 0, -1 );
+				rxcopy[ i ] = ( rxcopy[ i ] + (float)STICKS_DEADBAND ) * ( 1.0f + (float)STICKS_DEADBAND );
 			}
 		}
-#endif
-
-		rxcopy[ i ] *= rate_multiplier;
+#endif // STICKS_DEADBAND
 	}
 
 	rxcopy[ 3 ] = rx[ 3 ]; // throttle
@@ -212,7 +225,7 @@ void control( void )
 	static int countRX[ 4 ];
 	for ( int i = 0; i < 4; ++i ) {
 		if ( rxcopy[ i ] != lastRXcopy[ i ] ) {
-			static int step_count = 5000 / LOOPTIME; // Spread it evenly over 5 ms (PACKET_PERIOD)
+			const int step_count = packet_period / LOOPTIME; // Spread it evenly over e.g. 5 ms
 			stepRX[ i ] = ( rxcopy[ i ] - lastRXcopy[ i ] ) / step_count;
 			countRX[ i ] = step_count;
 			rxsmooth[ i ] = lastRXcopy[ i ];
@@ -232,6 +245,12 @@ void control( void )
 
 	// flight control
 
+	float rx_roll = rxcopy[ 0 ];
+	float rx_pitch = rxcopy[ 1 ];
+	float rx_yaw = rxcopy[ 2 ];
+	rx_roll *= rate_multiplier;
+	rx_pitch *= rate_multiplier;
+	rx_yaw *= rate_multiplier;
 #ifdef LEVELMODE
 	if ( aux[ LEVELMODE ] ) { // level mode
 		extern float angleerror[];
@@ -240,9 +259,9 @@ void control( void )
 		float yawerror[ 3 ] = { 0 }; // yaw rotation vector
 
 		// calculate roll / pitch error
-		stick_vector( rxcopy, 0 );
+		stick_vector( rx_roll, rx_pitch );
 
-		float yawrate = rxcopy[ 2 ] * (float)MAX_RATEYAW * DEGTORAD;
+		float yawrate = rx_yaw * (float)MAX_RATEYAW * DEGTORAD;
 		// apply yaw from the top of the quad
 		yawerror[ 0 ] = GEstG[ 1 ] * yawrate;
 		yawerror[ 1 ] = -GEstG[ 0 ] * yawrate;
@@ -266,9 +285,9 @@ void control( void )
 	} else
 #endif // LEVELMODE
 	{ // rate mode
-		setpoint[ 0 ] = rxcopy[ 0 ] * (float)MAX_RATE * DEGTORAD;
-		setpoint[ 1 ] = rxcopy[ 1 ] * (float)MAX_RATE * DEGTORAD;
-		setpoint[ 2 ] = rxcopy[ 2 ] * (float)MAX_RATEYAW * DEGTORAD;
+		setpoint[ 0 ] = rx_roll * (float)MAX_RATE * DEGTORAD;
+		setpoint[ 1 ] = rx_pitch * (float)MAX_RATE * DEGTORAD;
+		setpoint[ 2 ] = rx_yaw * (float)MAX_RATEYAW * DEGTORAD;
 
 		for ( int i = 0; i < 3; ++i ) {
 			error[ i ] = setpoint[ i ] - gyro[ i ];
@@ -326,34 +345,38 @@ void control( void )
 		static int count;
 		if ( count > 0 ) {
 			--count;
+			if ( send_motor_values ) {
+				for ( int i = 0; i < 4; ++i ) {
+					pwm_set( i, 0 );
+				}
+			}
 		} else {
 			// Call motorbeep() only every millisecond, otherwise the beeps get slowed down by the ESC.
-			count = 500 / LOOPTIME - 1; // So we enter only every 0.5 ms and
-			static bool send_beep; // alternate between pwm_set() and motorbeep().
-			if ( send_beep ) {
+			count = 10000 / LOOPTIME - 1;
 #ifdef MOTOR_BEEPS
 	#ifndef MOTOR_BEEPS_CHANNEL
 		#define MOTOR_BEEPS_CHANNEL CH_OFF
 	#endif
 				motorbeep( motors_failsafe, MOTOR_BEEPS_CHANNEL );
 #endif
-			} else {
-				for ( int i = 0; i < 4; ++i ) {
-					pwm_set( i, 0 );
-				}
-			}
-			send_beep = ! send_beep;
 		}
 	} else { // motors on - normal flight
+#ifdef THROTTLE_STARTUP_KICK
+		if ( onground == 1 ) {
+			throttle_kick( THROTTLE_STARTUP_KICK ); // Some startup kick.
+		}
+#endif // THROTTLE_STARTUP_KICK
+
 		onground = 0;
 
 		float throttle = rxcopy[ 3 ];
 
-#ifdef THRUST_LINEARIZATION
-		#define AA_motorCurve THRUST_LINEARIZATION // 0 .. linear, 1 .. quadratic
-		const float aa = AA_motorCurve;
-		throttle = throttle * ( throttle * aa + 1 - aa ); // invert the motor curve correction applied further below
-#endif
+#ifdef THROTTLE_VOLTAGE_COMPENSATION
+		throttle *= 4.2f / vbattfilt_corr;
+		if ( throttle > 1.0f ) {
+			throttle = 1.0f;
+		}
+#endif // THROTTLE_VOLTAGE_COMPENSATION
 
 #ifdef THROTTLE_TRANSIENT_COMPENSATION_FACTOR
 		const float throttle_boost = throttle_hpf( throttle ); // Keep the HPF call in the loop to keep its state updated.
@@ -361,7 +384,7 @@ void control( void )
 		if ( aux[ RATES ] && ! lowbatt ) {
 			throttle += (float)THROTTLE_TRANSIENT_COMPENSATION_FACTOR * throttle_boost;
 			if ( throttle < 0.0f ) {
-				throttle = 0;
+				throttle = 0.0f;
 			} else if ( throttle > 1.0f ) {
 				throttle = 1.0f;
 			}
@@ -372,8 +395,16 @@ void control( void )
 		if ( throttle_reversing_kick_sawtooth > 0.0f ) {
 			if ( throttle_reversing_kick_sawtooth > throttle_reversing_kick ) {
 				throttle = 0.0f;
+				pidoutput[ 0 ] = pidoutput[ 1 ] = pidoutput[ 2 ] = 0.0f;
 			} else {
-				throttle = throttle_reversing_kick_sawtooth;
+				const float transitioning_factor = ( throttle_reversing_kick - throttle_reversing_kick_sawtooth ) / throttle_reversing_kick;
+				throttle = throttle_reversing_kick_sawtooth + throttle * transitioning_factor;
+				pidoutput[ 0 ] *= transitioning_factor;
+				pidoutput[ 1 ] *= transitioning_factor;
+				pidoutput[ 2 ] *= transitioning_factor;
+				if ( prevent_motor_filtering_state == 1 ) {
+					prevent_motor_filtering_state = 2;
+				}
 			}
 			throttle_reversing_kick_sawtooth -= throttle_reversing_kick_decrement;
 		}
@@ -410,12 +441,26 @@ void control( void )
 		}
 #endif
 
+		bb_throttle = throttle;
+
+#ifdef THRUST_LINEARIZATION
+		#define AA_motorCurve (float)THRUST_LINEARIZATION // 0 .. linear, 1 .. quadratic
+		const float aa = AA_motorCurve;
+		throttle = throttle * ( throttle * aa + 1 - aa ); // invert the motor curve correction applied further below
+#endif // THRUST_LINEARIZATION
+
+#ifdef ALTERNATIVE_THRUST_LINEARIZATION
+		// not really the inverse of ALTERNATIVE_THRUST_LINEARIZATION below, but a good enough approximation
+		const float aa = 1.2f * (float)( ALTERNATIVE_THRUST_LINEARIZATION ); // use <1.2 for less compensation
+		const float tr = 1.0f - throttle; // throttle reversed
+		throttle = throttle / ( 1.0f + tr * tr * aa ); // compensate throttle for the linearization applied further below
+#endif // ALTERNATIVE_THRUST_LINEARIZATION
+
 #ifdef INVERT_YAW_PID
 		pidoutput[ 2 ] = -pidoutput[ 2 ];
 #endif
 
 		float mix[ 4 ];
-		bb_throttle = throttle;
 
 #ifdef INVERTED_ENABLE
 		if ( pwmdir == REVERSE ) { // inverted flight
@@ -487,7 +532,9 @@ void control( void )
 		if ( reduceAmount > 0.0f ) {
 	#endif // ALLOW_MIX_INCREASING
 	#ifdef TRANSIENT_MIX_INCREASING_HZ
-			if ( reduceAmount < -transientMixIncreaseLimit ) {
+			if ( reduceAmount < -transientMixIncreaseLimit &&
+				mixmax > idle_offset + 0.1f ) // Do not apply the limit on idling (e.g. after throttle punches) to prevent from slow wobbles.
+			{
 				reduceAmount = -transientMixIncreaseLimit;
 			}
 	#endif // TRANSIENT_MIX_INCREASING_HZ
@@ -546,12 +593,11 @@ void control( void )
 		}
 #endif
 
+		for ( int i = 0; i < 4; ++i ) { // For each motor.
 
-		for ( int i = 0; i < 4; ++i ) {
 #if defined(MOTORS_TO_THROTTLE) || defined(MOTORS_TO_THROTTLE_MODE)
 
-			extern int idle_offset;
-			static int orig_idle_offset = 0;
+			static float orig_idle_offset = 0.0f;
 #if defined(MOTORS_TO_THROTTLE_MODE) && !defined(MOTORS_TO_THROTTLE)
 			if ( orig_idle_offset == 0 ) {
 				orig_idle_offset = idle_offset;
@@ -567,10 +613,16 @@ void control( void )
 					( i == MOTOR_FR - 1 && rxcopy[ ROLL ] > 0 && rxcopy[ PITCH ] > 0 ) ||
 					( i == MOTOR_BR - 1 && rxcopy[ ROLL ] > 0 && rxcopy[ PITCH ] < 0 ) )
 				{
-					idle_offset = 0;
-					mix[ i ] = fabsf( rxcopy[ ROLL ] * rxcopy[ PITCH ] );
+					idle_offset = 0.0f;
+					mix[ i ] = fabsf( rxcopy[ ROLL ] * rxcopy[ PITCH ] * rate_multiplier );
+#ifdef RPM_FILTER
+	#if !defined(USE_SILVERLITE) // We don't implement notify_telemetry_value() with SilverLite-FC
+					extern float motor_hz[ 4 ];
+					notify_telemetry_value( motor_hz[ i ] );
+	#endif					
+#endif // RPM_FILTER
 				}
-				ledcommand = 1;
+				ledcommand = true;
 #if defined(MOTORS_TO_THROTTLE_MODE) && !defined(MOTORS_TO_THROTTLE)
 			} else {
 				idle_offset = orig_idle_offset;
@@ -583,7 +635,7 @@ void control( void )
 			if (gTurtleModeActive)
 			{
 				ledcommand = 1;
-				idle_offset = 0;
+				idle_offset = 0.0f;
 
 				float power;
 				switch (i)
@@ -620,6 +672,8 @@ void control( void )
 				mix[ i ] = 1.0f;
 			}
 
+			mix[ i ] = idle_offset + mix[ i ] * ( 1.0f - idle_offset ); // maps 0 .. 1 -> idle_offset .. 1
+
 #ifdef THRUST_LINEARIZATION
 			// Computationally quite expensive:
 			static float a, a_reci, b, b_sq;
@@ -636,15 +690,25 @@ void control( void )
 			}
 #endif
 
-			pwm_set( i, mix[ i ] );
+#ifdef ALTERNATIVE_THRUST_LINEARIZATION
+			const float mr = 1.0f - mix[ i ]; // mix reversed
+			mix[ i ] *= 1.0f + mr * mr * (float)( ALTERNATIVE_THRUST_LINEARIZATION );
+#endif // ALTERNATIVE_THRUST_LINEARIZATION
+
+			if ( send_motor_values ) {
+				pwm_set( i, mix[ i ] );
+			}
 			bb_mix[ i ] = mix[ i ];
 
 			thrsum += mix[ i ];
 			if ( mixmax < mix[ i ] ) {
 				mixmax = mix[ i ];
 			}
-		}
+		} // For each motor.
 
+		if ( prevent_motor_filtering_state == 2 ) {
+	 		prevent_motor_filtering_state = 0;
+	 	}
 		thrsum = thrsum / 4.0f;
 	} // end motors on
 }

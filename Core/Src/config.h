@@ -145,9 +145,13 @@
 // a filter which makes throttle feel faster (aka Throttle Boost) (not active in LOW_RATES or lowbatt)
 #define THROTTLE_TRANSIENT_COMPENSATION_FACTOR 3.0
 
+// Compensate throttle for sagging battery voltage
+//#define THROTTLE_VOLTAGE_COMPENSATION
+
 // For smoother motor reversing in 3D flight
-#define THROTTLE_REVERSING_KICK 0.1f
-#define THROTTLE_REVERSING_DEADTIME 20000 // 20 ms
+#define THROTTLE_REVERSING_KICK 0.15 // 4S
+#define THROTTLE_REVERSING_DEADTIME 20000 // 20 ms (increase this in case of over-propped motors)
+//#define THROTTLE_STARTUP_KICK 0.10
 
 // Continue stick movement with the current stick velocity in case of lost packets
 #define RX_PREDICTOR
@@ -163,8 +167,11 @@
 // Can be used to limit maximum motor RPM, i.e. tone down a too fast quad.
 #define MIX_RANGE_LIMIT 1.0f // aux[ DEVO_CHAN_11 ] ? 0.75f : 1.0f
 
+// Adjust IDLE_OFFSET so that the motors still spin reliably at zero throttle.
+#define IDLE_OFFSET 0.02 // 4S
 // Use a square root motor curve to counteract thrust ~ RPM^2
-#define THRUST_LINEARIZATION 0.33f // 0.0f .. no compensation, 1.0f .. full square root curve
+//#define THRUST_LINEARIZATION 0.33f // 0.0 .. no compensation, 1.0 .. full square root curve
+#define ALTERNATIVE_THRUST_LINEARIZATION 0.6 // different shape from the above curve; do not enable both together
 
 // A deadband can be used to eliminate stick center jitter and non-returning to exactly 0.
 #define STICKS_DEADBAND 0.02f
@@ -223,6 +230,11 @@
 #define MOTOR_BR 4
 #define MOTOR_FR 3
 
+// For BIDIRECTIONAL motor direction, the motors can be reversed below.
+#define REVERSE_MOTOR_BL false
+#define REVERSE_MOTOR_FL false
+#define REVERSE_MOTOR_BR false
+#define REVERSE_MOTOR_FR false
 // Disable the check for known gyro that causes the 4 times LED flash.
 #define GYRO_CHECK
 

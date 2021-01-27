@@ -114,6 +114,7 @@ extern "C" {
 
 extern uint32_t gettime();
 
+int packet_period = 7000;   // seems to be about 7000ms
 int packetpersecond;
 int pkt_hits;
 int b_crc_errors;

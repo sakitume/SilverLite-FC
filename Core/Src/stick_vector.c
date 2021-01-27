@@ -9,19 +9,19 @@ extern char aux[];
 // error vector between stick position and quad orientation
 // this is the output of this function
 float errorvect[ 3 ];
-float stickvector[ 3 ] = { 0, 0, 1};
+float stickvector[ 3 ] = { 0, 0, 1 };
 
-void stick_vector( float rx_input[], float maxangle )
+void stick_vector( float rx_roll, float rx_pitch )
 {
 	float pitch, roll;
 
 	// rotate down vector to match stick position
-	pitch = rx_input[ 1 ] * (float)LEVEL_MAX_ANGLE * DEGTORAD;
-	roll = rx_input[ 0 ] * (float)LEVEL_MAX_ANGLE * DEGTORAD;
+	roll = rx_roll * (float)LEVEL_MAX_ANGLE * DEGTORAD;
+	pitch = rx_pitch * (float)LEVEL_MAX_ANGLE * DEGTORAD;
 
-	stickvector[ 0 ] = fastsin( roll );
-	stickvector[ 1 ] = fastsin( pitch );
-	stickvector[ 2 ] = fastcos( roll ) * fastcos( pitch );
+	stickvector[ 0 ] = sin_approx( roll );
+	stickvector[ 1 ] = sin_approx( pitch );
+	stickvector[ 2 ] = cos_approx( roll ) * cos_approx( pitch );
 
 	float mag2 = stickvector[ 0 ] * stickvector[ 0 ] + stickvector[ 1 ] * stickvector[ 1 ];
 

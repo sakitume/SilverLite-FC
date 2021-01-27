@@ -2,10 +2,6 @@
 // be set to 'Bidirectional' (or 'Bidirectional Rev.') accordingly:
 #define BIDIRECTIONAL
 
-// IDLE_OFFSET is added to the throttle. Adjust its value so that the motors
-// still spin at minimum throttle.
-#define IDLE_OFFSET 30 // 4S
-
 
 #include <stdbool.h>
 
@@ -18,8 +14,9 @@
 #ifdef DSHOT_DRIVER
 
 extern int onground;
+extern int pwmdir; // control.c
+extern bool reverse_motor_direction[ 4 ]; // control.c
 
-int pwmdir = 0;
 static uint32_t motor_data[ 48 ] = { 0 }; // Access to uint32_t array is overall 4 us faster than uint8_t.
 
 static void make_packet( uint8_t number, uint16_t value, bool telemetry );
@@ -32,32 +29,31 @@ void pwm_init()
 	}
 }
 
-int idle_offset = IDLE_OFFSET; // gets corrected by battery_scale_factor in battery.c
 void pwm_set( uint8_t number, float pwm )
 {
 	if ( pwm < 0.0f ) {
 		pwm = 0.0f;
 	}
-	if ( pwm > 0.999f ) {
-		pwm = 0.999f;
+	if ( pwm > 0.9991f ) {
+		pwm = 0.9991f;
 	}
 
 	uint16_t value = 0;
 
 #ifdef BIDIRECTIONAL
 
-	if ( pwmdir == FORWARD ) {
-		// maps 0.0 .. 0.999 to 48 + IDLE_OFFSET .. 1047
-		value = 48 + idle_offset + (uint16_t)( pwm * ( 1000 - idle_offset ) );
-	} else if ( pwmdir == REVERSE ) {
-		// maps 0.0 .. 0.999 to 1048 + IDLE_OFFSET .. 2047
-		value = 1048 + idle_offset + (uint16_t)( pwm * ( 1000 - idle_offset ) );
+	if ( ( pwmdir == FORWARD && ! reverse_motor_direction[ number ] ) || ( pwmdir == REVERSE && reverse_motor_direction[ number ] ) ) {
+		// maps 0.0 .. 0.999 to 48 .. 1047
+		value = 48 + (uint16_t)( pwm * 1000.0f );
+	} else if ( ( pwmdir == REVERSE && ! reverse_motor_direction[ number ] ) || ( pwmdir == FORWARD && reverse_motor_direction[ number ] ) ) {
+		// maps 0.0 .. 0.999 to 1048 .. 2047
+		value = 1048 + (uint16_t)( pwm * 1000.0f );
 	}
 
 #else
 
 	// maps 0.0 .. 0.999 to 48 + IDLE_OFFSET * 2 .. 2047
-	value = 48 + idle_offset * 2 + (uint16_t)( pwm * ( 2001 - idle_offset * 2 ) );
+	value = 48 + (uint16_t)( pwm * 2001 );
 
 #endif
 
@@ -70,7 +66,7 @@ void pwm_set( uint8_t number, float pwm )
 	if ( number == 3 ) {
 		__disable_irq();
 		bitbang_data();
-		__disable_irq();
+		__enable_irq();
 	}
 }
 

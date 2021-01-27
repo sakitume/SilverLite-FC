@@ -18,6 +18,14 @@ extern "C" {
 
 extern uint32_t gettime();
 
+#if defined(RX_FLYSKY) 
+int packet_period = 1500;
+#elif defined(RX_FLYSKY2A)
+int packet_period = 3850;
+#else
+    #error
+#endif
+
 int packetpersecond;
 int pkt_hits;
 int b_crc_errors;

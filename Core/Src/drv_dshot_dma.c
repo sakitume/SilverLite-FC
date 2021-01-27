@@ -28,8 +28,8 @@
 #ifdef DSHOT_DMA_DRIVER
 
 extern int onground;
-
-int pwmdir = FORWARD;
+extern int pwmdir; // control.c
+extern bool reverse_motor_direction[ 4 ]; // control.c
 
 volatile int dshot_dma_phase = 0; // 1: port1st, 2: port2nd, 0: idle
 uint16_t dshot_packet[ 4 ]; // 16bits dshot data for 4 motors
@@ -264,32 +264,31 @@ void DMA1_Channel3_IRQHandler(void)
 	}
 }
 
-int idle_offset = IDLE_OFFSET; // gets corrected by battery_scale_factor in battery.c
 void pwm_set( uint8_t number, float pwm )
 {
 	if ( pwm < 0.0f ) {
 		pwm = 0.0f;
 	}
-	if ( pwm > 0.999f ) {
-		pwm = 0.999f;
+	if ( pwm > 0.9991f ) {
+		pwm = 0.9991f;
 	}
 
 	uint16_t value = 0;
 
 #ifdef BIDIRECTIONAL
 
-	if ( pwmdir == FORWARD ) {
-		// maps 0.0 .. 0.999 to 48 + IDLE_OFFSET .. 1047
-		value = 48 + idle_offset + (uint16_t)( pwm * ( 1000 - idle_offset ) );
-	} else if ( pwmdir == REVERSE ) {
-		// maps 0.0 .. 0.999 to 1048 + IDLE_OFFSET .. 2047
-		value = 1048 + idle_offset + (uint16_t)( pwm * ( 1000 - idle_offset ) );
+	if ( ( pwmdir == FORWARD && ! reverse_motor_direction[ number ] ) || ( pwmdir == REVERSE && reverse_motor_direction[ number ] ) ) {
+		// maps 0.0 .. 0.999 to 48 .. 1047
+		value = 48 + (uint16_t)( pwm * 1000.0f );
+	} else if ( ( pwmdir == REVERSE && ! reverse_motor_direction[ number ] ) || ( pwmdir == FORWARD && reverse_motor_direction[ number ] ) ) {
+		// maps 0.0 .. 0.999 to 1048 .. 2047
+		value = 1048 + (uint16_t)( pwm * 1000.0f );
 	}
 
 #else
 
-	// maps 0.0 .. 0.999 to 48 + IDLE_OFFSET * 2 .. 2047
-	value = 48 + idle_offset * 2 + (uint16_t)( pwm * ( 2001 - idle_offset * 2 ) );
+	// maps 0.0 .. 0.999 to 48 .. 2047
+	value = 48 + (uint16_t)( pwm * 2001 );
 
 #endif
 

@@ -34,9 +34,9 @@
 // Above should usually be left alone but the following can (and should) be
 // adjusted to meet your needs
 //------------------------------------------------------------------------------
-#define IDLE_OFFSET         20  // IDLE_OFFSET is added to the throttle. Adjust its value so that the motors still spin at minimum throttle.
-#define DSHOT               300 // Acceptable values are 150, 300 (works on BB1), 600 (BLHeli_S BB2, not supported by BB1), 1200 (BLHeli_32 only)
-#define MOTOR_POLE_COUNT    12  // 08XX, 11XX, 12XX motors (typically found on whoop or micros) tend to have 12 poles.
+#define IDLE_OFFSET         0.02f   // IDLE_OFFSET is added to the throttle. Adjust its value so that the motors still spin at minimum throttle.
+#define DSHOT               300     // Acceptable values are 150, 300 (works on BB1), 600 (BLHeli_S BB2, not supported by BB1), 1200 (BLHeli_32 only)
+#define MOTOR_POLE_COUNT    12      // 08XX, 11XX, 12XX motors (typically found on whoop or micros) tend to have 12 poles.
 
 
 #endif

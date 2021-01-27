@@ -1,5 +1,6 @@
 #include "config.h"
 #include "filter.h"
+#include "math.h"
 #include "util.h"
 #include "stdbool.h"
 
@@ -13,6 +14,10 @@ void lpf( float * out, float in, float alpha )
 	*out += alpha * ( in - *out );
 }
 
+void lpf_hz( float * out, float in, float f_hz )
+{
+	*out += ALPHACALC( LOOPTIME, 1e6f / f_hz ) * ( in - *out );
+}
 
 // Biquad
 
@@ -21,7 +26,10 @@ typedef struct FilterBiquadCoeff_s {
 } FilterBiquadCoeff_t;
 
 typedef struct FilterBiquad_s {
-	float x1, x2, y1, y2;
+	float x1, x2;
+#ifdef USE_DIRECT_FORM_I
+	float y1, y2;
+#endif
 } FilterBiquad_t;
 
 static void filter_notch_coeff( FilterBiquadCoeff_t * coeff, float filter_Hz, float filter_Q )
@@ -43,6 +51,38 @@ static void filter_notch_coeff( FilterBiquadCoeff_t * coeff, float filter_Hz, fl
 	const float a0 = 1 + alpha;
 	coeff->a1 = -2 * cs;
 	coeff->a2 = 1 - alpha;
+
+	// precompute the coefficients
+	coeff->b0 /= a0;
+	coeff->b1 /= a0;
+	coeff->b2 /= a0;
+	coeff->a1 /= a0;
+	coeff->a2 /= a0;
+
+	// filter frequency for the above coefficients
+	coeff->f_Hz = filter_Hz;
+}
+
+static void filter_peak_coeff( FilterBiquadCoeff_t * coeff, float filter_Hz, float filter_Q, float filter_gain )
+{
+	if ( filter_Hz == 0.0f || filter_Q == 0.0f || filter_gain == 0.0f ) {
+		return;
+	}
+
+	// setup variables
+	const float gain_abs = sqrtf( filter_gain );
+	const float omega = 2.0f * PI_F * filter_Hz * LOOPTIME * 1e-6f;
+	const float sn = sin_approx( omega );
+	const float cs = cos_approx( omega );
+	const float alpha = sn / ( 2.0f * filter_Q );
+
+	// peak coefficients
+	coeff->b0 = 1 + alpha * gain_abs;
+	coeff->b1 = -2 * cs;
+	coeff->b2 = 1 - alpha * gain_abs;
+	const float a0 = 1 + alpha / gain_abs;
+	coeff->a1 = -2 * cs;
+	coeff->a2 = 1 - alpha / gain_abs;
 
 	// precompute the coefficients
 	coeff->b0 /= a0;
@@ -81,9 +121,9 @@ static void filter_bessel_coeff( FilterBiquadCoeff_t * coeff, float filter_Hz )
 	coeff->f_Hz = filter_Hz;
 }
 
-float filter_biquad_step( FilterBiquad_t * filter, FilterBiquadCoeff_t * coeff, float input )
+static float filter_biquad_step( FilterBiquad_t * filter, FilterBiquadCoeff_t * coeff, float input )
 {
-#if 1
+#ifdef USE_DIRECT_FORM_I
 	// Direct Form I
 	const float result = coeff->b0 * input + coeff->b1 * filter->x1 + coeff->b2 * filter->x2 - coeff->a1 * filter->y1 - coeff->a2 * filter->y2;
 	filter->x2 = filter->x1;
@@ -112,16 +152,10 @@ typedef struct FilterLPF2Coeff_s {
 typedef struct FilterLPF2_s {
 	float last_out;
 	float last_out2;
-	int holdoff_steps;
 } FilterLPF2_t;
 
 static float filter_lpf2_step( FilterLPF2_t * filter, FilterLPF2Coeff_t * coeff, float in )
 {
-	if ( filter->holdoff_steps > 0 ) {
-		--filter->holdoff_steps;
-		return 0.0f;
-	}
-
 	const float ans =
 		in * coeff->alpha_sqr
 		+ coeff->two_one_minus_alpha * filter->last_out
@@ -145,12 +179,6 @@ static void filter_lpf2_coeff( FilterLPF2Coeff_t * coeff, float filter_Hz )
 	coeff->alpha_sqr = alpha * alpha;
 }
 
-static void filter_lpf2_reset( FilterLPF2_t * filter, int holdoff_time_ms )
-{
-	filter->last_out = filter->last_out2 = 0.0f;
-	filter->holdoff_steps = holdoff_time_ms * 1000 / LOOPTIME;
-}
-
 
 // Gyro
 
@@ -167,7 +195,7 @@ float rpm_filter( float input, int axis )
 		for ( int harmonic = 0; harmonic < RPM_FILTER_HARMONICS; ++harmonic ) {
 			if ( harmonic == 0 || ( RPM_FILTER_2ND_HARMONIC && harmonic == 1 ) || ( RPM_FILTER_3RD_HARMONIC && harmonic == 2 ) ) {
 				const float filter_hz_harmonic = motor_hz[ motor ] * ( harmonic + 1 );
-				if ( axis == 0 && filter_hz_harmonic != 0.0f ) {
+				if ( axis == 0 && filter_hz_harmonic >= RPM_FILTER_HZ_MIN ) {
 					filter_notch_coeff( &gyro_notch_coeff[ motor ][ harmonic ], filter_hz_harmonic, RPM_FILTER_Q );
 				}
 				const float filtered = filter_biquad_step( &gyro_notch[ axis ][ motor ][ harmonic ], &gyro_notch_coeff[ motor ][ harmonic ], output );
@@ -190,7 +218,7 @@ float notch_a_filter( float input, int num )
 	static FilterBiquadCoeff_t gyro_notch_coeff;
 	static FilterBiquad_t gyro_notch[ 3 ];
 	static float notch_Hz, notch_Q;
-	if ( notch_Hz != BIQUAD_NOTCH_A_HZ || notch_Q != BIQUAD_NOTCH_A_Q ) {
+	if ( notch_Hz != (float)BIQUAD_NOTCH_A_HZ || notch_Q != (float)BIQUAD_NOTCH_A_Q ) {
 		notch_Hz = BIQUAD_NOTCH_A_HZ;
 		notch_Q = BIQUAD_NOTCH_A_Q;
 		filter_notch_coeff( &gyro_notch_coeff, notch_Hz, notch_Q );
@@ -208,7 +236,7 @@ float notch_b_filter( float input, int num )
 	static FilterBiquadCoeff_t gyro_notch_coeff;
 	static FilterBiquad_t gyro_notch[ 3 ];
 	static float notch_Hz, notch_Q;
-	if ( notch_Hz != BIQUAD_NOTCH_B_HZ || notch_Q != BIQUAD_NOTCH_B_Q ) {
+	if ( notch_Hz != (float)BIQUAD_NOTCH_B_HZ || notch_Q != (float)BIQUAD_NOTCH_B_Q ) {
 		notch_Hz = BIQUAD_NOTCH_B_HZ;
 		notch_Q = BIQUAD_NOTCH_B_Q;
 		filter_notch_coeff( &gyro_notch_coeff, notch_Hz, notch_Q );
@@ -226,7 +254,7 @@ float notch_c_filter( float input, int num )
 	static FilterBiquadCoeff_t gyro_notch_coeff;
 	static FilterBiquad_t gyro_notch[ 3 ];
 	static float notch_Hz, notch_Q;
-	if ( notch_Hz != BIQUAD_NOTCH_C_HZ || notch_Q != BIQUAD_NOTCH_C_Q ) {
+	if ( notch_Hz != (float)BIQUAD_NOTCH_C_HZ || notch_Q != (float)BIQUAD_NOTCH_C_Q ) {
 		notch_Hz = BIQUAD_NOTCH_C_HZ;
 		notch_Q = BIQUAD_NOTCH_C_Q;
 		filter_notch_coeff( &gyro_notch_coeff, notch_Hz, notch_Q );
@@ -235,6 +263,71 @@ float notch_c_filter( float input, int num )
 }
 
 #endif // BIQUAD_NOTCH_C_HZ
+
+
+#ifdef BIQUAD_AUTO_NOTCH
+
+float auto_notch_Hz = 0.0f;
+
+float auto_notch_filter( float input, int num )
+{
+	static FilterBiquadCoeff_t gyro_notch_coeff;
+	static FilterBiquad_t gyro_notch[ 3 ];
+	static float notch_Hz, notch_Q;
+	if ( notch_Hz != auto_notch_Hz || notch_Q != (float)BIQUAD_AUTO_NOTCH_Q ) {
+		notch_Hz = auto_notch_Hz;
+		notch_Q = BIQUAD_AUTO_NOTCH_Q;
+		filter_notch_coeff( &gyro_notch_coeff, notch_Hz, notch_Q );
+	}
+	if ( notch_Hz != 0.0f ) {
+		return filter_biquad_step( &gyro_notch[ num ], &gyro_notch_coeff, input );
+	} else {
+		return input;
+	}
+}
+
+#endif // BIQUAD_AUTO_NOTCH
+
+
+#ifdef BIQUAD_SDFT_NOTCH
+
+float sdft_notch_Hz[ SDFT_AXES * 2 ];
+
+float sdft_notch_filter( float input, int num )
+{
+	static FilterBiquadCoeff_t gyro_notch_coeff[ SDFT_AXES * 2 ];
+	static FilterBiquad_t gyro_notch[ SDFT_AXES * 2 ];
+	static float notch_Hz[ SDFT_AXES * 2 ];
+	if ( notch_Hz[ num ] != sdft_notch_Hz[ num ] ) {
+		notch_Hz[ num ] = sdft_notch_Hz[ num ];
+		float Q = sdft_notch_Hz[ num ] / 20.0f; // 20 Hz bandwidth
+		Q = Q > 6.0f ? 6.0f : Q; // Limit Q to 6, otherwise the settling time gets too long.
+		filter_notch_coeff( &gyro_notch_coeff[ num ], sdft_notch_Hz[ num ], Q );
+		// filter_peak_coeff( &gyro_notch_coeff[ num ], sdft_notch_Hz[ num ], Q, 0.2f );
+	}
+	return filter_biquad_step( &gyro_notch[ num ], &gyro_notch_coeff[ num ], input );
+}
+
+#endif // BIQUAD_SDFT_NOTCH
+
+
+#ifdef BIQUAD_PEAK_HZ
+
+float peak_filter( float input, int num )
+{
+	static FilterBiquadCoeff_t gyro_peak_coeff;
+	static FilterBiquad_t gyro_peak[ 3 ];
+	static float peak_Hz, peak_Q, peak_gain;
+	if ( peak_Hz != (float)BIQUAD_PEAK_HZ || peak_Q != (float)BIQUAD_PEAK_Q || peak_gain != (float)BIQUAD_PEAK_GAIN ) {
+		peak_Hz = BIQUAD_PEAK_HZ;
+		peak_Q = BIQUAD_PEAK_Q;
+		peak_gain = BIQUAD_PEAK_GAIN;
+		filter_peak_coeff( &gyro_peak_coeff, peak_Hz, peak_Q, peak_gain );
+	}
+	return filter_biquad_step( &gyro_peak[ num ], &gyro_peak_coeff, input );
+}
+
+#endif // BIQUAD_PEAK_HZ
 
 
 #ifdef GYRO_LPF_1ST_HZ_BASE
@@ -310,6 +403,8 @@ float gyro_lpf2_filter( float in, int num )
 
 // D-Term
 
+#ifdef DTERM_LPF_2ND_HZ_BASE
+
 static FilterBiquadCoeff_t dterm_bessel_coeff;
 static FilterBiquad_t dterm_bessel[ 3 ];
 
@@ -348,12 +443,7 @@ float dterm_filter( float in, int num )
 #endif // DTERM_BESSEL_FILTER
 }
 
-void dterm_filter_reset( int holdoff_time_ms )
-{
-	filter_lpf2_reset( &dterm_lpf2[ 0 ], holdoff_time_ms );
-	filter_lpf2_reset( &dterm_lpf2[ 1 ], holdoff_time_ms );
-	filter_lpf2_reset( &dterm_lpf2[ 2 ], holdoff_time_ms );
-}
+#endif // DTERM_LPF_2ND_HZ_BASE
 
 
 // 16 Hz hpf filter for throttle boost
@@ -367,13 +457,13 @@ static FilterHPF_t throttle_hpf1;
 
 float throttle_hpf( float in )
 {
-	lpf( &throttle_hpf1.in_lpf, in, ALPHACALC( LOOPTIME, 1e6f / 16.0f ) ); // 16 Hz for HPF
-
 	if ( throttle_hpf1.holdoff_steps > 0 ) {
 		--throttle_hpf1.holdoff_steps;
+		throttle_hpf1.in_lpf = in;
 		return 0.0f;
 	}
 
+	lpf( &throttle_hpf1.in_lpf, in, ALPHACALC( LOOPTIME, 1e6f / 16.0f ) ); // 16 Hz for HPF
 	const float boost = in - throttle_hpf1.in_lpf; // HPF = input - average_input
 	lpf( &throttle_hpf1.avg_boost, boost, ALPHACALC( LOOPTIME, 1e6f / 8.0f ) ); // 8 Hz for LPF
 	return throttle_hpf1.avg_boost;
@@ -382,5 +472,70 @@ float throttle_hpf( float in )
 void throttle_hpf_reset( int holdoff_time_ms )
 {
 	throttle_hpf1.in_lpf = 0.0f;
+	throttle_hpf1.avg_boost = 0.0f;
 	throttle_hpf1.holdoff_steps = holdoff_time_ms * 1000 / LOOPTIME;
 }
+
+
+#ifdef KALMAN_q
+
+#define KALMAN_WINDOW_SIZE 256
+
+typedef struct Kalman_s {
+	// float q; // process noise covariance
+	float r; // measurement noise covariance
+	float p; // estimation error covariance matrix
+	float k; // kalman gain
+	float x; // state
+	float lastX; // previous state
+
+	float window[ KALMAN_WINDOW_SIZE ];
+	float meanSum;
+	float varianceSum;
+	int index;
+} Kalman_t;
+
+static float kalman_step( Kalman_t * filter, float input )
+{
+	// update variance
+	filter->window[ filter->index ] = input;
+	filter->meanSum += filter->window[ filter->index ];
+	filter->varianceSum += filter->window[ filter->index ] * filter->window[ filter->index ];
+	++filter->index;
+	if ( filter->index == KALMAN_WINDOW_SIZE ) {
+		filter->index = 0;
+	}
+	filter->meanSum -= filter->window[ filter->index ];
+	filter->varianceSum -= filter->window[ filter->index ] * filter->window[ filter->index ];
+	const float mean = filter->meanSum / KALMAN_WINDOW_SIZE;
+	const float variance = fabsf( filter->varianceSum / KALMAN_WINDOW_SIZE - mean * mean );
+	filter->r = sqrtf( variance );
+
+	// project the state ahead using acceleration
+	filter->x += filter->x - filter->lastX;
+	// update last state
+	filter->lastX = filter->x;
+	// prediction update
+	filter->p += KALMAN_q * 1e-6f;
+	// measurement update
+	filter->k = filter->p / ( filter->p + filter->r );
+	filter->x += filter->k * ( input - filter->x );
+	filter->p = ( 1.0f - filter->k ) * filter->p;
+
+	return filter->x;
+}
+
+static Kalman_t kalman_lpf[ 4 ];
+
+float kalman_filter( float input, int num )
+{
+	return kalman_step( &kalman_lpf[ num ], input );
+}
+
+void kalman_set( float input, int num )
+{
+	kalman_lpf[ num ].x = input;
+	kalman_lpf[ num ].lastX = input;
+}
+
+#endif // KALMAN_q

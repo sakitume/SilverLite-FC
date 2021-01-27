@@ -81,7 +81,7 @@ void usermain()
 #ifdef LEVELMODE
 		imu(); // attitude calculations for level mode
 #endif // LEVELMODE
-		control(); // all flight calculations and motors
+		control(true); // all flight calculations and motors
 		blackbox_log();
 		battery();
 		if ( onground ) {
