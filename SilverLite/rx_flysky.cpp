@@ -57,8 +57,8 @@ static uint32_t lastRXTime;
 
 //------------------------------------------------------------------------------
 // Define only one of the following
-#define FLYSKY_i6_MAPPING
-//#define TURNIGY_EVOLUTION_MAPPING
+//#define FLYSKY_i6_MAPPING
+#define TURNIGY_EVOLUTION_MAPPING
 
 //------------------------------------------------------------------------------
 // IBUS supports 14 channels but in reality our transmitters and receivers
@@ -85,8 +85,8 @@ enum e_IBUSChannels
                     // FlySky i6    Turnigy Evolution
     kIBUS_Aux1,     // VrA          SwB/LeftSw(1-3)     // 1000, 1500, 2000
     kIBUS_Aux2,     // VrB          SwA/MidSw(1-2)      // 1000(up), 2000(dn)
-    kIBUS_Aux3,     // SwB          VrA(Rotary)         // 1000, 2000
-    kIBUS_Aux4,     // SwC(1-3)     SwC/RightSw(1-3)    // 1000, 1500, 2000
+    kIBUS_Aux3,     // SwB          SwC/RightSw(1-3)    // 1000, 1500, 2000
+    kIBUS_Aux4,     // SwC(1-3)     VrA(Rotary)         // 1000, 2000
     kIBUS_Aux5,     // SwA(1-2)
     kIBUS_Aux6,     // SwD(1-2)
 };
@@ -138,8 +138,8 @@ static uint8_t aux_map[][4] =
 //  RATES                   SwC/1   kIBUS_Aux4
 //    kIBUS_Aux1,     // VrA          SwB/LeftSw(1-3)     // 1000, 1500, 2000
 //    kIBUS_Aux2,     // VrB          SwA/MidSw(1-2)      // 1000(up), 2000(dn)
-//    kIBUS_Aux3,     // SwB          VrA(Rotary)         // 1000, 2000
-//    kIBUS_Aux4,     // SwC(1-3)     SwC/RightSw(1-3)    // 1000, 1500, 2000
+//    kIBUS_Aux3,     // SwB          SwC/RightSw(1-3)    // 1000, 1500, 2000
+//    kIBUS_Aux4,     // SwC(1-3)     VrA(Rotary)         // 1000, 2000
 #ifdef TURNIGY_EVOLUTION_MAPPING
 static uint8_t aux_map[][4] =
 {
@@ -151,7 +151,7 @@ static uint8_t aux_map[][4] =
 #if defined(TURTLE_MODE)    
     { TURTLE_MODE,              kIBUS_Aux2,     75, 100 },
 #endif    
-    { RATES,                    kIBUS_Aux3,     0,  35  },
+    { RATES,                    kIBUS_Aux4,     0,   50 },
 };
 #endif
 
