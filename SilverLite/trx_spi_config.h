@@ -53,10 +53,10 @@ static Pin<'A', 9>      SPI_DATA;       // PA9
 #if !defined(TRX_SPI_3WIRE) && defined(OMNIBUSF4)
 //------------------------------------------------------------------------------
 // 4-wire SPI pin configuration for OMNIBUSF4 target
-static Pin<'B', 14>		TRX_CS_PIN;	    // PB14
-static Pin<'D', 2>		SPI_SCK;	    // PD2
-static Pin<'A', 10>		SPI_MISO;	    // PA10
-static Pin<'A', 9>		SPI_MOSI;	    // PA9
+static Pin<'B', 14>		TRX_CS_PIN;	    // PB14     (SBUS/PPM)
+static Pin<'D', 2>		SPI_SCK;	    // PD2      (LED_STRIP)
+static Pin<'A', 10>		SPI_MISO;	    // PA10     (RX1)
+static Pin<'A', 9>		SPI_MOSI;	    // PA9      (TX1)
 #endif
 
 #if defined(TRX_SPI_3WIRE) && defined(NOX)

@@ -31,6 +31,8 @@
         #define RX_FLYSKY
     #elif defined(NOX)
         #define RX_SILVERLITE_BAYANG_PROTOCOL
+    #elif defined(OMNIBUSF4)
+        #define RX_SILVERLITE_BAYANG_PROTOCOL
     #endif
 #endif
 
