@@ -31,8 +31,10 @@
         #define RX_FLYSKY
     #elif defined(NOX)
         #define RX_SILVERLITE_BAYANG_PROTOCOL
+    #elif defined(OMNIBUS)
+        #define RX_IBUS
     #elif defined(OMNIBUSF4)
-        #define RX_SILVERLITE_BAYANG_PROTOCOL
+        #define RX_IBUS
     #endif
 #endif
 
@@ -213,8 +215,11 @@
     #define RPM_FILTER
     #define LOOPTIME    250
 #elif defined(OMNIBUS)
+    // With RPM filter and using IBUS, the looptime takes 300us
+    // Without RPM filter and using IBUS, the looptime takes 158us
+    // So we'll need to disable RPM filter unless maybe I can get overclock working
     //#define RPM_FILTER
-    #define LOOPTIME    500
+    #define LOOPTIME    250
 #elif defined(CRAZYBEEF3FS)
     // With RPM filter, and using AFHDS2A the looptime is around 441
     // With RPM filter, and using AFHDS2A the looptime is around 384

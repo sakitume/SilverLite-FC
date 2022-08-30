@@ -31,6 +31,19 @@
                 "interface/stlink.cfg",
                 "target/stm32f4x.cfg",
             ]
+        },
+        {
+            "name": "Attach Debug OMNIBUS",
+            "type": "cortex-debug",
+            "request": "attach",
+            "servertype": "openocd",
+            "cwd": "${workspaceRoot}",
+            "executable": "./gcc_debug/OMNIBUS/OMNIBUS.elf",
+            "device": "stm32",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f3x.cfg",
+            ]
         }
     ]
 }

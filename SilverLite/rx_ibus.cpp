@@ -157,6 +157,8 @@ static UartBufDev< PinA<9>, PinA<10>, 16 > uart;    // USART1
     #endif
 #elif defined(MATEKF411RX)
 static UartBufDev< PinA<9>, PinA<10>, 16 > uart;        // USART1
+#elif defined(OMNIBUSF4)
+static UartBufDev< PinA<9>, PinA<10>, 16 > uart;        // USART1
 #elif defined(OMNIBUS)
 static UartBufDev< PinB<10>, PinB<11>, 16 > uart;       // USART3
 #else
@@ -215,7 +217,7 @@ void rx_init()
     #endif    
 #elif defined(OMNIBUS)
     int hz = 72000000;       //F3 processor runs at 72Mhz
-    uart.baud(115200, hz);
+    uart.baud(115200 * 2, hz);  // Same issue as F405, my clock/peripheral setup isn't correct. Doubling baud rate seems to work around the issue
 #else
     #error "Unable to determine what F4 variant to target"
 #endif    
