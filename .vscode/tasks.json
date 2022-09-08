@@ -4,6 +4,54 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "clean TARGET=OMNIBUS",
+            "type": "shell",
+            "command": "make TARGET=OMNIBUS clean",
+            "windows": {
+                "command": "mingw32-make TARGET=OMNIBUS clean",
+            },
+            "options": {
+                "cwd": "${workspaceRoot}"
+            }, 
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "make TARGET=OMNIBUS",
+            "type": "shell",
+            "command": "make -j8 TARGET=OMNIBUS",
+            "windows": {
+                "command": "mingw32-make -j12 TARGET=OMNIBUS",
+            },
+            "options": {
+                "cwd": "${workspaceRoot}"
+            }, 
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "make and flash TARGET=OMNIBUS",
+            "type": "shell",
+            "command": "make -j8 TARGET=OMNIBUS flash",
+            "windows": {
+                "command": "mingw32-make -j12 TARGET=OMNIBUS flash",
+            },
+            "options": {
+                "cwd": "${workspaceRoot}"
+            }, 
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "clean TARGET=OMNIBUSF4",
             "type": "shell",
             "command": "make TARGET=OMNIBUSF4 clean",

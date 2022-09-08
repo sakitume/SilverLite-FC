@@ -1,0 +1,49 @@
+{
+    "configurations": [
+      {
+        "name": "STM32F4",
+        "includePath": [
+          "${workspaceFolder}/Core/Src",
+          "${workspaceFolder}/SilverLite",
+          "${workspaceFolder}/Drivers/CMSIS/Include",
+          "${workspaceFolder}/Drivers/STM32F4xx_HAL_Driver/Inc",
+          "${workspaceFolder}/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy",
+          "${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32F4xx/Include",
+          "${workspaceFolder}/Targets/OMNIBUSF4/Core/Inc"
+        ],
+        "defines": [
+          "USE_HAL_DRIVER",
+          "USE_FULL_LL_DRIVER",
+          "STM32F4",
+          "STM32F405xx",
+	      "USE_SILVERLITE",
+          "OMNIBUSF4"
+        ],
+        "compilerPath": "C:\\USERS\\DONOVAN\\APPDATA\\ROAMING\\CODE\\USER\\GLOBALSTORAGE\\BMD.STM32-FOR-VSCODE\\@XPACK-DEV-TOOLS\\ARM-NONE-EABI-GCC\\11.2.1-1.2.2\\.CONTENT\\BIN\\ARM-NONE-EABI-G++.EXE"
+      },
+
+      {
+        "name": "STM32F3",
+        "includePath": [
+          "${workspaceFolder}/Core/Src",
+          "${workspaceFolder}/SilverLite",
+          "${workspaceFolder}/Drivers/CMSIS/Include",
+          "${workspaceFolder}/Drivers/STM32F3xx_HAL_Driver/Inc",
+          "${workspaceFolder}/Drivers/STM32F3xx_HAL_Driver/Inc/Legacy",
+          "${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32F3xx/Include",
+          "${workspaceFolder}/Targets/OMNIBUSF4/Core/Inc"
+        ],
+        "defines": [
+          "USE_HAL_DRIVER",
+          "USE_FULL_LL_DRIVER",
+          "STM32F3",
+          "STM32F303xC",
+	        "USE_SILVERLITE",
+          "OMNIBUS"
+        ],
+        "compilerPath": "C:\\USERS\\DONOVAN\\APPDATA\\ROAMING\\CODE\\USER\\GLOBALSTORAGE\\BMD.STM32-FOR-VSCODE\\@XPACK-DEV-TOOLS\\ARM-NONE-EABI-GCC\\11.2.1-1.2.2\\.CONTENT\\BIN\\ARM-NONE-EABI-G++.EXE"
+      }
+
+    ],
+    "version": 4
+  }

@@ -74,8 +74,8 @@ void Error_Handler(void);
 #define ESC2_GPIO_Port GPIOA
 #define ESC4_Pin GPIO_PIN_1
 #define ESC4_GPIO_Port GPIOB
-#define PB10_Pin GPIO_PIN_10
-#define PB10_GPIO_Port GPIOB
+#define PPM_Pin GPIO_PIN_10
+#define PPM_GPIO_Port GPIOB
 #define SPI_MPU_SS_Pin GPIO_PIN_12
 #define SPI_MPU_SS_GPIO_Port GPIOB
 #define SPI2_CLK_Pin GPIO_PIN_13

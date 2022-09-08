@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch Debug config",
+            "name": "Launch Debug OMNIBUSF4",
             "type": "cortex-debug",
             "request": "launch",
             "servertype": "openocd",
@@ -19,7 +19,7 @@
             ]
         },
         {
-            "name": "Attach Debug config",
+            "name": "Attach Debug OMNIBUSF4",
             "type": "cortex-debug",
             "request": "attach",
             "servertype": "openocd",
@@ -33,9 +33,37 @@
             ]
         },
         {
-            "name": "Attach Debug OMNIBUS",
+            "name": "Launch TEST OMNIBUSF4",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "cwd": "${workspaceRoot}",
+            "executable": "./Test/gcc_debug/OMNIBUSF4/OMNIBUSF4.elf",
+            "device": "stm32",
+            "svdPath": ".vscode/STM32F40x.svd",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f4x.cfg",
+            ]
+        },
+        {
+            "name": "Attach to TEST OMNIBUSF4",
             "type": "cortex-debug",
             "request": "attach",
+            "servertype": "openocd",
+            "cwd": "${workspaceRoot}",
+            "executable": "./Test/gcc_debug/OMNIBUSF4/OMNIBUSF4.elf",
+            "device": "stm32",
+            "svdPath": ".vscode/STM32F40x.svd",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f4x.cfg",
+            ]
+        },
+        {
+            "name": "Attach Debug OMNIBUS (F3)",
+            "type": "cortex-debug",
+            "request": "launch",
             "servertype": "openocd",
             "cwd": "${workspaceRoot}",
             "executable": "./gcc_debug/OMNIBUS/OMNIBUS.elf",
@@ -44,6 +72,6 @@
                 "interface/stlink.cfg",
                 "target/stm32f3x.cfg",
             ]
-        }
+        },
     ]
 }

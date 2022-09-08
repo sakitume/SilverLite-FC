@@ -24,8 +24,6 @@
 
 float GEstG[ 3 ] = { 0, 0, ACC_1G };
 
-float attitude[ 3 ];
-
 extern float gyro[ 3 ];
 extern float accel[ 3 ];
 extern float looptime;
@@ -93,13 +91,6 @@ void imu( void )
 	// } else {
 	// 	ledoff();
 	}
-
-#ifdef DEBUG
-	// vectorcopy( &GEstG[ 0 ], &EstG[ 0 ] );
-	float atan2approx( float y, float x );
-	attitude[ 0 ] = atan2approx( EstG[ 0 ], EstG[ 2 ] );
-	attitude[ 1 ] = atan2approx( EstG[ 1 ], EstG[ 2 ] );
-#endif
 }
 
 void vectorcopy( float * vector1, float * vector2 )

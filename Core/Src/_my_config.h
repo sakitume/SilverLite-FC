@@ -19,6 +19,7 @@
 //#define RX_IBUS // Enable IBUS protocol support on a USART RX pin, double-check rx_ibus.cpp and define one of: FLYSKY_i6_MAPPING, TURNIGY_EVOLUTION_MAPPING
 //#define RX_FLYSKY     // Enable FlySky (AFHDS) SPI transceiver implementation
 //#define RX_FLYSKY2A   // Enable FlySky (AFHDS-2A) SPI transceiver implementation
+//#define RX_ELRS       // Enable ELRS protocol support on a USART RX pin, check drv_serial_rx.cpp for choosing the USART
 
 // Alternatively, if an RX protocol/config wasn't explicitly provided, I will
 // default some targets to use a specific protocol/config. For targets that have
@@ -30,15 +31,17 @@
     #elif defined(CRAZYBEEF3FS)
         #define RX_FLYSKY
     #elif defined(NOX)
-        #define RX_SILVERLITE_BAYANG_PROTOCOL
+//        #define RX_SILVERLITE_BAYANG_PROTOCOL
+        #define RX_ELRS
     #elif defined(OMNIBUS)
-        #define RX_IBUS
+//        #define RX_IBUS
+        #define RX_ELRS
     #elif defined(OMNIBUSF4)
-        #define RX_IBUS
+        #define RX_ELRS
     #endif
 #endif
 
-#if !defined(RX_SILVERLITE_BAYANG_PROTOCOL) && !defined(RX_IBUS) && !defined(RX_FLYSKY) && !defined(RX_FLYSKY2A)
+#if !defined(RX_SILVERLITE_BAYANG_PROTOCOL) && !defined(RX_IBUS) && !defined(RX_FLYSKY) && !defined(RX_FLYSKY2A) && !defined(RX_ELRS)
     #warning "No RX implementation was chosen"
 #endif
 
@@ -87,7 +90,7 @@
 
 // rate in deg/sec for acro mode
 #define MAX_RATE            800
-#define MAX_RATEYAW         675
+#define MAX_RATEYAW         800
 
 #define LEVEL_MAX_ANGLE     80
 #define LEVEL_MAX_RATE      900
@@ -231,6 +234,16 @@
     #elif defined(RX_FLYSKY)
         // If AFHDS, no RPM filter, then real looptime is around 231
         #define LOOPTIME    250
+    #elif defined(RX_ELRS)
+        // If ELRS, and RPM filter, then real looptime is around 318 which is
+        // too much for RPM filter unless we drop to 500us looptime (2k loop)
+        // If ELRS, no RPM filter, then real looptime is around 160
+        //#define RPM_FILTER
+        #if defined(RPM_FILTER)
+            #define LOOPTIME    500
+        #else
+            #define LOOPTIME    250
+        #endif
     #else
         #error "LOOPTIME for CRAZYBEEF3FS needs to be defined"
     #endif

@@ -317,6 +317,16 @@ bool silverlite_postupdate(uint32_t max_used_loop_time)
         console_closePacket(0x02);
 #endif
 
+#if defined(RX_ELRS) && 0   // Disable this for now
+        console_openPacket();
+        console_appendPacket16(max_used_loop_time);
+        console_appendPacket16(osd_time);
+        console_appendPacket16(packetpersecond);
+        console_appendPacket16(0);
+        console_appendPacket16(0);
+        console_closePacket(0x02);
+#endif
+
 #if defined(RX_FLYSKY) || defined(RX_FLYSKY2A)
         console_openPacket();
         console_appendPacket16(max_used_loop_time);

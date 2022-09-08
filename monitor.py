@@ -109,6 +109,13 @@ def handlePacket(cmdID, packet):
             for data in debugData:
                 print data,
             print "\n"
+    elif cmdID == 0x06: # Debug logging of 32bit signed integers
+        if len(packet) >= 4:
+            numInts = len(packet) / 4
+            debugData = struct.unpack("<" + ('i'*numInts), packet)
+            for data in debugData:
+                print data,
+            print "\n"
     else:
         print "Unknown packet type: ", hex(cmdID), len(packet)
 
@@ -118,7 +125,7 @@ def handlePacket(cmdID, packet):
 def checkForInput(ser):
     # Check for keyboard input
     ch = getch()
-    if ch == 'r':
+    if ch in ('R', 'r'):
         if ser:
             print 'Sending reset command'
             ser.write(ch)

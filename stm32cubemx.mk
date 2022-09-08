@@ -52,6 +52,7 @@ endif
 #-------------------------------------------------------------------------------
 DEFINES += \
 	USE_HAL_DRIVER \
+	USE_FULL_LL_DRIVER
 
 ifeq ($(TARGET),OMNIBUSF4)
 DEFINES += \
