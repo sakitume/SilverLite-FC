@@ -51,3 +51,6 @@
 #undef MOTOR_FR
 
 
+// Aux channel definitions
+#undef FN_INVERTED              // default value is DEVO_CHAN6
+#define FN_INVERTED CH_OFF      // Effectively disables FN_INVERTED

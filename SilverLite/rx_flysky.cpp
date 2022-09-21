@@ -133,11 +133,12 @@ static uint8_t aux_map[][4] =
 //  Feature                 Turnigy Evolution
 //  -------                 ---------
 //  THROTTLE_KILL_SWITCH    SwB/1   kIBUS_Aux1
-//  LEVELMODE               SwB/2   kIBUS_Aux1
-//  MOTOR_BEEPS_CHANNEL     SwA/2   kIBUS_Aux3
-//  RATES                   SwC/1   kIBUS_Aux4
+//  LEVELMODE               SwB/2   kIBUS_Aux2
+//  MOTOR_BEEPS_CHANNEL     SwC/2   kIBUS_Aux3
+//  RATES                   SwC/3   kIBUS_Aux3
+//  TURTLE_MODE             SwA/2   kIBUS_Aux4
 //    kIBUS_Aux1,     // VrA          SwB/LeftSw(1-3)     // 1000, 1500, 2000
-//    kIBUS_Aux2,     // VrB          SwA/MidSw(1-2)      // 1000(up), 2000(dn)
+//    kIBUS_Aux2,     // VrB          SwA/MidSw(1-2)      // 1000(dn), 2000(up)
 //    kIBUS_Aux3,     // SwB          SwC/RightSw(1-3)    // 1000, 1500, 2000
 //    kIBUS_Aux4,     // SwC(1-3)     VrA(Rotary)         // 1000, 2000
 #ifdef TURNIGY_EVOLUTION_MAPPING
@@ -145,13 +146,13 @@ static uint8_t aux_map[][4] =
 {
     { THROTTLE_KILL_SWITCH,     kIBUS_Aux1,     0,  30  },
 #if defined(LEVELMODE)    
-    { LEVELMODE,                kIBUS_Aux1,     35, 75  },
+    { LEVELMODE,                kIBUS_Aux2,     35, 75  },
 #endif    
-    { MOTOR_BEEPS_CHANNEL,      kIBUS_Aux2,     35, 75 },
+    { MOTOR_BEEPS_CHANNEL,      kIBUS_Aux3,     35, 75  },
+    { RATES,                    kIBUS_Aux3,     0,  30  },
 #if defined(TURTLE_MODE)    
-    { TURTLE_MODE,              kIBUS_Aux2,     75, 100 },
+    { TURTLE_MODE,              kIBUS_Aux4,     35, 100 },
 #endif    
-    { RATES,                    kIBUS_Aux4,     0,   50 },
 };
 #endif
 

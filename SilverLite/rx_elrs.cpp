@@ -383,9 +383,14 @@ void SerialFrame::ProcessFrame(const uint8_t* pFrame)
             }
 
             // Update aux channels
-            aux[THROTTLE_KILL_SWITCH]   = (channels[4] > 880) ? 0 : 1;      // 
-            aux[MOTOR_BEEPS_CHANNEL]    = (channels[5] > 1100) ? 1 : 0;
-            aux[LEVELMODE]              = 0;
+            // Note: for THROTTLE_KILL_SWITCH we invert the channel's logic value so that it can
+            // behave as an "arm switch". For RATES we also invert the channel's logic so that
+            // if aux channel is switched on, we use *slow* RATES multiplier
+            aux[THROTTLE_KILL_SWITCH]   = (channels[4] > 880) ? 0 : 1;
+            aux[LEVELMODE]              = (channels[5] > 1100) ? 1 : 0;
+            aux[MOTOR_BEEPS_CHANNEL]    = (channels[6] > 1100) ? 1 : 0;
+            aux[TURTLE_MODE]            = (channels[7] > 1100) ? 1 : 0;
+            aux[RATES]                  = (channels[8] > 1100) ? 0 : 1;
 
 #if defined(USE_LOG_CHANNEL_PACKET)
             LogChannelPacket(channels);
