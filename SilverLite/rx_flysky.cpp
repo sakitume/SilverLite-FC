@@ -57,8 +57,8 @@ static uint32_t lastRXTime;
 
 //------------------------------------------------------------------------------
 // Define only one of the following
-//#define FLYSKY_i6_MAPPING
-#define TURNIGY_EVOLUTION_MAPPING
+#define FLYSKY_i6_MAPPING
+//#define TURNIGY_EVOLUTION_MAPPING
 
 //------------------------------------------------------------------------------
 // IBUS supports 14 channels but in reality our transmitters and receivers
@@ -110,7 +110,7 @@ enum e_IBUSChannels
 //  Feature                 FlySky i6
 //  -------                 ---------
 //  THROTTLE_KILL_SWITCH    SwA/1
-//  LEVELMODE               SwB/1
+//  LEVELMODE               SwB/2
 //  MOTOR_BEEPS_CHANNEL     SwC/3
 //  RATES                   SwD/1
 //
@@ -119,7 +119,7 @@ static uint8_t aux_map[][4] =
 {
     { THROTTLE_KILL_SWITCH,     kIBUS_Aux1,     0,  50  },
 #if defined(LEVELMODE)    
-    { LEVELMODE,                kIBUS_Aux2,     0,  50  },
+    { LEVELMODE,                kIBUS_Aux2,     40, 100 },
 #endif    
     { MOTOR_BEEPS_CHANNEL,      kIBUS_Aux3,     25, 65 },
 #if defined(TURTLE_MODE)    
