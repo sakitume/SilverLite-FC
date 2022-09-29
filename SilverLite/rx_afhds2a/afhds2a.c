@@ -386,6 +386,10 @@ bool flySkyInit(const rxSpiConfig_t *rxSpiConfig, struct rxRuntimeConfig_s *rxRu
         A7105Config(flySkyRegs, sizeof(flySkyRegs));
     }
 
+#define NO_BIND_SAVE
+#if defined(NO_BIND_SAVE)
+    bound = false;
+#else    
     if (flySkyConfig()->txId == 0) {
         bound = false;
     } else {
@@ -394,6 +398,7 @@ bool flySkyInit(const rxSpiConfig_t *rxSpiConfig, struct rxRuntimeConfig_s *rxRu
         memcpy (rfChannelMap, flySkyConfig()->rfChannelMap, FLYSKY_FREQUENCY_COUNT);// load channel map
         startRxChannel = getNextChannel(0);
     }
+#endif    
 
     if (rssiSource == RSSI_SOURCE_NONE) {
         rssiSource = RSSI_SOURCE_RX_PROTOCOL;
@@ -463,9 +468,14 @@ rx_spi_received_e flySkyDataReceived(uint8_t *payload)
         if ((micros() - timeLastBind) > BIND_TIMEOUT && rfChannelMap[0] != 0 && txId != 0) {
             result = RX_SPI_RECEIVED_BIND;
             bound = true;
+
+#if defined(NO_BIND_SAVE)
+            // Don't save into flash
+#else
             flySkyConfigMutable()->txId = txId; // store TXID
             memcpy (flySkyConfigMutable()->rfChannelMap, rfChannelMap, FLYSKY_FREQUENCY_COUNT);// store channel map
             writeEEPROM();
+#endif            
         }
         rxSpiLedBlinkBind();
     }
