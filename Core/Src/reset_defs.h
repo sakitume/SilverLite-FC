@@ -44,6 +44,14 @@
 #undef DTERM_LPF_2ND_HZ_MAX
 #undef DTERM_LPF_2ND_HZ_THROTTLE
 
+// Accelerometer sensor
+#undef SENSOR_ROTATE_45_CCW
+#undef SENSOR_ROTATE_45_CW
+#undef SENSOR_ROTATE_90_CW
+#undef SENSOR_ROTATE_90_CCW
+#undef SENSOR_ROTATE_180
+#undef SENSOR_INVERT 
+
 // Motor order
 #undef MOTOR_BL
 #undef MOTOR_FL

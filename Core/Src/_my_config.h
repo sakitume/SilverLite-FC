@@ -30,6 +30,8 @@
         #define RX_FLYSKY
     #elif defined(CRAZYBEEF3FS)
         #define RX_FLYSKY
+// Define SENSOR_INVERT if you wish to flip the flight controller so USB port is up (on top)        
+//        #define SENSOR_INVERT
     #elif defined(NOX)
 //        #define RX_SILVERLITE_BAYANG_PROTOCOL
         #define RX_ELRS
@@ -350,13 +352,6 @@
 //------------------------------------------------------------------------------
 // Gyro orientation
 //------------------------------------------------------------------------------
-#undef SENSOR_ROTATE_45_CCW
-#undef SENSOR_ROTATE_45_CW
-#undef SENSOR_ROTATE_90_CW
-#undef SENSOR_ROTATE_90_CCW
-#undef SENSOR_ROTATE_180
-#undef SENSOR_INVERT 
-
 #if defined(NOX)
     // You would rotate the Play F4 board 90 degrees clockwise so that the
     // pin 1 dot on the MPU chip would orient correctly and be on the upper
@@ -402,11 +397,17 @@
     #define MOTOR_BR 1
     #define MOTOR_FR 2
 #elif defined(CRAZYBEEF3FS)
-    // This is verified to be correct
-    #define MOTOR_BL 3
-    #define MOTOR_FL 4
-    #define MOTOR_BR 1
-    #define MOTOR_FR 2
+    #if defined(SENSOR_INVERT)
+        #define MOTOR_BL 1  // 3
+        #define MOTOR_FL 2  // 4
+        #define MOTOR_BR 3  // 1
+        #define MOTOR_FR 4  // 2
+    #else
+        #define MOTOR_BL 3
+        #define MOTOR_FL 4
+        #define MOTOR_BR 1
+        #define MOTOR_FR 2
+    #endif
 #else
     #error "Unsupported flight controller target. Define your motor order here"
 #endif
